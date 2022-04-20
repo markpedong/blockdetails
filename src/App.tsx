@@ -1,6 +1,7 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React from "react";
 import "../src/Styles/App.css";
+import { GlobalContext } from "./Context/GlobalContext";
 import { Main } from "./Pages/Main/Main";
 
 const theme = createTheme({
@@ -36,7 +37,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
-        <Main />
+        <GlobalContext>
+          <Main />
+        </GlobalContext>
       </div>
     </ThemeProvider>
   );
