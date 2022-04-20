@@ -1,8 +1,45 @@
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React from "react";
-import "./App.css";
+import "../src/Styles/App.css";
+import { Main } from "./Pages/Main/Main";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#ffffff",
+    },
+  },
+  typography: {
+    fontFamily: [
+      '"Inter"',
+      '"Montserrat"',
+      '"Poppins"',
+      "Open Sans",
+      '"Nunito Sans"',
+    ].join(","),
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Inter';
+          font-style: normal;
+          font-weight: 400;
+          
+        }
+      `,
+    },
+  },
+});
 
 function App() {
-  return <div className="App"></div>;
+  return (
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <Main />
+      </div>
+    </ThemeProvider>
+  );
 }
 
 export default App;
