@@ -12,7 +12,14 @@ export const Main = () => {
   return (
     <div>
       <GlobalData />
-      <NavbarSec />
+      <NavbarSec
+        links={[
+          { link: "/", label: "Home" },
+          { link: "/crypto", label: "Crypto" },
+          { link: "/exchanges", label: "Exchanges" },
+          { link: "/nft", label: "NFT" },
+        ]}
+      />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cryptocurrency/:id" element={<CryptoDetail />} />
