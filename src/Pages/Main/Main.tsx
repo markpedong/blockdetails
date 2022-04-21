@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import { GlobalContext } from "../../Context/GlobalContext";
 import { CryptoDetail } from "../Crypto/CryptoDetail";
 import { Exchanges } from "../Crypto/Exchanges";
 import { NFT } from "../Crypto/NFT";

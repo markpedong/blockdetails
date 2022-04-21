@@ -10,6 +10,7 @@ export const GlobalContext = ({ children }: Context) => {
   const { data, error, loading } = useFetchAPISingle(
     `${GLOBAL_API}`
   ) as unknown as TGlobalData;
+
   const [currency, setCurrency] = useState("USD");
   const [symbol, setSymbol] = useState("$");
 
