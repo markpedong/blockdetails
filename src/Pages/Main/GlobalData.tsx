@@ -19,7 +19,7 @@ export const GlobalData = () => {
   const dark = colorScheme === "dark";
 
   return (
-    <MediaQuery query="(max-width: 1200px)" styles={{ display: "none" }}>
+    <MediaQuery query="(max-width: 768px)" styles={{ display: "none" }}>
       <Paper
         sx={{
           marginBlockStart: "0.3rem",
@@ -30,28 +30,28 @@ export const GlobalData = () => {
         }}
       >
         <Container size="xl" px={"xs"}>
-          <Grid align="center" columns={24}>
-            <Grid.Col lg={2.3}>
+          <Grid align="center" columns={24} justify="center">
+            <Grid.Col sm={4} md={2.7} lg={2.3}>
               <GlobalHeader title="Cryptos:" data={global.active} />
             </Grid.Col>
-            <Grid.Col lg={2.3}>
+            <Grid.Col sm={4} md={2.7} lg={2.3}>
               <GlobalHeader title="Exchanges:" data={global.market} />
             </Grid.Col>
-            <Grid.Col lg={4.7}>
+            <Grid.Col sm={7} md={5.7} lg={4.7}>
               <GlobalHeader
                 title="Market Cap:"
                 data={numberWithCommas(global.mcap)}
                 symbol={symbol}
               />
             </Grid.Col>
-            <Grid.Col lg={4}>
+            <Grid.Col sm={7} md={4.8} lg={4.3}>
               <GlobalHeader
                 title="24h Vol:"
                 data={numberWithCommas(global.volume)}
                 symbol={symbol}
               />
             </Grid.Col>
-            <Grid.Col lg={4}>
+            <Grid.Col sm={7} md={4.7} lg={4}>
               <GlobalHeader
                 title="Dominance:"
                 data={global.btc?.toFixed(2)}
@@ -59,16 +59,12 @@ export const GlobalData = () => {
               />
               <GlobalHeader data={global.eth?.toFixed(2)} percentage="%" />
             </Grid.Col>
-            <Grid.Col offset={3.8} lg={2}>
+            <Grid.Col sm={3} md={2} offsetLg={3.5} lg={2}>
               <Select
                 placeholder="Change Currency"
                 onChange={(e) => setCurrency(e as string)}
                 defaultValue={"usd"}
                 size="xs"
-                transition={"scale-y"}
-                selectOnBlur={true}
-                transitionDuration={500}
-                transitionTimingFunction={"ease-in"}
                 data={[
                   { value: "usd", label: "USD" },
                   { value: "php", label: "PHP" },
@@ -77,7 +73,7 @@ export const GlobalData = () => {
                 ]}
               />
             </Grid.Col>
-            <Grid.Col lg={0.8}>
+            <Grid.Col sm={3} md={0.8} lg={0.8}>
               <ActionIcon
                 color={dark ? "white" : "blue"}
                 onClick={() => toggleColorScheme()}

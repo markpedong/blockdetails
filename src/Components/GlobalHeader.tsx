@@ -1,6 +1,6 @@
 import { CSSProperties } from "@mantine/styles/lib/tss/types/css-object";
 import React from "react";
-import { useStyles } from "../Theme/GlobalHeader";
+import { TopHeader } from "../Config/Theme/useStyles";
 
 type Props = {
   title?: string;
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const GlobalHeader = ({ title, data, symbol, percentage }: Props) => {
-  const { classes } = useStyles();
+  const { classes } = TopHeader();
   return (
     <>
       {title}

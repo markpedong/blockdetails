@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { GLOBAL_API } from "../Config/API";
 import { Context } from "../Config/Type/type";
 import { useFetchAPISingle } from "../Hooks/useFetchAPISingle";
-import { AppContextInterface, TGlobalData } from "../Type/GlobalData";
+import { AppContextInterface, TGlobalData } from "../Config/Type/type";
 
 const GlobalData = createContext({} as AppContextInterface);
 
