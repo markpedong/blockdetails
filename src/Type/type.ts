@@ -47,3 +47,16 @@ export type TGlobal = {
   mcap_change: number;
   volume: number;
 };
+
+export type TTrending = {
+  current_price: number;
+  id: string;
+  image: string;
+  name: string;
+  symbol: string;
+  price_change_percentage_24h: number;
+};
+
+export type TProfitChange = {
+  profit: boolean;
+};

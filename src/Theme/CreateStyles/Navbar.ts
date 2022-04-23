@@ -1,16 +1,5 @@
 import { createStyles } from "@mantine/core";
-
-export const TopHeader = createStyles((theme) => ({
-  digits: {
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.indigo[8]
-        : theme.colors.indigo[7],
-    marginInlineStart: theme.spacing.xs,
-  },
-}));
-
-export const HEADER_HEIGHT = 60;
+import { HEADER_HEIGHT } from "../../Config/Variable";
 
 export const NavStyles = createStyles((theme) => ({
   root: {

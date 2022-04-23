@@ -6308,6 +6308,11 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
+open-props@^1.3.16:
+  version "1.3.16"
+  resolved "https://registry.yarnpkg.com/open-props/-/open-props-1.3.16.tgz#e9bf5c756595aa4cf4ed3a6253c3dc4af50793b5"
+  integrity sha512-ZAYewrlH5xuCItPa8c4RxPtqyvuC7zYpdfEzSbDFmLT6T0SZ/iQNHNIs/SgnzMGVpSszFcbChK17S5/IswN2bw==
+
 open@^8.0.9, open@^8.4.0:
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/open/-/open-8.4.0.tgz#345321ae18f8138f82565a910fdc6b39e8c244f8"
@@ -7192,6 +7197,13 @@ raw-body@2.4.3:
     http-errors "1.8.1"
     iconv-lite "0.4.24"
     unpipe "1.0.0"
+
+react-alice-carousel@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/react-alice-carousel/-/react-alice-carousel-2.5.1.tgz#d8b27f942d342bf57367eb2c3301358a28758381"
+  integrity sha512-UeAd+O83TEiCxbDMMd9xAOLRr+xPNFPai9W6cNQgmIfEBgOiKDdntpTnhhwfXKoirXxQcbPlg9eG7FG9D1M4SA==
+  dependencies:
+    vanilla-swipe "^2.2.0"
 
 react-app-polyfill@^3.0.0:
   version "3.0.0"
@@ -8563,6 +8575,11 @@ v8-to-istanbul@^8.1.0:
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^1.6.0"
     source-map "^0.7.3"
+
+vanilla-swipe@^2.2.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/vanilla-swipe/-/vanilla-swipe-2.4.0.tgz#fb26199d26e0a5b26e240b3b19fc4a60110b1dce"
+  integrity sha512-EdZdBWhPQvKz8DWHRXEHxsbJnU5wWKXrXblOV9ENElDnEK3tPkrBlAYK1pgPeuUb8k2DPQEK3tFi6W4cMZgUAg==
 
 vary@~1.1.2:
   version "1.1.2"

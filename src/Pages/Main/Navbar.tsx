@@ -20,9 +20,10 @@ import { MoonStars, Sun } from "tabler-icons-react";
 import { scaleY } from "../../Config/Transition";
 import logodark from "../../Images/logo-darkmode.svg";
 import logo from "../../Images/logo.svg";
-import { HEADER_HEIGHT, NavStyles } from "../../Config/Theme/useStyles";
 import { GlobalState } from "../../Context/GlobalContext";
 import { NavGrid } from "../../Styled Components/StyledNavbar";
+import { HEADER_HEIGHT } from "../../Config/Variable";
+import { NavStyles } from "../../Theme/CreateStyles/Navbar";
 
 interface HeaderResponsiveProps {
   links: { link: string; label: string }[];

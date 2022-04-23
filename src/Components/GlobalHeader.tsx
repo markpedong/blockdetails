@@ -1,6 +1,6 @@
 import { CSSProperties } from "@mantine/styles/lib/tss/types/css-object";
 import React from "react";
-import { TopHeader } from "../Config/Theme/useStyles";
+import { TopHeader } from "../Theme/CreateStyles/Global";
 
 type Props = {
   title?: string;
