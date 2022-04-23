@@ -1,23 +1,26 @@
 import { createStyles } from "@mantine/core";
 
 export const CarouselStyles = createStyles((theme) => ({
-  carousel: {
+  link: {
     display: "grid",
+    justifyContent: "space-evenly",
     alignItems: "center",
+    gridTemplateColumns: "auto auto",
+  },
+
+  carousel: {
     inlineSize: "max-content",
     backgroundColor:
       theme.colorScheme === "dark"
         ? theme.colors.gray[9]
         : theme.colors.gray[0],
-    gridTemplateColumns: "auto auto",
+
     paddingBlock: theme.spacing.xl,
     transition: "all 0.3s var(--ease-5)",
     transform: "scale(0.9)",
     marginBlock: "1rem",
-    marginInline: "1rem",
     borderRadius: theme.radius.lg,
     boxShadow: "var(--shadow-2)",
-    justifyContent: "space-evenly",
 
     "&:hover": {
       transform: "scale(1)",
@@ -35,5 +38,11 @@ export const CarouselStyles = createStyles((theme) => ({
       theme.colorScheme === "dark"
         ? theme.colors.gray[0]
         : theme.colors.gray[9],
+  },
+
+  loader: {
+    display: "flex",
+    justifyContent: "center",
+    blockSize: "8.35rem",
   },
 }));

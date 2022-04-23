@@ -22,7 +22,7 @@ export const GlobalData = () => {
     <MediaQuery query="(max-width: 768px)" styles={{ display: "none" }}>
       <Paper
         sx={{
-          marginBlockStart: "0.3rem",
+          marginBlock: "0.3rem",
           fontSize: 11,
           fontWeight: 600,
           borderRadius: 0,

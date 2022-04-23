@@ -15,3 +15,13 @@ a {
 .alice-carousel__stage-item {
   list-style-type: none;
 }
+
+.mantine-1x9p4r4 {
+  background: rgb(34, 37, 49);
+  background: linear-gradient(
+    180deg,
+    rgba(34, 37, 49, 1) 0%,
+    rgba(26, 26, 29, 1) 30%
+  );
+  height: 100vh;
+}
