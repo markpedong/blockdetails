@@ -13,13 +13,18 @@ export const App = () => {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
+  const customTheme = {
+    fontFamily: "Inter",
+    colorScheme: colorScheme,
+  };
+
   return (
     <div className="App">
       <ColorSchemeProvider
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
       >
-        <MantineProvider theme={{ colorScheme }}>
+        <MantineProvider theme={customTheme}>
           <GlobalContext>
             <Main />
           </GlobalContext>

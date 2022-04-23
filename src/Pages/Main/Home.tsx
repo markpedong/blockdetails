@@ -8,7 +8,7 @@ export const Home = () => {
         borderRadius: 0,
       }}
     >
-      <Container size="lg" px={0}>
+      <Container size="xl" px={"xs"}>
         Home Element Lorem ipsum dolor sit amet consectetur adipisicing elit.
         Delectus maxime consequatur provident in. Nobis, officia earum natus
         asperiores ipsum eos ut magni non labore tempora laborum similique

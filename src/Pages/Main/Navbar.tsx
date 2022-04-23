@@ -9,12 +9,14 @@ import {
   Transition,
   useMantineColorScheme,
   ActionIcon,
+  Autocomplete,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
 import logo from "../../Images/logo.svg";
 import logodark from "../../Images/logo-darkmode.svg";
 import { Link } from "react-router-dom";
 import { MoonStars, Sun } from "tabler-icons-react";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 const HEADER_HEIGHT = 60;
 
@@ -34,7 +36,7 @@ const useStyles = createStyles((theme) => ({
     borderTopLeftRadius: 0,
     borderTopWidth: 0,
 
-    [theme.fn.largerThan("md")]: {
+    [theme.fn.largerThan("lg")]: {
       display: "none",
     },
   },
@@ -46,21 +48,37 @@ const useStyles = createStyles((theme) => ({
     height: "100%",
   },
 
+  brand: {
+    display: "flex",
+    alignItems: "center",
+
+    span: {
+      marginInlineStart: "0.5rem",
+      fontWeight: 700,
+      fontSize: "1.2rem",
+      letterSpacing: "0.1rem",
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.gray[0]
+          : theme.colors.gray[9],
+    },
+  },
+
   links: {
-    [theme.fn.smallerThan("md")]: {
+    [theme.fn.smallerThan("lg")]: {
       display: "none",
     },
   },
 
   burger: {
-    [theme.fn.largerThan("md")]: {
+    [theme.fn.largerThan("lg")]: {
       display: "none",
     },
   },
 
   link: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "end",
     lineHeight: 1,
     padding: "8px 12px",
     borderRadius: theme.radius.sm,
@@ -79,7 +97,7 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.gray[0],
     },
 
-    [theme.fn.smallerThan("md")]: {
+    [theme.fn.smallerThan("lg")]: {
       borderRadius: 0,
       padding: theme.spacing.md,
     },
@@ -95,13 +113,19 @@ const useStyles = createStyles((theme) => ({
         theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 3 : 7],
     },
   },
+
+  search: {
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
+    },
+  },
 }));
 
 interface HeaderResponsiveProps {
   links: { link: string; label: string }[];
 }
 
-const scaleY = {
+export const scaleY = {
   in: { opacity: 1, transform: "scaleY(1)" },
   out: { opacity: 0, transform: "scaleY(0)" },
   common: { transformOrigin: "top" },
@@ -117,16 +141,15 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
 
   const items = links.map((link) => (
     <Link
+      to={link.link}
       key={link.label}
       className={cx(classes.link, {
         [classes.linkActive]: active === link.link,
       })}
-      onClick={(event) => {
-        event.preventDefault();
+      onClick={() => {
         setActive(link.link);
         toggleOpened(false);
       }}
-      to={link.link}
     >
       {link.label}
     </Link>
@@ -134,18 +157,27 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
 
   return (
     <Header height={HEADER_HEIGHT} className={classes.root}>
-      <Container size={"lg"} px={"lg"} className={classes.header}>
-        <img src={dark ? logodark : logo} alt="logo" height={20} />
+      <Container size={"xl"} px={"xs"} className={classes.header}>
+        <Paper className={classes.brand}>
+          <img src={dark ? logodark : logo} alt="logo" height={20} />
+          <span>BLOCKDETAILS</span>
+        </Paper>
         <Group spacing={5} className={classes.links}>
           {items}
-          <ActionIcon
-            variant="outline"
-            color={dark ? "yellow" : "blue"}
-            onClick={() => toggleColorScheme()}
-            title="Toggle color scheme"
-          >
-            {dark ? <Sun size={18} /> : <MoonStars size={18} />}
-          </ActionIcon>
+          <Autocomplete
+            className={classes.search}
+            placeholder="Search"
+            icon={<MagnifyingGlassIcon fontSize={16} />}
+            data={[
+              "React",
+              "Angular",
+              "Vue",
+              "Next.js",
+              "Riot.js",
+              "Svelte",
+              "Blitz.js",
+            ]}
+          />
         </Group>
 
         <Burger
@@ -164,14 +196,39 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
               {items}
-              <ActionIcon
-                variant="outline"
-                color={dark ? "yellow" : "blue"}
-                onClick={() => toggleColorScheme()}
-                title="Toggle color scheme"
+              <Container
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
               >
-                {dark ? <Sun size={18} /> : <MoonStars size={18} />}
-              </ActionIcon>
+                <Autocomplete
+                  sx={{
+                    flexGrow: 1,
+                  }}
+                  className={classes.search}
+                  placeholder="Search"
+                  icon={<MagnifyingGlassIcon fontSize={16} />}
+                  data={[
+                    "React",
+                    "Angular",
+                    "Vue",
+                    "Next.js",
+                    "Riot.js",
+                    "Svelte",
+                    "Blitz.js",
+                  ]}
+                />
+                <ActionIcon
+                  variant="outline"
+                  color={dark ? "white" : "blue"}
+                  onClick={() => toggleColorScheme()}
+                  title="Toggle color scheme"
+                >
+                  {dark ? <Sun size={18} /> : <MoonStars size={18} />}
+                </ActionIcon>
+              </Container>
             </Paper>
           )}
         </Transition>

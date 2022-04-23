@@ -14,8 +14,7 @@ export const Main = () => {
       <GlobalData />
       <NavbarSec
         links={[
-          { link: "/", label: "Home" },
-          { link: "/crypto", label: "Crypto" },
+          { link: "/", label: "Crypto" },
           { link: "/exchanges", label: "Exchanges" },
           { link: "/nft", label: "NFT" },
         ]}

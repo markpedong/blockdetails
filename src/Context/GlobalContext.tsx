@@ -15,8 +15,10 @@ export const GlobalContext = ({ children }: Context) => {
   const [symbol, setSymbol] = useState("$");
 
   useEffect(() => {
-    if (currency === "USD") setSymbol("$");
-    if (currency === "PHP") setSymbol("₱");
+    if (currency === "usd") setSymbol("$");
+    if (currency === "php") setSymbol("₱");
+    if (currency === "eur") setSymbol("€");
+    if (currency === "jpy") setSymbol("¥");
   }, [currency]);
 
   const global = {
