@@ -10,3 +10,6 @@ export const DEFI_API =
 
 export const SingleCoin = (id: string) =>
   `https://api.coingecko.com/api/v3/coins/${id}`;
+
+export const CoinList = (currency: string, page: number, res_page: number) =>
+  `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${res_page}&page=${page}&sparkline=false`;

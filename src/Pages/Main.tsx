@@ -3,13 +3,14 @@ import { Route, Routes } from "react-router-dom";
 import { CryptoDetail } from "./Crypto/CryptoDetail";
 import { Exchanges } from "./Crypto/Exchanges";
 import { NFT } from "./Crypto/NFT";
+import { Footer } from "./Footer";
+import { GlobalData } from "./GlobalData";
 import { Home } from "./Home";
-import { GlobalData } from "./Home/GlobalData";
 import { NavbarSec } from "./Home/Navbar";
 
 export const Main = () => {
   return (
-    <div>
+    <>
       <GlobalData />
       <NavbarSec
         links={[
@@ -24,6 +25,7 @@ export const Main = () => {
         <Route path="/exchanges" element={<Exchanges />} />
         <Route path="/nft" element={<NFT />} />
       </Routes>
-    </div>
+      <Footer />
+    </>
   );
 };

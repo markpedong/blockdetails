@@ -1,16 +1,10 @@
-import {
-  Container,
-  Image,
-  Loader,
-  SimpleGrid,
-  Text,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { Container, Image, Text } from "@mantine/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import AliceCarousel from "react-alice-carousel";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
+import { LoaderComp } from "../../Components/Loader";
 import { TrendingCoins } from "../../Config/API";
 import { numberWithCommas } from "../../Config/Function";
 import { responsive } from "../../Config/Transition";
@@ -24,8 +18,7 @@ import { TTrending } from "../../Type/type";
 
 export const Carousel = () => {
   const [trending, setTrending] = useState([] as TTrending[]);
-  const { currency, symbol } = GlobalState();
-  const { colorScheme } = useMantineColorScheme();
+  const { currency, symbol, loading } = GlobalState();
   const { classes } = CarouselStyles();
 
   const fetchTrendingCoins = async () => {
@@ -54,13 +47,7 @@ export const Carousel = () => {
           onClick={() => navigateCoin(coin.id)}
           px={10}
         >
-          <Image
-            src={coin.image}
-            alt={coin.name}
-            width={50}
-            withPlaceholder
-            radius={360}
-          />
+          <Image src={coin.image} alt={coin.name} width={50} radius={360} />
           <Container className={classes.description} px={10}>
             {symbol} {numberWithCommas(coin.current_price)}
             <ProfitChange profit={profit}>
@@ -76,7 +63,11 @@ export const Carousel = () => {
 
   return (
     <>
-      {trending.length > 0 ? (
+      {loading ? (
+        <div>
+          <LoaderComp />
+        </div>
+      ) : (
         <AliceCarousel
           mouseTracking
           infinite
@@ -88,16 +79,6 @@ export const Carousel = () => {
           autoPlay
           items={items}
         />
-      ) : (
-        <div>
-          <SimpleGrid cols={1} className={classes.loader}>
-            <Loader
-              variant="bars"
-              size="lg"
-              color={colorScheme === "dark" ? "blue" : "indigo"}
-            />
-          </SimpleGrid>
-        </div>
       )}
     </>
   );
