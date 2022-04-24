@@ -16,4 +16,10 @@ export const TodayTitle = styled(Text)`
   font-weight: 800;
   color: ${({ theme }: TodayCryptoProps) =>
     theme === "dark" ? "#fff" : "#000"};
+  margin-block-end: 1rem;
+`;
+
+export const Number = styled.span`
+  text-transform: uppercase;
+  font-weight: 800;
 `;

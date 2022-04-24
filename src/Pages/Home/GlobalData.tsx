@@ -75,8 +75,10 @@ export const GlobalData = () => {
             </Grid.Col>
             <Grid.Col sm={3} md={0.8} lg={0.8}>
               <ActionIcon
-                color={dark ? "white" : "blue"}
+                color={dark ? "gray" : "blue"}
                 onClick={() => toggleColorScheme()}
+                size="sm"
+                variant="filled"
               >
                 {dark ? <SunIcon fontSize={18} /> : <MoonIcon fontSize={18} />}
               </ActionIcon>

@@ -6,7 +6,7 @@ import {
 import React, { useState } from "react";
 import "../src/Styles/App.css";
 import { GlobalContext } from "./Context/GlobalContext";
-import { Main } from "./Pages/Main/Main";
+import { Main } from "./Pages/Main";
 
 export const App = () => {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");

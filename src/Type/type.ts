@@ -41,10 +41,15 @@ export type AppContextInterface = TGlobalHeaderProps & {
 export type TGlobal = {
   active: number;
   btc: number;
+  defi: number;
+  defi_top: number;
+  defi_vol: number;
+  defimcap: number;
   eth: number;
   market: number;
   mcap: number;
   mcap_change: number;
+  top_name: string;
   volume: number;
 };
 

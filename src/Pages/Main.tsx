@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { CryptoDetail } from "../Crypto/CryptoDetail";
-import { Exchanges } from "../Crypto/Exchanges";
-import { NFT } from "../Crypto/NFT";
-import { GlobalData } from "./GlobalData";
+import { CryptoDetail } from "./Crypto/CryptoDetail";
+import { Exchanges } from "./Crypto/Exchanges";
+import { NFT } from "./Crypto/NFT";
 import { Home } from "./Home";
-import { NavbarSec } from "./Navbar";
+import { GlobalData } from "./Home/GlobalData";
+import { NavbarSec } from "./Home/Navbar";
 
 export const Main = () => {
   return (
