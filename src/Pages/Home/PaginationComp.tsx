@@ -17,7 +17,6 @@ export const PaginationComp = () => {
 
   const first = Object.values(coins)[0];
   const last = Object.values(coins)[99];
-
   return loading ? (
     <>{""}</>
   ) : (
@@ -38,6 +37,11 @@ export const PaginationComp = () => {
           position="center"
           page={page}
           onChange={(e) => setPage(e)}
+          sx={{
+            "& > button": {
+              fontFamily: "Inter",
+            },
+          }}
         />
       </Grid.Col>
       <Grid.Col sm={6}>

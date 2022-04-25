@@ -1,13 +1,4 @@
-import {
-  Container,
-  Grid,
-  Image,
-  MediaQuery,
-  Pagination,
-  Table,
-  Text,
-  useMantineTheme,
-} from "@mantine/core";
+import { Image, MediaQuery, Table, Text, useMantineTheme } from "@mantine/core";
 import numeral from "numeral";
 import React from "react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
@@ -18,12 +9,10 @@ import { GlobalState } from "../../Context/GlobalContext";
 import { TableState } from "../../Context/TableContext";
 import { ProfitChange } from "../../Styled Components/StyledCarousel";
 import { TableStyles } from "../../Theme/CreateStyles/Table";
-import PaginationComp from "./PaginationComp";
-import { ShowRow } from "./ShowRow";
 
 export const CryptoTable = () => {
-  const { coins, loading, res_page } = TableState();
-  const { symbol, global } = GlobalState();
+  const { coins, loading } = TableState();
+  const { symbol } = GlobalState();
   const { colorScheme } = useMantineTheme();
   const { classes } = TableStyles();
 
@@ -43,11 +32,6 @@ export const CryptoTable = () => {
         </>
       ) : (
         <>
-          <Grid justify={"end"}>
-            <Grid.Col sm={3} md={3} lg={2}>
-              <ShowRow />
-            </Grid.Col>
-          </Grid>
           <Table
             fontSize="xs"
             striped
@@ -99,7 +83,11 @@ export const CryptoTable = () => {
                         width={22}
                         height={22}
                       />
-                      <Text size="xs" onClick={() => navigateCoin(coin.id)}>
+                      <Text
+                        size="xs"
+                        sx={{ cursor: "pointer" }}
+                        onClick={() => navigateCoin(coin.id)}
+                      >
                         {coin.name}
                       </Text>
                       <Text size="xs" color="dimmed" transform="uppercase">

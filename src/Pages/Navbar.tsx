@@ -15,16 +15,15 @@ import {
 import { useBooleanToggle } from "@mantine/hooks";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MoonStars, Sun } from "tabler-icons-react";
-import { scaleY } from "../../Config/Transition";
-import logodark from "../../Images/logo-darkmode.svg";
-import logo from "../../Images/logo.svg";
-import { GlobalState } from "../../Context/GlobalContext";
-import { NavGrid } from "../../Styled Components/StyledNavbar";
-import { HEADER_HEIGHT } from "../../Config/Variable";
-import { NavStyles } from "../../Theme/CreateStyles/Navbar";
-
+import { scaleY } from "../Config/Transition";
+import { GlobalState } from "../Context/GlobalContext";
+import { NavGrid } from "../Styled Components/StyledNavbar";
+import { HEADER_HEIGHT } from "../Config/Variable";
+import { NavStyles } from "../Theme/CreateStyles/Navbar";
+import logodark from "../Images/logo-darkmode.svg";
+import logo from "../Images/logo.svg";
 interface HeaderResponsiveProps {
   links: { link: string; label: string }[];
 }
@@ -36,6 +35,7 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const { setCurrency } = GlobalState();
+  const navigate = useNavigate();
 
   const items = links.map((link) => (
     <Link
@@ -56,7 +56,11 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
   return (
     <Header height={HEADER_HEIGHT} className={classes.root}>
       <Container size={"xl"} px={"xs"} className={classes.header}>
-        <Paper className={classes.brand}>
+        <Paper
+          className={classes.brand}
+          onClick={() => navigate("/")}
+          sx={{ cursor: "pointer" }}
+        >
           <img src={dark ? logodark : logo} alt="logo" height={20} />
           <span>BLOCKDETAILS</span>
         </Paper>
