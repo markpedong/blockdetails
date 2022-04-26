@@ -77,32 +77,36 @@ export const Footer = () => {
               <FooterHeader color={darkmode}>Explore</FooterHeader>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={Bitcoin}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Bitcoin
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={Ethereum}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Ethereum
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={BlockChainExplorer}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 BlockChain Explorer
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={CryptoIndices}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Crypto Indices
@@ -112,16 +116,18 @@ export const Footer = () => {
               <FooterHeader color={darkmode}>API Used</FooterHeader>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={API_CMC}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 CoinMarketCap
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={API_CG}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Coingecko
@@ -132,31 +138,34 @@ export const Footer = () => {
               <FooterLink
                 color={darkmode}
                 href={API_CG}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Coingecko
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={Perpetuals}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Perpetuals
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={News}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Crypto News
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={BTCTreasury}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Bitcoin Treasury
@@ -166,24 +175,27 @@ export const Footer = () => {
               <FooterHeader color={darkmode}>Websites</FooterHeader>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={CMC}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 CoinMarketCap
               </FooterLink>
               <FooterLink
                 color={darkmode}
+                component="a"
                 href={CG}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Coingecko
               </FooterLink>
               <FooterLink
-                color={Portfolio}
+                color={darkmode}
+                component="a"
                 href={CG}
-                hoverColor={hover}
+                hovercolor={hover}
                 target="_blank"
               >
                 Portfolio

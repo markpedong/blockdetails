@@ -3,6 +3,7 @@ import {
   Grid,
   Image,
   Paper,
+  Tabs,
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
@@ -14,8 +15,12 @@ import {
   GrayContainer,
   GrayText,
 } from "../../Styled Components/StyledCrypto";
+import { StyledTabs } from "../../Theme/CreateStyles/CryptoDetails";
 import { CoinNameLinks } from "./CoinNameLinks";
 import { Price } from "./Price";
+import { Market } from "./Tabs/Market";
+import { Overview } from "./Tabs/Overview";
+import { Social } from "./Tabs/Social";
 
 export const CryptoDetail = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -23,7 +28,7 @@ export const CryptoDetail = () => {
 
   return (
     <Paper sx={{ borderRadius: 0 }}>
-      <Container size="xl" px="xs" pt="xl">
+      <Container size="xl" px="xs" py="xl">
         {/* Categories Header */}
         <Paper sx={{ display: "flex" }}>
           <Text size="xs" weight="bold">
@@ -39,7 +44,7 @@ export const CryptoDetail = () => {
           </Text>
         </Paper>
         {/* Name and Price Container */}
-        <Grid columns={24} pt="xl" mb="xl">
+        <Grid columns={24} pt="xl">
           {/* Name */}
           <Grid.Col xs={9} pt="xl">
             {/* name, image, symbol */}
@@ -63,6 +68,22 @@ export const CryptoDetail = () => {
             <Price />
           </Grid.Col>
         </Grid>
+      </Container>
+      <Container fluid>
+        {/* TABS */}
+        <Container size="xl" px="xs">
+          <StyledTabs initialTab={0} tabPadding="xl">
+            <Tabs.Tab label="Overview">
+              <Overview />
+            </Tabs.Tab>
+            <Tabs.Tab label="Market">
+              <Market />
+            </Tabs.Tab>
+            <Tabs.Tab label="Social">
+              <Social />
+            </Tabs.Tab>
+          </StyledTabs>
+        </Container>
       </Container>
     </Paper>
   );

@@ -25,7 +25,6 @@ export const Price = () => {
   const priceProfit = crypto.price_change >= 0.0;
   const profitMCAP = crypto.mcap_per >= 0.0;
 
-  console.log(crypto);
   return (
     <>
       {/* Price Header */}
@@ -58,7 +57,7 @@ export const Price = () => {
         </PriceChange>
       </Paper>
       {/* High and Low 24h */}
-      <Grid columns={12} pt="md" pb="xl">
+      <Grid columns={12} pt="md">
         <Grid.Col
           xs={6}
           style={{

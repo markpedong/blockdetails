@@ -3,7 +3,7 @@ import { Text } from "@mantine/core";
 
 type FooterHeader = {
   colors: string;
-  hoverColor: string;
+  hovercolor: string;
 };
 export const FooterHeader = styled(Text)`
   color: ${(props: FooterHeader) => props.colors};
@@ -11,19 +11,19 @@ export const FooterHeader = styled(Text)`
   margin-block-end: 1rem;
 `;
 
-export const FooterLink = styled.a`
-  color: ${(props: FooterHeader) => props.colors};
+export const FooterLink = styled(Text)`
   font-family: "Inter", sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  cursor: pointer;
 
   &:hover {
-    color: ${(props: FooterHeader) => props.hoverColor};
+    color: ${(props: FooterHeader) => props.hovercolor};
   }
 `;
 
-export const FooterLinksContainer = styled.span`
+export const FooterLinksContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;

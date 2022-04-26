@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { SinglePage } from "../Context/CoinContext";
-import { Exchanges } from "./CryptoDetails/Exchanges";
-import { NFT } from "./CryptoDetails/NFT";
+import { Exchanges } from "./Exchanges/Exchanges";
 import { Footer } from "./Footer";
 import { GlobalData } from "./GlobalData";
 import { Home } from "./Home";
 import { NavbarSec } from "./Navbar";
+import { NFT } from "./NFT/NFT";
 
 export const Main = () => {
   return (
