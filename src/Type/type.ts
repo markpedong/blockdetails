@@ -117,6 +117,7 @@ export type TCryptoDetail = TErrorLoading & {
     };
     links: {
       blockchain_site: string[];
+      chat_url: string[];
       homepage: string[];
       official_forum_url: string[];
       repos_url: {
@@ -149,4 +150,44 @@ export type TCryptoDetail = TErrorLoading & {
     name: string;
     symbol: string;
   };
+};
+
+export type TCrypto = {
+  algo: string;
+  ath_date: string;
+  ath_per: number;
+  ath: string;
+  atl_date: string;
+  atl_per: number;
+  atl: string;
+  categories: string[];
+  categories1: string;
+  categories2: string;
+  circ_supply: string;
+  date_origin: string;
+  description: string;
+  forum_site: string[];
+  high_24: string;
+  home_site: string;
+  id: string;
+  img_large: string;
+  img_small: string;
+  img_thumb: string;
+  liq_score: number;
+  low_24: string;
+  max_supply: string;
+  mcap_per: string;
+  mcap_rank: number;
+  mcap: string;
+  name: string;
+  price_change: string;
+  price: string;
+  rank: number;
+  reddit: string;
+  scan_site: string[];
+  source_code: string[];
+  symbol: string;
+  total_supply: string;
+  valuation: string;
+  volume: string;
 };

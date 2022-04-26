@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { CryptoDetail } from "./CryptoDetails/CryptoDetail";
+import { SinglePage } from "../Context/CoinContext";
 import { Exchanges } from "./CryptoDetails/Exchanges";
 import { NFT } from "./CryptoDetails/NFT";
 import { Footer } from "./Footer";
@@ -21,7 +21,7 @@ export const Main = () => {
       />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/cryptocurrency/:id" element={<CryptoDetail />} />
+        <Route path="/cryptocurrency/:id" element={<SinglePage />} />
         <Route path="/exchanges" element={<Exchanges />} />
         <Route path="/nft" element={<NFT />} />
       </Routes>
