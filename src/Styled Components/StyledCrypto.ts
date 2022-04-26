@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 type StyledColor = {
   color: string;
+  profit: boolean;
 };
 export const CryptoName = styled(Text)`
   color: ${({ color }: StyledColor) => (color === "dark" ? "#fff" : "#000")};
@@ -43,4 +44,33 @@ export const GrayContainerLinks = styled(Paper)`
 export const GrayTextLink = styled(Text)`
   font-size: 0.7rem;
   cursor: pointer;
+`;
+
+export const PriceChange = styled(Text)`
+  display: flex;
+  gap: 0.2rem;
+  align-items: center;
+  background-color: ${({ profit }: StyledColor) =>
+    profit ? "#16c784" : "#ea3943"};
+  color: #fff;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius-2);
+`;
+
+export const WhiteText = styled(Text)`
+  color: ${({ color }: StyledColor) => (color === "dark" ? "white" : "black")};
+`;
+
+export const LowHigh = styled(Text)`
+  color: ${({ color }: StyledColor) =>
+    color === "dark" ? "#a1a7bb" : "#58667e"};
+  max-width: fit-content;
+
+  font-weight: 600;
+  font-size: 0.8rem;
+`;
+
+export const LowHighSpan = styled.span`
+  color: ${({ color }: StyledColor) => (color === "dark" ? "white" : "black")};
+  font-weight: 800;
 `;

@@ -1,6 +1,6 @@
 import { Container, Paper } from "@mantine/core";
 import numeral from "numeral";
-import React, { createContext } from "react";
+import React, { createContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { LoaderComp } from "../Components/Loader";
 import { SingleCoin } from "../Config/API";
@@ -12,17 +12,22 @@ import { CryptoDetail } from "../Pages/CryptoDetails/CryptoDetail";
 
 type TCoinContext = {
   crypto: TCrypto;
+  setDate: React.Dispatch<React.SetStateAction<number>>;
+  date: number;
 };
 
 const CoinContext = createContext({} as TCoinContext);
 
 export const SinglePage = () => {
+  const [date, setDate] = useState(1);
   const { id } = useParams();
   const { data, error, loading } = useFetchAPISingle(
     SingleCoin(id as string)
   ) as unknown as TCryptoDetail;
 
   const { currency } = GlobalState();
+
+  console.log(data);
 
   // prettier-ignore
   const crypto: TCrypto = {
@@ -54,18 +59,17 @@ export const SinglePage = () => {
     mcap: numeral(data?.market_data.market_cap[currency.toLowerCase()]).format("0,0"),
     name: data?.name,
     price_change: data?.market_data.price_change_percentage_24h_in_currency[currency.toLowerCase()],
-    price: numeral(data?.market_data.current_price[currency.toLowerCase()]).format("0,0"),
+    price: numeral(data?.market_data.current_price[currency.toLowerCase()]).format("0,0.00"),
     rank: data?.coingecko_rank,
     reddit: data?.links.subreddit_url,
     scan_site: data?.links?.blockchain_site?.filter((link) => link !== ""),
     source_code: data?.links?.repos_url?.github.filter((link) => link !== ""),
     symbol: data?.symbol,
     total_supply: numeral(data?.market_data.total_supply).format("0,0"),
-    valuation: numeral(data?.market_data.fully_diluted_valuation).format("0,0"),
-    volume: numeral(data?.market_data.total_volume).format("0,0"),
+    valuation: numeral(data?.market_data.fully_diluted_valuation[currency.toLowerCase()]).format("0,0"),
+    volume: numeral(data?.market_data.total_volume[currency.toLowerCase()]).format("0,0"),
+    volumetomcap: data?.market_data?.total_volume[currency.toLowerCase()] / data?.market_data?.market_cap[currency.toLowerCase()],
   };
-
-  console.log(data);
 
   return error ? (
     <>
@@ -85,7 +89,7 @@ export const SinglePage = () => {
       </Container>
     </Paper>
   ) : (
-    <CoinContext.Provider value={{ crypto }}>
+    <CoinContext.Provider value={{ crypto, date, setDate }}>
       <CryptoDetail />
     </CoinContext.Provider>
   );
