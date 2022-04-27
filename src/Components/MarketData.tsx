@@ -79,7 +79,7 @@ export const MarketData = ({
         ""
       )}
       {maxSupply ? (
-        <Paper style={{ fontFamily: "Inter" }}>
+        <div style={{ fontFamily: "Inter" }}>
           <Container
             pt="lg"
             px={0}
@@ -106,7 +106,7 @@ export const MarketData = ({
               {+crypto.total_supply === 0 ? "∞" : crypto.total_supply}
             </Text>
           </Container>
-        </Paper>
+        </div>
       ) : (
         ""
       )}

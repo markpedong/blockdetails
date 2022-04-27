@@ -10,9 +10,9 @@ type Props = {
 
 type CoinChartData = {
   chart: {
-    market_caps: any;
-    prices: any;
-    total_volumes: any;
+    market_caps: number[][];
+    prices: number[][];
+    total_volumes: number[][];
   };
 };
 
@@ -31,7 +31,6 @@ export const ChartState = ({ children }: Props) => {
 
   const fetchChart = async () => {
     const { data } = await axios.get(CoinChart(crypto.id, currency, days));
-    console.log(data);
     setChart(data);
   };
 

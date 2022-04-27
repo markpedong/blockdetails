@@ -32,32 +32,32 @@ export const GlobalData = () => {
         <Container size="xl" px={"xs"}>
           <Grid align="center" columns={24} justify="center">
             <Grid.Col lg={2.5}>
-              <GlobalHeader title="Cryptos:" data={global.active} />
+              <GlobalHeader title="Cryptos:" data={global?.active} />
             </Grid.Col>
             <Grid.Col lg={2.5}>
-              <GlobalHeader title="Exchanges:" data={global.market} />
+              <GlobalHeader title="Exchanges:" data={global?.market} />
             </Grid.Col>
             <Grid.Col lg={4.7}>
               <GlobalHeader
                 title="Market Cap:"
-                data={numberWithCommas(global.mcap)}
+                data={numberWithCommas(global?.mcap)}
                 symbol={symbol}
               />
             </Grid.Col>
             <Grid.Col lg={4.3}>
               <GlobalHeader
                 title="24h Vol:"
-                data={numberWithCommas(global.volume)}
+                data={numberWithCommas(global?.volume)}
                 symbol={symbol}
               />
             </Grid.Col>
             <Grid.Col lg={4.5}>
               <GlobalHeader
                 title="Dominance:"
-                data={global.btc?.toFixed(2)}
+                data={global?.btc?.toFixed(2)}
                 percentage="%"
               />
-              <GlobalHeader data={global.eth?.toFixed(2)} percentage="%" />
+              <GlobalHeader data={global?.eth?.toFixed(2)} percentage="%" />
             </Grid.Col>
             <Grid.Col offsetLg={2.7} lg={2}>
               <Select

@@ -63,6 +63,7 @@ export const SinglePage = () => {
     scan_site: data?.links?.blockchain_site?.filter((link) => link !== ""),
     source_code: data?.links?.repos_url?.github.filter((link) => link !== ""),
     symbol: data?.symbol,
+    tickers: data?.tickers?.filter((name) => name.target_coin_id === data.id).sort((a,b) =>b.volume - a.volume),
     total_supply: numeral(data?.market_data.total_supply).format("0,0"),
     valuation: numeral(data?.market_data.fully_diluted_valuation[currency.toLowerCase()]).format("0,0"),
     volume: numeral(data?.market_data.total_volume[currency.toLowerCase()]).format("0,0"),

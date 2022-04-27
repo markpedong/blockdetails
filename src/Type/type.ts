@@ -149,6 +149,16 @@ export type TCryptoDetail = TErrorLoading & {
     };
     name: string;
     symbol: string;
+    tickers: {
+      market: {
+        identifier: string;
+        name: string;
+      };
+      target: string;
+      target_coin_id: string;
+      trade_url: string;
+      volume: number;
+    }[];
   };
 };
 
@@ -187,6 +197,16 @@ export type TCrypto = {
   scan_site: string[];
   source_code: string[];
   symbol: string;
+  tickers: {
+    market: {
+      identifier: string;
+      name: string;
+    };
+    target: string;
+    target_coin_id: string;
+    trade_url: string;
+    volume: number;
+  }[];
   total_supply: string;
   valuation: string;
   volume: string;

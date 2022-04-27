@@ -30,7 +30,7 @@ export const CryptoDetail = () => {
     <Paper sx={{ borderRadius: 0 }}>
       <Container size="xl" px="xs" py="xl">
         {/* Categories Header */}
-        <Paper sx={{ display: "flex" }}>
+        <div style={{ display: "flex" }}>
           <Text size="xs" weight="bold">
             {crypto.categories1}
           </Text>
@@ -42,7 +42,7 @@ export const CryptoDetail = () => {
           <Text size="xs" weight="bold">
             {crypto.name}
           </Text>
-        </Paper>
+        </div>
         {/* Name and Price Container */}
         <Grid columns={24} pt="xl">
           {/* Name */}

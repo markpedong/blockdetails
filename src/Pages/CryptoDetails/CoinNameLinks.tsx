@@ -25,6 +25,7 @@ export const CoinNameLinks = (props: Props) => {
     <Container
       fluid
       px={0}
+      pt="xl"
       style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" }}
     >
       {/* Home Page */}
