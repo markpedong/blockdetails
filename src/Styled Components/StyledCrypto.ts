@@ -22,7 +22,7 @@ export const GrayText = styled(Text)`
   border-radius: var(--radius-2);
 `;
 
-export const GrayContainer = styled(Paper)`
+export const GrayContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.7rem;
@@ -73,4 +73,17 @@ export const LowHigh = styled(Text)`
 export const LowHighSpan = styled.span`
   color: ${({ color }: StyledColor) => (color === "dark" ? "white" : "black")};
   font-weight: 800;
+`;
+
+export const StyledDesc = styled(Text)`
+  color: ${({ color }: StyledColor) => (color === "dark" ? "white" : "black")};
+  font-size: 1.5rem;
+`;
+
+export const SpanUpperCase = styled.span`
+  text-transform: uppercase;
+`;
+
+export const StyledDesc2 = styled(Text)`
+  font-size: 1.5rem;
 `;

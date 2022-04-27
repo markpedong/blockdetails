@@ -1,7 +1,64 @@
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+} from "chart.js";
 import React from "react";
+import { Line } from "react-chartjs-2";
+import { useChartContext } from "../../../Context/ChartContext";
 
-type Props = {};
+type Props = {
+  data: number[][];
+};
 
-export const MarketCapChart = (props: Props) => {
-  return <div>MarketCapChart</div>;
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+export const MarketCapChart = () => {
+  const { chart, days } = useChartContext();
+
+  return (
+    <>
+      <Line
+        options={{
+          elements: {
+            point: {
+              radius: 1,
+            },
+          },
+        }}
+        data={{
+          labels: chart.market_caps?.map((coin) => {
+            let date = new Date(coin[0]);
+            let time =
+              date.getHours() > 12
+                ? `${date.getHours() - 12}: ${date.getMinutes()} PM`
+                : `${date.getHours()}: ${date.getMinutes()} AM`;
+
+            return days === 1 ? time : date.toLocaleDateString();
+          }),
+
+          datasets: [
+            {
+              data: chart.market_caps?.map((coin) => coin[1]),
+              label: `Price (Past ${days} Days) `,
+              borderColor: "#3e95cd",
+            },
+          ],
+        }}
+      />
+    </>
+  );
 };

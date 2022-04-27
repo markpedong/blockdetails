@@ -28,14 +28,14 @@ export const Price = () => {
   return (
     <>
       {/* Price Header */}
-      <Paper>
+      <div>
         <Text size="xs" weight="bold">
           {crypto.name} Price (
           {<span style={{ textTransform: "uppercase" }}>{crypto.symbol}</span>})
         </Text>
-      </Paper>
+      </div>
       {/* Price and Price Change */}
-      <Paper
+      <div
         style={{
           textTransform: "uppercase",
           fontWeight: "bold",
@@ -55,7 +55,7 @@ export const Price = () => {
           )}{" "}
           {crypto.price_change?.toFixed(2)} %
         </PriceChange>
-      </Paper>
+      </div>
       {/* High and Low 24h */}
       <Grid columns={12} pt="md">
         <Grid.Col

@@ -43,7 +43,7 @@ export const StyledPriceTabs = (props: TabsProps) => {
               ? theme.colors.dark[6]
               : theme.colors.gray[4]
           }`,
-          inlineSize: "max-content",
+          inlineSize: "fit-content",
         },
         tabControl: {
           backgroundColor:
