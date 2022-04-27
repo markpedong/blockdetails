@@ -40,6 +40,9 @@ export const Overview = () => {
     )
     .slice(0, 5);
 
+  const description = crypto?.description?.split(". ");
+  console.log(description);
+
   return (
     <Container fluid>
       <Text size="lg" weight="bold" pb="xl">
@@ -91,10 +94,22 @@ export const Overview = () => {
             </Paper>
             {/* What is  */}
             <Paper>
-              <StyledDesc2 pt="xl" weight="bold">
+              <StyledDesc2 py="xl" weight="bold">
                 What is <SpanUpperCase>({crypto.symbol})</SpanUpperCase>?
               </StyledDesc2>
-              {parse(crypto.description)}
+              {
+                // <div
+                //   className="crypto_detail"
+                //   dangerouslySetInnerHTML={{ __html: crypto.description }}
+                // ></div>
+
+                description?.map((desc, index) => (
+                  <Text key={index} pb="sm">
+                    {parse(desc)}.
+                    <br />
+                  </Text>
+                ))
+              }
             </Paper>
           </Grid.Col>
           <Grid.Col xs={4}>2</Grid.Col>

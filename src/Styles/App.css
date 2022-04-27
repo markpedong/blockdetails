@@ -24,3 +24,12 @@ a {
     rgba(26, 26, 29, 1) 30%
   );
 }
+
+.crypto_detail {
+  line-height: 1.55;
+  font-family: "Inter", sans-serif;
+}
+.mantine-Text-root a {
+  color: rgb(66, 129, 247);
+  font-weight: 600;
+}
