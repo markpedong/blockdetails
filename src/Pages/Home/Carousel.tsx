@@ -1,34 +1,23 @@
 import { Container, Image, Text } from "@mantine/core";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AliceCarousel from "react-alice-carousel";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 import { LoaderComp } from "../../Components/Loader";
-import { TrendingCoins } from "../../Config/API";
 import { numberWithCommas } from "../../Config/Function";
 import { responsive } from "../../Config/Transition";
 import { GlobalState } from "../../Context/GlobalContext";
+import { TrendingState } from "../../Context/TrendingCoinContext";
 import {
   CarouselPaper,
   ProfitChange,
 } from "../../StyledComponents/StyledCarousel";
 import { CarouselStyles } from "../../Theme/CreateStyles/Carousel";
-import { TTrending } from "../../Type/type";
 
 export const Carousel = () => {
-  const [trending, setTrending] = useState([] as TTrending[]);
-  const { currency, symbol, loading } = GlobalState();
+  const { trending } = TrendingState();
+  const { symbol, loading } = GlobalState();
   const { classes } = CarouselStyles();
-
-  const fetchTrendingCoins = async () => {
-    const { data } = await axios.get(TrendingCoins(currency));
-
-    setTrending(data);
-  };
-  useEffect(() => {
-    fetchTrendingCoins();
-  }, [currency]);
 
   let navigate = useNavigate();
 
@@ -40,7 +29,7 @@ export const Carousel = () => {
     let profit = coin.price_change_percentage_24h >= 0.0;
 
     return (
-      <Container className={classes.carousel}>
+      <Container className={classes.carousel} key={coin.name}>
         <Text
           className={classes.link}
           key={coin.id}

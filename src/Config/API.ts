@@ -20,3 +20,9 @@ export const CoinChart = (
   days: number | string
 ) => `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=${currency}&days=${days}
   `;
+
+export const MarketList = (id: string, page: number) => `
+  
+  https://api.coingecko.com/api/v3/coins/${id}/tickers?include_exchange_logo=true&page=${page}&order=volume_desc&depth=true
+
+  `;

@@ -27,8 +27,6 @@ export const SinglePage = () => {
 
   const { currency } = GlobalState();
 
-  console.log(data);
-
   // prettier-ignore
   const crypto: TCrypto = {
     algo: data?.hashing_algorithm,

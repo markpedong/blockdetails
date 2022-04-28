@@ -34,8 +34,6 @@ export const TrendingCoins = () => {
     fetchData();
   }, [id]);
 
-  console.log(trending);
-
   return (
     <StyledContainer fluid color={colorScheme} style={{ marginTop: "2rem" }}>
       <Text size="lg" weight="bolder" style={{ paddingBottom: "1rem" }}>
@@ -44,7 +42,7 @@ export const TrendingCoins = () => {
       <Container fluid px={0}>
         {trending?.coins
           ?.map((coin) => (
-            <GrayContainer style={{ paddingTop: "1rem" }}>
+            <GrayContainer style={{ paddingTop: "1rem" }} key={coin.item.id}>
               <Image src={coin.item.large} height={20} />
               <Text weight="bold">{coin.item.name}</Text>
               <Text
@@ -64,5 +62,3 @@ export const TrendingCoins = () => {
     </StyledContainer>
   );
 };
-
-export default TrendingCoins;

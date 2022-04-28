@@ -1,4 +1,5 @@
 import {
+  Button,
   Container,
   Grid,
   Paper,
@@ -6,11 +7,13 @@ import {
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
+import { ReaderIcon } from "@radix-ui/react-icons";
 import parse from "html-react-parser";
 import React from "react";
 import { ChartState, useChartContext } from "../../../Context/ChartContext";
 import { useCoinContext } from "../../../Context/CoinContext";
 import { GlobalState } from "../../../Context/GlobalContext";
+import { TrendingCoinContext } from "../../../Context/TrendingCoinContext";
 import {
   SpanUpperCase,
   StyledDesc,
@@ -20,15 +23,16 @@ import { StyledPriceTabs } from "../../../Theme/CreateStyles/CryptoDetails";
 import { MarketCapChart } from "../Chart/MarketCapChart";
 import { PriceChart } from "../Chart/PriceChart";
 import { VolumeChart } from "../Chart/VolumeChart";
+import { CryptoMarket } from "../CryptoMarket";
 import { CryptoStats } from "../CryptoStats";
-import TrendingCoins from "../TrendingCoins";
+import { PeopleAlsoWatch } from "../PeopleAlsoWatch";
+import { TrendingCoins } from "../TrendingCoins";
 
 export const Overview = () => {
   const { crypto } = useCoinContext();
   const { currency, symbol } = GlobalState();
   const { colorScheme } = useMantineColorScheme();
 
-  console.log(crypto);
   const upDown = crypto.price_per > 0.0 ? "up" : "down";
   const cryptoMarkets = crypto.tickers
     ?.map((ticker) => ticker.market.name)
@@ -101,6 +105,28 @@ export const Overview = () => {
             <TrendingCoins />
           </Grid.Col>
         </Grid>
+        <Container fluid px={0}>
+          <StyledDesc2 weight="bold" style={{ marginTop: "3rem" }}>
+            {crypto.name} Markets
+          </StyledDesc2>
+          <CryptoMarket />
+        </Container>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            paddingBlock: "3rem",
+          }}
+        >
+          <Button leftIcon={<ReaderIcon />}>See All Markets</Button>
+        </div>
+
+        <Container fluid px={0}>
+          <StyledDesc2 weight="bold">People Also Watch</StyledDesc2>
+          <TrendingCoinContext>
+            <PeopleAlsoWatch />
+          </TrendingCoinContext>
+        </Container>
       </ChartState>
     </Container>
   );
