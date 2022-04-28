@@ -2,14 +2,12 @@ import {
   Container,
   Grid,
   Paper,
-  SimpleGrid,
   Tabs,
-  TabsProps,
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
+import parse from "html-react-parser";
 import React from "react";
-import { chartDays } from "../../../Config/Variable";
 import { ChartState, useChartContext } from "../../../Context/ChartContext";
 import { useCoinContext } from "../../../Context/CoinContext";
 import { GlobalState } from "../../../Context/GlobalContext";
@@ -22,12 +20,10 @@ import { StyledPriceTabs } from "../../../Theme/CreateStyles/CryptoDetails";
 import { MarketCapChart } from "../Chart/MarketCapChart";
 import { PriceChart } from "../Chart/PriceChart";
 import { VolumeChart } from "../Chart/VolumeChart";
-import parse from "html-react-parser";
 
 export const Overview = () => {
   const { crypto } = useCoinContext();
   const { currency, symbol } = GlobalState();
-  const { setDays } = useChartContext();
   const { colorScheme } = useMantineColorScheme();
 
   console.log(crypto);
@@ -53,15 +49,9 @@ export const Overview = () => {
           <Grid.Col xs={8}>
             {/* Tabs for Price, Market Cap, Volume */}
             <StyledPriceTabs initialTab={0} mb="xl">
-              <Tabs.Tab label="Price">
-                <PriceChart />
-              </Tabs.Tab>
-              <Tabs.Tab label="Market Cap">
-                <MarketCapChart />
-              </Tabs.Tab>
-              <Tabs.Tab label="Volume">
-                <VolumeChart />
-              </Tabs.Tab>
+              <Tabs.Tab label="Price" children={<PriceChart />} />
+              <Tabs.Tab label="Market Cap" children={<MarketCapChart />} />
+              <Tabs.Tab label="Volume" children={<VolumeChart />} />
             </StyledPriceTabs>
             {/* Live Data */}
             <Paper>
@@ -97,19 +87,12 @@ export const Overview = () => {
               <StyledDesc2 py="xl" weight="bold">
                 What is <SpanUpperCase>({crypto.symbol})</SpanUpperCase>?
               </StyledDesc2>
-              {
-                // <div
-                //   className="crypto_detail"
-                //   dangerouslySetInnerHTML={{ __html: crypto.description }}
-                // ></div>
-
-                description?.map((desc, index) => (
-                  <Text key={index} pb="sm">
-                    {parse(desc)}.
-                    <br />
-                  </Text>
-                ))
-              }
+              {description?.map((desc, index) => (
+                <Text key={index} pb="sm">
+                  {parse(desc)}.
+                  <br />
+                </Text>
+              ))}
             </Paper>
           </Grid.Col>
           <Grid.Col xs={4}>2</Grid.Col>

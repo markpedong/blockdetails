@@ -1,4 +1,4 @@
-import { Button, Paper } from "@mantine/core";
+import { Button } from "@mantine/core";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -11,12 +11,11 @@ import {
 } from "chart.js";
 import React from "react";
 import { Line } from "react-chartjs-2";
-import { chartDays } from "../../../Config/Variable";
+import { ChartComponent } from "../../../Components/ChartLoader";
+import { chartDays, LineOptions } from "../../../Config/Variable";
 import { useChartContext } from "../../../Context/ChartContext";
-
-type Props = {
-  data: number[][];
-};
+import { useCoinContext } from "../../../Context/CoinContext";
+import { StyledPaper } from "../../../Styled Components/StyledChart";
 
 ChartJS.register(
   CategoryScale,
@@ -29,20 +28,19 @@ ChartJS.register(
 );
 
 export const PriceChart = () => {
-  const { chart, days, setDays } = useChartContext();
+  const { data, days, setDays, loading } = useChartContext();
+  const { crypto } = useCoinContext();
 
-  return (
+  const borderColor = crypto.price_change >= 0.0 ? "#16c784" : "#ea3943";
+
+  return loading ? (
+    <ChartComponent />
+  ) : (
     <>
       <Line
-        options={{
-          elements: {
-            point: {
-              radius: 1,
-            },
-          },
-        }}
+        options={LineOptions}
         data={{
-          labels: chart.prices?.map((coin) => {
+          labels: data?.prices?.map((coin) => {
             let date = new Date(coin[0]);
             let time =
               date.getHours() > 12
@@ -54,17 +52,13 @@ export const PriceChart = () => {
 
           datasets: [
             {
-              data: chart.prices?.map((coin) => coin[1]),
-              label: `Price (Past ${days} Days) `,
-              borderColor: "#3e95cd",
+              data: data?.prices?.map((coin) => coin[1]),
+              borderColor: `${borderColor}`,
             },
           ],
         }}
       />
-      <Paper
-        mt="xl"
-        style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}
-      >
+      <StyledPaper>
         {chartDays.map((day) => (
           <Button
             compact
@@ -75,7 +69,7 @@ export const PriceChart = () => {
             {day.label}
           </Button>
         ))}
-      </Paper>
+      </StyledPaper>
     </>
   );
 };

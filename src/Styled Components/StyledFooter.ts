@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Text } from "@mantine/core";
+import { Grid, Text } from "@mantine/core";
 
 type FooterHeader = {
   colors: string;
@@ -11,6 +11,10 @@ export const FooterHeader = styled(Text)`
   margin-block-end: 1rem;
 `;
 
+export const StyledText = styled(Text)`
+  color: ${({ colors }: FooterHeader) => (colors === "dark" ? "white" : "")};
+`;
+
 export const FooterLink = styled(Text)`
   font-family: "Inter", sans-serif;
   font-weight: 600;
@@ -19,7 +23,8 @@ export const FooterLink = styled(Text)`
   cursor: pointer;
 
   &:hover {
-    color: ${(props: FooterHeader) => props.hovercolor};
+    color: ${({ hovercolor }: FooterHeader) =>
+      hovercolor === "dark" ? "var(--indigo-6)" : "var(--indigo-8)"};
   }
 `;
 
@@ -27,4 +32,18 @@ export const FooterLinksContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+`;
+
+export const StyledDiv = styled.div`
+  display: flex;
+  inline-size: max-content;
+  color: ${({ colors }: FooterHeader) =>
+    colors === "dark" ? "white" : "black"};
+`;
+
+export const StyledCol = styled(Grid.Col)`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: end;
 `;

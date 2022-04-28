@@ -1,3 +1,4 @@
+import { Button } from "@mantine/core";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -10,11 +11,10 @@ import {
 } from "chart.js";
 import React from "react";
 import { Line } from "react-chartjs-2";
+import { ChartComponent } from "../../../Components/ChartLoader";
+import { chartDays, LineOptions } from "../../../Config/Variable";
 import { useChartContext } from "../../../Context/ChartContext";
-
-type Props = {
-  data: number[][];
-};
+import { StyledPaper } from "../../../Styled Components/StyledChart";
 
 ChartJS.register(
   CategoryScale,
@@ -27,20 +27,16 @@ ChartJS.register(
 );
 
 export const VolumeChart = () => {
-  const { chart, days } = useChartContext();
+  const { data, days, setDays, loading } = useChartContext();
 
-  return (
+  return loading ? (
+    <ChartComponent />
+  ) : (
     <>
       <Line
-        options={{
-          elements: {
-            point: {
-              radius: 1,
-            },
-          },
-        }}
+        options={LineOptions}
         data={{
-          labels: chart.total_volumes?.map((coin) => {
+          labels: data?.total_volumes?.map((coin) => {
             let date = new Date(coin[0]);
             let time =
               date.getHours() > 12
@@ -52,13 +48,24 @@ export const VolumeChart = () => {
 
           datasets: [
             {
-              data: chart.total_volumes?.map((coin) => coin[1]),
-              label: `Price (Past ${days} Days) `,
-              borderColor: "#3e95cd",
+              data: data?.total_volumes?.map((coin) => coin[1]),
+              borderColor: "#1686c7",
             },
           ],
         }}
       />
+      <StyledPaper>
+        {chartDays.map((day) => (
+          <Button
+            compact
+            uppercase
+            key={day.label}
+            onClick={() => setDays(day.value)}
+          >
+            {day.label}
+          </Button>
+        ))}
+      </StyledPaper>
     </>
   );
 };

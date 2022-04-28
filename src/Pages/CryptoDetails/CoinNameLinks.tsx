@@ -13,6 +13,7 @@ import {
   GrayContainerLinks,
   GrayTextLink,
 } from "../../Styled Components/StyledCrypto";
+import { StyledDiv } from "../../Styled Components/StyledFooter";
 
 type Props = {};
 
@@ -52,17 +53,11 @@ export const CoinNameLinks = (props: Props) => {
         >
           {crypto.scan_site?.map((site) => (
             <Menu.Item key={site}>
-              <div
-                style={{
-                  display: "flex",
-                  inlineSize: "max-content",
-                  color: darkColor,
-                }}
-              >
+              <StyledDiv>
                 <a href={site} target="_blank">
                   {removeHTTP(site)} <RiExternalLinkFill />
                 </a>
-              </div>
+              </StyledDiv>
             </Menu.Item>
           ))}
         </Menu>
@@ -83,17 +78,11 @@ export const CoinNameLinks = (props: Props) => {
         >
           {crypto.forum_site?.map((site) => (
             <Menu.Item key={site}>
-              <div
-                style={{
-                  display: "flex",
-                  inlineSize: "max-content",
-                  color: darkColor,
-                }}
-              >
+              <StyledDiv>
                 <a href={site} target="_blank">
                   {removeHTTP(site)} <RiExternalLinkFill />
                 </a>
-              </div>
+              </StyledDiv>
             </Menu.Item>
           ))}
         </Menu>
@@ -122,17 +111,11 @@ export const CoinNameLinks = (props: Props) => {
         >
           {crypto.source_code?.map((site) => (
             <Menu.Item key={site}>
-              <div
-                style={{
-                  display: "flex",
-                  inlineSize: "max-content",
-                  color: darkColor,
-                }}
-              >
+              <StyledDiv>
                 <a href={site} target="_blank">
                   {removeHTTP(site)} <RiExternalLinkFill />
                 </a>
-              </div>
+              </StyledDiv>
             </Menu.Item>
           ))}
         </Menu>

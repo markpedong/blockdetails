@@ -1,6 +1,7 @@
-import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { CoinChart } from "../Config/API";
+import { useFetchAPISingle } from "../Hooks/useFetchAPISingle";
+import { TErrorLoading } from "../Type/type";
 import { useCoinContext } from "./CoinContext";
 import { GlobalState } from "./GlobalContext";
 
@@ -8,8 +9,8 @@ type Props = {
   children: React.ReactNode;
 };
 
-type CoinChartData = {
-  chart: {
+export type CoinChartData = TErrorLoading & {
+  data: {
     market_caps: number[][];
     prices: number[][];
     total_volumes: number[][];
@@ -17,29 +18,23 @@ type CoinChartData = {
 };
 
 type TChartContext = CoinChartData & {
-  setDays: React.Dispatch<React.SetStateAction<number>>;
-  days: number;
+  setDays: React.Dispatch<React.SetStateAction<string | number>>;
+  days: number | string;
 };
 
 export const ChartContext = createContext({} as TChartContext);
 
 export const ChartState = ({ children }: Props) => {
   const { crypto } = useCoinContext();
-  const [chart, setChart] = useState({} as any);
   const { currency } = GlobalState();
-  const [days, setDays] = useState(1);
+  const [days, setDays] = useState(1 as number | string);
 
-  const fetchChart = async () => {
-    const { data } = await axios.get(CoinChart(crypto.id, currency, days));
-    setChart(data);
-  };
-
-  useEffect(() => {
-    fetchChart();
-  }, [currency, days]);
+  const { data, loading, error } = useFetchAPISingle(
+    CoinChart(crypto.id, currency, days)
+  ) as unknown as CoinChartData;
 
   return (
-    <ChartContext.Provider value={{ chart, days, setDays }}>
+    <ChartContext.Provider value={{ data, days, setDays, error, loading }}>
       {children}
     </ChartContext.Provider>
   );

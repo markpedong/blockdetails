@@ -17,6 +17,6 @@ export const CoinList = (currency: string, page: number, res_page: number) =>
 export const CoinChart = (
   id: string,
   currency: string,
-  days: number
+  days: number | string
 ) => `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=${currency}&days=${days}
   `;

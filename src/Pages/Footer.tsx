@@ -1,41 +1,23 @@
-import {
-  Container,
-  Grid,
-  Paper,
-  Text,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { Container, Grid, Text, useMantineColorScheme } from "@mantine/core";
 import React from "react";
-import logodark from "../Images/logo-darkmode.svg";
-import logo from "../Images/logo.svg";
-import coinmarketcap_dark from "../Images/coinmarketcap_dark.svg";
-import coinmarketcap from "../Images/coinmarketcap.svg";
+import { API_USED, EXPLORE_LINKS, RESOURCES, WEBSITES } from "../Config/Links";
 import coingecko from "../Images/coingecko.svg";
 import coingecko_dark from "../Images/coingecko_dark.svg";
+import coinmarketcap from "../Images/coinmarketcap.svg";
+import coinmarketcap_dark from "../Images/coinmarketcap_dark.svg";
+import logodark from "../Images/logo-darkmode.svg";
+import logo from "../Images/logo.svg";
 import {
   FooterHeader,
   FooterLink,
   FooterLinksContainer,
+  StyledCol,
+  StyledText,
 } from "../Styled Components/StyledFooter";
-import {
-  API_CG,
-  API_CMC,
-  Bitcoin,
-  BlockChainExplorer,
-  BTCTreasury,
-  CG,
-  CMC,
-  CryptoIndices,
-  Ethereum,
-  News,
-  Perpetuals,
-  Portfolio,
-} from "../Config/Links";
 
 export const Footer = () => {
   const { colorScheme } = useMantineColorScheme();
   const darkmode = colorScheme === "dark" ? "white" : "";
-  const hover = colorScheme === "dark" ? "var(--indigo-6)" : "var(--indigo-8)";
 
   return (
     <Container
@@ -73,154 +55,70 @@ export const Footer = () => {
               gridTemplateColumns: "repeat(4, 1fr)",
             }}
           >
+            {/* Explore */}
             <FooterLinksContainer>
               <FooterHeader color={darkmode}>Explore</FooterHeader>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={Bitcoin}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Bitcoin
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={Ethereum}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Ethereum
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={BlockChainExplorer}
-                hovercolor={hover}
-                target="_blank"
-              >
-                BlockChain Explorer
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={CryptoIndices}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Crypto Indices
-              </FooterLink>
+              {EXPLORE_LINKS?.map((link) => (
+                <FooterLink
+                  component="a"
+                  href={link.link}
+                  hovercolor={colorScheme}
+                  target="_blank"
+                >
+                  {link.name}
+                </FooterLink>
+              ))}
             </FooterLinksContainer>
+            {/* API USED */}
             <FooterLinksContainer>
               <FooterHeader color={darkmode}>API Used</FooterHeader>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={API_CMC}
-                hovercolor={hover}
-                target="_blank"
-              >
-                CoinMarketCap
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={API_CG}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Coingecko
-              </FooterLink>
+              {API_USED?.map((link) => (
+                <FooterLink
+                  component="a"
+                  href={link.link}
+                  hovercolor={colorScheme}
+                  target="_blank"
+                >
+                  {link.name}
+                </FooterLink>
+              ))}
             </FooterLinksContainer>
+            {/* RESOURCES */}
             <FooterLinksContainer>
               <FooterHeader color={darkmode}>Resources</FooterHeader>
-              <FooterLink
-                color={darkmode}
-                href={API_CG}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Coingecko
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={Perpetuals}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Perpetuals
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={News}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Crypto News
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={BTCTreasury}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Bitcoin Treasury
-              </FooterLink>
+              {RESOURCES?.map((link) => (
+                <FooterLink
+                  component="a"
+                  href={link.link}
+                  hovercolor={colorScheme}
+                  target="_blank"
+                >
+                  {link.name}
+                </FooterLink>
+              ))}
             </FooterLinksContainer>
+            {/* WEBSITES */}
             <FooterLinksContainer>
               <FooterHeader color={darkmode}>Websites</FooterHeader>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={CMC}
-                hovercolor={hover}
-                target="_blank"
-              >
-                CoinMarketCap
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={CG}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Coingecko
-              </FooterLink>
-              <FooterLink
-                color={darkmode}
-                component="a"
-                href={CG}
-                hovercolor={hover}
-                target="_blank"
-              >
-                Portfolio
-              </FooterLink>
+              {WEBSITES?.map((link) => (
+                <FooterLink
+                  component="a"
+                  href={link.link}
+                  hovercolor={colorScheme}
+                  target="_blank"
+                >
+                  {link.name}
+                </FooterLink>
+              ))}
             </FooterLinksContainer>
           </Grid.Col>
         </Grid>
         <Grid columns={24}>
           <Grid.Col xs={12}>
-            <Text color={darkmode} weight="bold" size="sm">
-              © 2022 BlockDetails. All rights reserved
-            </Text>
+            <StyledText>© 2022 BlockDetails. All rights reserved</StyledText>
           </Grid.Col>
-          <Grid.Col
-            xs={12}
-            sx={{
-              display: "flex",
-              gap: "1rem",
-              alignItems: "center",
-              justifyContent: "end",
-            }}
-          >
-            <Text color={darkmode} weight="bold" size="sm">
-              Powered by:
-            </Text>
+          <StyledCol xs={12}>
+            <StyledText>Powered by:</StyledText>
             <img
               src={colorScheme === "dark" ? coinmarketcap_dark : coinmarketcap}
               alt="logo"
@@ -231,7 +129,7 @@ export const Footer = () => {
               alt="logo"
               height={25}
             />
-          </Grid.Col>
+          </StyledCol>
         </Grid>
       </Container>
     </Container>
