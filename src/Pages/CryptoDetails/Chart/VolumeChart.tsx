@@ -14,7 +14,7 @@ import { Line } from "react-chartjs-2";
 import { ChartComponent } from "../../../Components/ChartLoader";
 import { chartDays, LineOptions } from "../../../Config/Variable";
 import { useChartContext } from "../../../Context/ChartContext";
-import { StyledPaper } from "../../../Styled Components/StyledChart";
+import { StyledPaper } from "../../../StyledComponents/StyledChart";
 
 ChartJS.register(
   CategoryScale,

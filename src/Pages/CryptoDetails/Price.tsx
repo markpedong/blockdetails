@@ -16,13 +16,13 @@ import {
   LowHighSpan,
   PriceChange,
   WhiteText,
-} from "../../Styled Components/StyledCrypto";
+} from "../../StyledComponents/StyledCrypto";
 
 export const Price = () => {
   const { crypto } = useCoinContext();
   const { colorScheme } = useMantineColorScheme();
   const { symbol } = GlobalState();
-  const priceProfit = crypto.price_change >= 0.0;
+  const priceProfit = crypto.price_per >= 0.0;
   const profitMCAP = crypto.mcap_per >= 0.0;
 
   return (
@@ -53,7 +53,7 @@ export const Price = () => {
           ) : (
             <AiFillCaretDown size={15} />
           )}{" "}
-          {crypto.price_change?.toFixed(2)} %
+          {crypto.price_per?.toFixed(2)} %
         </PriceChange>
       </div>
       {/* High and Low 24h */}

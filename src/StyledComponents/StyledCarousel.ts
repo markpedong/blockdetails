@@ -11,8 +11,10 @@ export const ProfitChange = styled.span`
   color: ${({ profit }: TProfitChange) => (profit ? "#16c784" : "#ea3943")};
   margin-inline-start: 0.5rem;
   display: inline-flex;
+  justify-content: end;
   align-items: baseline;
   font-weight: var(--font-weight-7);
+  font-family: "Inter";
 
   svg {
     align-self: center;

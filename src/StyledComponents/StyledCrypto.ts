@@ -87,3 +87,32 @@ export const SpanUpperCase = styled.span`
 export const StyledDesc2 = styled(Text)`
   font-size: 1.5rem;
 `;
+
+export const StyledText = styled(Text)`
+  color: ${({ color }: StyledColor) =>
+    color === "dark" ? "#a1a7bb" : "#58667e"};
+  font-weight: 600;
+  font-size: 0.9rem;
+`;
+
+export const StyledNum = styled(Text)`
+  color: ${({ color }: StyledColor) => (color === "dark" ? "white" : "black")};
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+`;
+
+export const StyledContainer = styled(Container)`
+  background-color: ${({ color }: StyledColor) =>
+    color === "dark" ? "#2C2E33" : "#eff2f5"};
+  box-shadow: var(--shadow-2);
+  border-radius: var(--radius-2);
+  padding-block: 2rem;
+`;
+
+// backgroundColor:
+// colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.white,
+// boxShadow: "var(--shadow-2)",
+// borderRadius: "var(--radius-2)",
+// paddingBlock: "2rem",
+// marginTop: "3rem",

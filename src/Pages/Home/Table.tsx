@@ -7,7 +7,7 @@ import { LoaderComp } from "../../Components/Loader";
 import { numberWithCommas } from "../../Config/Function";
 import { GlobalState } from "../../Context/GlobalContext";
 import { TableState } from "../../Context/TableContext";
-import { ProfitChange } from "../../Styled Components/StyledCarousel";
+import { ProfitChange } from "../../StyledComponents/StyledCarousel";
 import { TableStyles } from "../../Theme/CreateStyles/Table";
 
 export const CryptoTable = () => {

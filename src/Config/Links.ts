@@ -1,3 +1,5 @@
+export const TRENDING_LINK = "https://api.coingecko.com/api/v3/search/trending";
+
 export const EXPLORE_LINKS = [
   {
     name: "Bitcoin",

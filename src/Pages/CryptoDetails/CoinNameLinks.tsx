@@ -12,8 +12,8 @@ import { useCoinContext } from "../../Context/CoinContext";
 import {
   GrayContainerLinks,
   GrayTextLink,
-} from "../../Styled Components/StyledCrypto";
-import { StyledDiv } from "../../Styled Components/StyledFooter";
+} from "../../StyledComponents/StyledCrypto";
+import { StyledDiv } from "../../StyledComponents/StyledFooter";
 
 type Props = {};
 

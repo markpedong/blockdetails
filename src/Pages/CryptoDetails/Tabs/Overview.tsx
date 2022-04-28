@@ -15,11 +15,13 @@ import {
   SpanUpperCase,
   StyledDesc,
   StyledDesc2,
-} from "../../../Styled Components/StyledCrypto";
+} from "../../../StyledComponents/StyledCrypto";
 import { StyledPriceTabs } from "../../../Theme/CreateStyles/CryptoDetails";
 import { MarketCapChart } from "../Chart/MarketCapChart";
 import { PriceChart } from "../Chart/PriceChart";
 import { VolumeChart } from "../Chart/VolumeChart";
+import { CryptoStats } from "../CryptoStats";
+import TrendingCoins from "../TrendingCoins";
 
 export const Overview = () => {
   const { crypto } = useCoinContext();
@@ -27,7 +29,7 @@ export const Overview = () => {
   const { colorScheme } = useMantineColorScheme();
 
   console.log(crypto);
-  const upDown = crypto.price_change > 0.0 ? "up" : "down";
+  const upDown = crypto.price_per > 0.0 ? "up" : "down";
   const cryptoMarkets = crypto.tickers
     ?.map((ticker) => ticker.market.name)
     .filter(
@@ -37,10 +39,9 @@ export const Overview = () => {
     .slice(0, 5);
 
   const description = crypto?.description?.split(". ");
-  console.log(description);
 
   return (
-    <Container fluid>
+    <Container fluid px={0}>
       <Text size="lg" weight="bold" pb="xl">
         {crypto.name} to {currency} Chart
       </Text>
@@ -65,9 +66,9 @@ export const Overview = () => {
                 {crypto.volume} {currency}. We update our{" "}
                 <SpanUpperCase>{crypto.symbol}</SpanUpperCase> to {currency}{" "}
                 price in real-time. {crypto.name} is {upDown}{" "}
-                {crypto.price_change?.toFixed(2).replace("-", "")}% in the last
-                24 hours. The current ranking is #{crypto.mcap_rank}, with a
-                live market cap of {symbol}
+                {crypto.price_per?.toFixed(2).replace("-", "")}% in the last 24
+                hours. The current ranking is #{crypto.mcap_rank}, with a live
+                market cap of {symbol}
                 {crypto.mcap} {currency}. It has a circulating supply of{" "}
                 {crypto.circ_supply}{" "}
                 <SpanUpperCase>{crypto.symbol}</SpanUpperCase> coins and a max.
@@ -95,7 +96,10 @@ export const Overview = () => {
               ))}
             </Paper>
           </Grid.Col>
-          <Grid.Col xs={4}>2</Grid.Col>
+          <Grid.Col xs={4}>
+            <CryptoStats />
+            <TrendingCoins />
+          </Grid.Col>
         </Grid>
       </ChartState>
     </Container>

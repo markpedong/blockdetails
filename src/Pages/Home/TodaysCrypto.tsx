@@ -12,12 +12,12 @@ import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { BITCOIN, SingleCoin } from "../../Config/API";
 import { numberWithCommas } from "../../Config/Function";
 import { GlobalState } from "../../Context/GlobalContext";
-import { ProfitChange } from "../../Styled Components/StyledCarousel";
+import { ProfitChange } from "../../StyledComponents/StyledCarousel";
 import {
   Number,
   TodayContainer,
   TodayTitle,
-} from "../../Styled Components/StyledTodayCrypto";
+} from "../../StyledComponents/StyledTodayCrypto";
 var numeral = require("numeral");
 
 type Bitcoin = {

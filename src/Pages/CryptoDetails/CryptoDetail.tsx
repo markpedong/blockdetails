@@ -14,7 +14,7 @@ import {
   CryptoName,
   GrayContainer,
   GrayText,
-} from "../../Styled Components/StyledCrypto";
+} from "../../StyledComponents/StyledCrypto";
 import { StyledTabs } from "../../Theme/CreateStyles/CryptoDetails";
 import { CoinNameLinks } from "./CoinNameLinks";
 import { Price } from "./Price";

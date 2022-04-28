@@ -15,7 +15,7 @@ import { ChartComponent } from "../../../Components/ChartLoader";
 import { chartDays, LineOptions } from "../../../Config/Variable";
 import { useChartContext } from "../../../Context/ChartContext";
 import { useCoinContext } from "../../../Context/CoinContext";
-import { StyledPaper } from "../../../Styled Components/StyledChart";
+import { StyledPaper } from "../../../StyledComponents/StyledChart";
 
 ChartJS.register(
   CategoryScale,

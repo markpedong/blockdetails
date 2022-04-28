@@ -143,7 +143,12 @@ export type TCryptoDetail = TErrorLoading & {
       market_cap_change_percentage_24h_in_currency: { [index: string]: number };
       market_cap_rank: number;
       max_supply: number;
+      price_change_percentage_1y_in_currency: { [index: string]: number };
+      price_change_percentage_7d_in_currency: { [index: string]: number };
+      price_change_24h_in_currency: { [index: string]: number };
       price_change_percentage_24h_in_currency: { [index: string]: number };
+      price_change_percentage_14d_in_currency: { [index: string]: number };
+      price_change_percentage_30d_in_currency: { [index: string]: number };
       total_supply: number;
       total_volume: { [index: string]: number };
     };
@@ -191,6 +196,10 @@ export type TCrypto = {
   mcap: string;
   name: string;
   price_change: number;
+  price_per: number;
+  price_7d: number;
+  price_30d: number;
+  price_1yr: number;
   price: string | number;
   rank: number;
   reddit: string;

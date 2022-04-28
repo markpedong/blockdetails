@@ -19,7 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MoonStars, Sun } from "tabler-icons-react";
 import { scaleY } from "../Config/Transition";
 import { GlobalState } from "../Context/GlobalContext";
-import { NavGrid } from "../Styled Components/StyledNavbar";
+import { NavGrid } from "../StyledComponents/StyledNavbar";
 import { HEADER_HEIGHT } from "../Config/Variable";
 import { NavStyles } from "../Theme/CreateStyles/Navbar";
 import logodark from "../Images/logo-darkmode.svg";

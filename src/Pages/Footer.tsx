@@ -13,7 +13,7 @@ import {
   FooterLinksContainer,
   StyledCol,
   StyledText,
-} from "../Styled Components/StyledFooter";
+} from "../StyledComponents/StyledFooter";
 
 export const Footer = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -60,10 +60,12 @@ export const Footer = () => {
               <FooterHeader color={darkmode}>Explore</FooterHeader>
               {EXPLORE_LINKS?.map((link) => (
                 <FooterLink
+                  key={link.name}
                   component="a"
                   href={link.link}
                   hovercolor={colorScheme}
                   target="_blank"
+                  color={darkmode}
                 >
                   {link.name}
                 </FooterLink>
@@ -74,9 +76,11 @@ export const Footer = () => {
               <FooterHeader color={darkmode}>API Used</FooterHeader>
               {API_USED?.map((link) => (
                 <FooterLink
+                  key={link.name}
                   component="a"
                   href={link.link}
                   hovercolor={colorScheme}
+                  color={darkmode}
                   target="_blank"
                 >
                   {link.name}
@@ -88,9 +92,11 @@ export const Footer = () => {
               <FooterHeader color={darkmode}>Resources</FooterHeader>
               {RESOURCES?.map((link) => (
                 <FooterLink
+                  key={link.name}
                   component="a"
                   href={link.link}
                   hovercolor={colorScheme}
+                  color={darkmode}
                   target="_blank"
                 >
                   {link.name}
@@ -102,9 +108,11 @@ export const Footer = () => {
               <FooterHeader color={darkmode}>Websites</FooterHeader>
               {WEBSITES?.map((link) => (
                 <FooterLink
+                  key={link.name}
                   component="a"
                   href={link.link}
                   hovercolor={colorScheme}
+                  color={darkmode}
                   target="_blank"
                 >
                   {link.name}
@@ -115,10 +123,12 @@ export const Footer = () => {
         </Grid>
         <Grid columns={24}>
           <Grid.Col xs={12}>
-            <StyledText>© 2022 BlockDetails. All rights reserved</StyledText>
+            <StyledText color={darkmode}>
+              © 2022 BlockDetails. All rights reserved
+            </StyledText>
           </Grid.Col>
           <StyledCol xs={12}>
-            <StyledText>Powered by:</StyledText>
+            <StyledText color={darkmode}>Powered by:</StyledText>
             <img
               src={colorScheme === "dark" ? coinmarketcap_dark : coinmarketcap}
               alt="logo"

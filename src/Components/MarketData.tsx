@@ -9,7 +9,7 @@ import React from "react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { useCoinContext } from "../Context/CoinContext";
 import { GlobalState } from "../Context/GlobalContext";
-import { ProfitChange } from "../Styled Components/StyledCarousel";
+import { ProfitChange } from "../StyledComponents/StyledCarousel";
 
 type Props = {
   profit?: boolean;

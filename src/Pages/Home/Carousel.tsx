@@ -12,7 +12,7 @@ import { GlobalState } from "../../Context/GlobalContext";
 import {
   CarouselPaper,
   ProfitChange,
-} from "../../Styled Components/StyledCarousel";
+} from "../../StyledComponents/StyledCarousel";
 import { CarouselStyles } from "../../Theme/CreateStyles/Carousel";
 import { TTrending } from "../../Type/type";
 

@@ -15,7 +15,7 @@ import { ChartComponent } from "../../../Components/ChartLoader";
 import { chartDays, LineOptions } from "../../../Config/Variable";
 import { useChartContext } from "../../../Context/ChartContext";
 import { useCoinContext } from "../../../Context/CoinContext";
-import { StyledPaper } from "../../../Styled Components/StyledChart";
+import { StyledPaper } from "../../../StyledComponents/StyledChart";
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +31,7 @@ export const PriceChart = () => {
   const { data, days, setDays, loading } = useChartContext();
   const { crypto } = useCoinContext();
 
-  const borderColor = crypto.price_change >= 0.0 ? "#16c784" : "#ea3943";
+  const borderColor = crypto.price_per >= 0.0 ? "#16c784" : "#ea3943";
 
   return loading ? (
     <ChartComponent />
