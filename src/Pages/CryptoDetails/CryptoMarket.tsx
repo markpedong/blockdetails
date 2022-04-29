@@ -77,6 +77,7 @@ export const CryptoMarket = () => {
         style={{
           maxWidth: "100%",
           whiteSpace: "nowrap",
+          marginBlockEnd: "3rem",
         }}
       >
         <thead>

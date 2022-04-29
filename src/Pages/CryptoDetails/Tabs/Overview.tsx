@@ -2,6 +2,7 @@ import {
   Button,
   Container,
   Grid,
+  MediaQuery,
   Paper,
   Tabs,
   Text,
@@ -10,7 +11,7 @@ import {
 import { ReaderIcon } from "@radix-ui/react-icons";
 import parse from "html-react-parser";
 import React from "react";
-import { ChartState, useChartContext } from "../../../Context/ChartContext";
+import { ChartState } from "../../../Context/ChartContext";
 import { useCoinContext } from "../../../Context/CoinContext";
 import { GlobalState } from "../../../Context/GlobalContext";
 import { TrendingCoinContext } from "../../../Context/TrendingCoinContext";
@@ -111,22 +112,15 @@ export const Overview = () => {
           </StyledDesc2>
           <CryptoMarket />
         </Container>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            paddingBlock: "3rem",
-          }}
-        >
-          <Button leftIcon={<ReaderIcon />}>See All Markets</Button>
-        </div>
 
-        <Container fluid px={0}>
-          <StyledDesc2 weight="bold">People Also Watch</StyledDesc2>
-          <TrendingCoinContext>
-            <PeopleAlsoWatch />
-          </TrendingCoinContext>
-        </Container>
+        <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
+          <Container fluid px={0} style={{ marginBlockStart: "3rem" }}>
+            <StyledDesc2 weight="bold">People Also Watch</StyledDesc2>
+            <TrendingCoinContext>
+              <PeopleAlsoWatch />
+            </TrendingCoinContext>
+          </Container>
+        </MediaQuery>
       </ChartState>
     </Container>
   );

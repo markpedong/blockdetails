@@ -19,6 +19,8 @@ export const CryptoStats = () => {
   const price30d = crypto.price_30d >= 0.0;
   const price1yr = crypto.price_1yr >= 0.0;
 
+  console.log(crypto);
+
   return (
     <StyledContainer color={colorScheme} fluid>
       <Text size="xl" weight="bolder" mb="xl">
@@ -102,10 +104,7 @@ export const CryptoStats = () => {
         name="Total Supply"
         number={`${crypto.circ_supply} ${crypto.symbol}`}
       />
-      <StatsComp
-        name="Max Supply"
-        number={`${crypto.max_supply} ${crypto.symbol}`}
-      />
+      <StatsComp name="Max Supply" number={crypto.total_supply} />
     </StyledContainer>
   );
 };

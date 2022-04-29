@@ -74,10 +74,14 @@ export const StatsComp = ({
             justifyContent: "end",
           }}
         >
-          {number && (
-            <StyledNum color={colorScheme}>
-              {symbol} {number}
-            </StyledNum>
+          {number === "0" ? (
+            <StyledNum color={colorScheme}>N/A</StyledNum>
+          ) : (
+            number && (
+              <StyledNum color={colorScheme}>
+                {symbol} {number}
+              </StyledNum>
+            )
           )}
           {perChange && (
             <ProfitChange profit={profit}>

@@ -93,7 +93,7 @@ export const PeopleAlsoWatch = () => {
         disableDotsControls
         disableButtonsControls
         responsive={responsive2}
-        // autoPlay
+        autoPlay
         items={items}
       />
     </Container>
