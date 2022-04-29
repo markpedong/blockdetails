@@ -20,7 +20,6 @@ type Props = {};
 export const CoinNameLinks = (props: Props) => {
   const { crypto } = useCoinContext();
   const { colorScheme } = useMantineColorScheme();
-  const darkColor = colorScheme === "dark" ? "white" : "black";
 
   return (
     <Container
@@ -54,7 +53,7 @@ export const CoinNameLinks = (props: Props) => {
           {crypto.scan_site?.map((site) => (
             <Menu.Item key={site}>
               <StyledDiv>
-                <a href={site} target="_blank">
+                <a href={site} target="_blank" rel="noreferrer">
                   {removeHTTP(site)} <RiExternalLinkFill />
                 </a>
               </StyledDiv>
@@ -79,7 +78,7 @@ export const CoinNameLinks = (props: Props) => {
           {crypto.forum_site?.map((site) => (
             <Menu.Item key={site}>
               <StyledDiv>
-                <a href={site} target="_blank">
+                <a href={site} target="_blank" rel="noreferrer">
                   {removeHTTP(site)} <RiExternalLinkFill />
                 </a>
               </StyledDiv>
@@ -115,7 +114,7 @@ export const CoinNameLinks = (props: Props) => {
             {crypto.source_code?.map((site) => (
               <Menu.Item key={site}>
                 <StyledDiv>
-                  <a href={site} target="_blank">
+                  <a href={site} target="_blank" rel="noreferrer">
                     {removeHTTP(site)} <RiExternalLinkFill />
                   </a>
                 </StyledDiv>

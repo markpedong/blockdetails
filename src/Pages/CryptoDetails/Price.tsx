@@ -2,7 +2,6 @@ import {
   Divider,
   Grid,
   Menu,
-  Paper,
   Text,
   useMantineColorScheme,
 } from "@mantine/core";

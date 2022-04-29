@@ -27,7 +27,7 @@ export const TrendingCoins = () => {
   const [trending, setTrending] = useState([] as unknown as Props);
 
   const fetchData = async () => {
-    const coin = axios.get(TRENDING_LINK).then(({ data }) => setTrending(data));
+    axios.get(TRENDING_LINK).then(({ data }) => setTrending(data));
   };
 
   let navigate = useNavigate();

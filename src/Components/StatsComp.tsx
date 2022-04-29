@@ -1,17 +1,9 @@
-import {
-  Container,
-  Divider,
-  Paper,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { Container, Divider, useMantineColorScheme } from "@mantine/core";
 import React from "react";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { GlobalState } from "../Context/GlobalContext";
 import { ProfitChange } from "../StyledComponents/StyledCarousel";
 import {
   GrayText,
-  PriceChange,
   StyledNum,
   StyledText,
 } from "../StyledComponents/StyledCrypto";

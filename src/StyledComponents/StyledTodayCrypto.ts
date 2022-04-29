@@ -1,5 +1,4 @@
 import { Paper, Text } from "@mantine/core";
-import React from "react";
 import styled from "styled-components";
 
 export const TodayContainer = styled(Paper)`

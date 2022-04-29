@@ -1,4 +1,4 @@
-import { Image, MediaQuery, Table, Text, useMantineTheme } from "@mantine/core";
+import { Table } from "@mantine/core";
 import numeral from "numeral";
 import React from "react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
@@ -10,7 +10,6 @@ import { numberWithCommas } from "../../Config/Function";
 import { GlobalState } from "../../Context/GlobalContext";
 import { TableState } from "../../Context/TableContext";
 import { ProfitChange } from "../../StyledComponents/StyledCarousel";
-import { TableStyles } from "../../Theme/CreateStyles/Table";
 
 export const CryptoTable = () => {
   const { coins, loading } = TableState();
@@ -42,6 +41,7 @@ export const CryptoTable = () => {
           >
             <thead>
               <TableHeader
+                query={true}
                 firstHeader="#"
                 secondHeader="Name"
                 thirdHeader="Price"

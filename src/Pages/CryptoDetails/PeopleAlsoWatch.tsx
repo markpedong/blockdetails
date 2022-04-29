@@ -5,19 +5,18 @@ import {
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
+import numeral from "numeral";
 import AliceCarousel from "react-alice-carousel";
-import { responsive, responsive2 } from "../../Config/Transition";
+import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { responsive2 } from "../../Config/Transition";
 import { useCoinContext } from "../../Context/CoinContext";
 import { GlobalState } from "../../Context/GlobalContext";
 import { TrendingState } from "../../Context/TrendingCoinContext";
-import numeral from "numeral";
-import { ProfitChange } from "../../StyledComponents/StyledCarousel";
-import { PriceChange, WhiteText } from "../../StyledComponents/StyledCrypto";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { PriceChange } from "../../StyledComponents/StyledCrypto";
 
 export const PeopleAlsoWatch = () => {
   const { trending } = TrendingState();
-  const { currency, symbol } = GlobalState();
+  const { symbol } = GlobalState();
   const { crypto } = useCoinContext();
   const filteredTrending = trending.filter((coin) => coin.id !== crypto.id);
   const { colorScheme } = useMantineColorScheme();

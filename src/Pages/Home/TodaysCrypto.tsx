@@ -1,15 +1,15 @@
 import {
   Button,
   Collapse,
-  Text,
   Container,
+  Text,
   useMantineColorScheme,
 } from "@mantine/core";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { BITCOIN, SingleCoin } from "../../Config/API";
+import { SingleCoin } from "../../Config/API";
 import { numberWithCommas } from "../../Config/Function";
 import { GlobalState } from "../../Context/GlobalContext";
 import { ProfitChange } from "../../StyledComponents/StyledCarousel";
@@ -35,7 +35,6 @@ export const TodaysCrypto = () => {
   const [bitcoin, setBitcoin] = useState({} as Bitcoin);
   const profit = global.mcap_change >= 0.0;
   const defi_per = (global.defi_vol / global.volume) * 100;
-  type Price = Bitcoin[];
 
   const FetchBitcoin = async () => {
     const { data } = await axios.get(SingleCoin("bitcoin"));

@@ -1,14 +1,7 @@
-import {
-  Container,
-  Grid,
-  Paper,
-  Text,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { Container, Grid, Text, useMantineColorScheme } from "@mantine/core";
 import React from "react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { useCoinContext } from "../Context/CoinContext";
-import { GlobalState } from "../Context/GlobalContext";
 import { ProfitChange } from "../StyledComponents/StyledCarousel";
 
 type Props = {
@@ -48,7 +41,7 @@ export const MarketData = ({
         {title}
       </Text>
       <Text size="xs" weight="bolder" pb={5}>
-        {data == 0 ? (
+        {data === 0 ? (
           "N/A"
         ) : (
           <>

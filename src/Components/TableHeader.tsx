@@ -6,7 +6,8 @@ type Props = {
   secondHeader: string;
   thirdHeader: string;
   fourthToFifthHeader: string[];
-  sixthToNinthHeader: string[];
+  sixthToNinthHeader?: string[];
+  query: boolean;
 };
 
 export const TableHeader = ({
@@ -15,6 +16,7 @@ export const TableHeader = ({
   thirdHeader,
   fourthToFifthHeader,
   sixthToNinthHeader,
+  query,
 }: Props) => {
   const { colorScheme } = useMantineColorScheme();
   const darkmode = colorScheme === "dark" ? "white" : "black";
@@ -27,7 +29,7 @@ export const TableHeader = ({
       {fourthToFifthHeader?.map((header) => (
         <MediaQuery
           key={header}
-          query="(max-width: 1200px)"
+          query={query ? "(max-width: 1200px)" : ""}
           styles={{ display: "none" }}
         >
           <th style={{ textAlign: "right", color: darkmode }}>{header}</th>

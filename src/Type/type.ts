@@ -251,3 +251,18 @@ export type TMarketType = TErrorLoading & {
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
 };
+
+export type TExchangeType = TErrorLoading & {
+  data: {
+    country: string;
+    id: string;
+    image: string;
+    name: string;
+    trade_volume_24h_btc: number;
+    trade_volume_24h_btc_normalized: number;
+    trust_score: number;
+    trust_score_rank: number;
+    url: string;
+    year_established: number;
+  }[];
+};

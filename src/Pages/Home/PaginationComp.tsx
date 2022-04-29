@@ -1,10 +1,4 @@
-import {
-  Container,
-  Grid,
-  Pagination,
-  Text,
-  useMantineTheme,
-} from "@mantine/core";
+import { Grid, Pagination, Text, useMantineTheme } from "@mantine/core";
 import React from "react";
 import { GlobalState } from "../../Context/GlobalContext";
 import { TableState } from "../../Context/TableContext";

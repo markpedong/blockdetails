@@ -1,4 +1,4 @@
-import { Container, Grid, Paper, Select, Text } from "@mantine/core";
+import { Container, Paper, Text } from "@mantine/core";
 import styled from "styled-components";
 
 type StyledColor = {

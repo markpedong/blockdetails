@@ -1,4 +1,4 @@
-import { createStyles, useMantineColorScheme } from "@mantine/core";
+import { createStyles } from "@mantine/core";
 
 export const TableStyles = createStyles((theme) => ({
   thr: {

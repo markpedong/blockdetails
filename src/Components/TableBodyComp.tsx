@@ -1,8 +1,6 @@
-import { Image, MediaQuery, Table, Text, useMantineTheme } from "@mantine/core";
+import { Image, MediaQuery, Text } from "@mantine/core";
 import React, { ReactNode } from "react";
-import { TableState } from "../Context/TableContext";
 import { TableStyles } from "../Theme/CreateStyles/Table";
-import { CryptoTable } from "../Type/type";
 
 type Props = {
   alt: string;
@@ -73,13 +71,13 @@ export const TableComponent = ({
 
         <td>
           <Text size="xs" className={classes.TableBlack}>
-            {symbol} {sixthData}
+            {sixthData ? `${symbol} ${sixthData}` : ""}
           </Text>
         </td>
 
         <td>
           <Text size="xs" className={classes.TableBlack}>
-            {symbol} {seventhData}
+            {seventhData ? `${symbol} ${seventhData}` : ""}
           </Text>
         </td>
         <td>

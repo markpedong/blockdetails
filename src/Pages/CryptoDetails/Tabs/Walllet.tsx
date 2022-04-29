@@ -2,7 +2,6 @@ import {
   Button,
   Collapse,
   Container,
-  Grid,
   Image,
   Text,
   useMantineColorScheme,

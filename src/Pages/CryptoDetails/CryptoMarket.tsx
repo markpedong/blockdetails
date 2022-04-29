@@ -1,11 +1,4 @@
-import {
-  Button,
-  Image,
-  MediaQuery,
-  Table,
-  Text,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { Button, Table } from "@mantine/core";
 import numeral from "numeral";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,20 +7,14 @@ import { TableComponent } from "../../Components/TableBodyComp";
 import { TableHeader } from "../../Components/TableHeader";
 import { MarketList } from "../../Config/API";
 import { useCoinContext } from "../../Context/CoinContext";
-import { GlobalState } from "../../Context/GlobalContext";
 import { useFetchAPISingle } from "../../Hooks/useFetchAPISingle";
-import { TableStyles } from "../../Theme/CreateStyles/Table";
-import { TErrorLoading, TMarketType } from "../../Type/type";
+import { TMarketType } from "../../Type/type";
 
 export const CryptoMarket = () => {
   const { crypto } = useCoinContext();
   const { data, loading } = useFetchAPISingle(
     MarketList(crypto.id, 1)
   ) as unknown as TMarketType;
-
-  const { colorScheme } = useMantineColorScheme();
-  const darkColor = colorScheme === "dark" ? "white" : "black";
-  const { classes } = TableStyles();
 
   const sortedTickers = data?.tickers?.sort(
     (a, b) => b.converted_volume.usd - a.converted_volume.usd
@@ -57,6 +44,7 @@ export const CryptoMarket = () => {
       >
         <thead>
           <TableHeader
+            query={true}
             firstHeader="#"
             secondHeader="Exchange"
             thirdHeader="Pair"
@@ -97,7 +85,7 @@ export const CryptoMarket = () => {
                   id={exchange.id}
                   navigateCrypto={() => navigateCoin(exchange.id)}
                   thirdData={
-                    <a href={exchange.url} target="_blank">
+                    <a href={exchange.url} target="_blank" rel="noreferrer">
                       {exchange.base}/{exchange.target}
                     </a>
                   }

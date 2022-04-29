@@ -7,6 +7,7 @@ import { GlobalData } from "./GlobalData";
 import { Home } from "./Home";
 import { NavbarSec } from "./Navbar";
 import { NFT } from "./NFT/NFT";
+import { ErrorPage } from "./Other/Error";
 
 export const Main = () => {
   return (
@@ -24,6 +25,7 @@ export const Main = () => {
         <Route path="/cryptocurrency/:id" element={<SinglePage />} />
         <Route path="/exchanges" element={<Exchanges />} />
         <Route path="/nft" element={<NFT />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
       <Footer />
     </>

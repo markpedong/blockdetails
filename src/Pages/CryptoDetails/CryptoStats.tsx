@@ -1,4 +1,4 @@
-import { Container, Text, useMantineColorScheme } from "@mantine/core";
+import { Text, useMantineColorScheme } from "@mantine/core";
 import React from "react";
 import { StatsComp } from "../../Components/StatsComp";
 import { useCoinContext } from "../../Context/CoinContext";
