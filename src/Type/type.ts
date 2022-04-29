@@ -38,15 +38,15 @@ export type AppContextInterface = TErrorLoading & {
   global: TGlobal;
 };
 
-type CryptoTable = {
+export type CryptoTable = {
   circulating_supply: number;
   current_price: number;
   id: string;
   image: string;
-  market_cap: number;
+  market_cap: number | string;
   market_cap_change_percentage_24h: number;
   market_cap_rank: number;
-  max_supply: number;
+  max_supply: number | string;
   name: string;
   price_change_percentage_24h: number;
   symbol: string;

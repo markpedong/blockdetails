@@ -10,6 +10,8 @@ import numeral from "numeral";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { LoaderComp } from "../../Components/Loader";
+import { TableComponent } from "../../Components/TableBodyComp";
+import { TableHeader } from "../../Components/TableHeader";
 import { MarketList } from "../../Config/API";
 import { useCoinContext } from "../../Context/CoinContext";
 import { GlobalState } from "../../Context/GlobalContext";
@@ -54,27 +56,18 @@ export const CryptoMarket = () => {
         }}
       >
         <thead>
-          <tr>
-            <th style={{ textAlign: "right", color: darkColor }}>#</th>
-            <th style={{ textAlign: "left", color: darkColor }}>Exchange</th>
-            <th style={{ textAlign: "right", color: darkColor }}>Pair</th>
-            <th style={{ textAlign: "right", color: darkColor }}>Price</th>
-            <th style={{ textAlign: "right", color: darkColor }}>Spread</th>
-            <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
-              <th style={{ textAlign: "right", color: darkColor }}>
-                +2% Depth
-              </th>
-            </MediaQuery>
-            <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
-              <th style={{ textAlign: "right", color: darkColor }}>
-                -2% Depth
-              </th>
-            </MediaQuery>
-            <th style={{ textAlign: "right", color: darkColor }}>24h Volume</th>
-            <th style={{ textAlign: "right", color: darkColor }}>
-              Trust Score
-            </th>
-          </tr>
+          <TableHeader
+            firstHeader="#"
+            secondHeader="Exchange"
+            thirdHeader="Pair"
+            fourthToFifthHeader={["+2% Depth", "-2% Depth"]}
+            sixthToNinthHeader={[
+              "Price",
+              "24h Volume",
+              "Spread",
+              "Trust Score",
+            ]}
+          />
         </thead>
         <tbody>
           {sortedTickers
@@ -93,40 +86,27 @@ export const CryptoMarket = () => {
                 url: ticker.trade_url,
                 volume: numeral(ticker.converted_volume.usd).format("$0,0.00"),
               };
+
               return (
-                <tr key={index}>
-                  <td className={classes.rank}>{index + 1}</td>
-                  <td className={classes.TableName}>
-                    <Image
-                      radius={"lg"}
-                      src={exchange.image}
-                      alt={exchange.name}
-                      width={22}
-                      height={22}
-                    />
-                    <Text
-                      size="xs"
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => navigateCoin(exchange.id)}
-                    >
-                      {exchange.name}
-                    </Text>
-                  </td>
-                  <td className={classes.TableBlack}>
-                    <a
-                      style={{ textTransform: "uppercase" }}
-                      href={exchange.url}
-                      target="_blank"
-                    >
-                      {crypto.symbol}/{exchange.target}
+                <TableComponent
+                  key={exchange.name}
+                  alt={ticker.market.identifier}
+                  image={ticker.market.logo}
+                  name={ticker.market.name}
+                  rank={index + 1}
+                  id={exchange.id}
+                  navigateCrypto={() => navigateCoin(exchange.id)}
+                  thirdData={
+                    <a href={exchange.url} target="_blank">
+                      {exchange.base}/{exchange.target}
                     </a>
-                  </td>
-                  <td className={classes.TableBlack}>{exchange.price}</td>
-                  <td className={classes.TableBlack}>{exchange.spread}%</td>
-                  <td className={classes.TableBlack}>{exchange.up}</td>
-                  <td className={classes.TableBlack}>{exchange.down}</td>
-                  <td className={classes.TableBlack}>{exchange.volume}</td>
-                  <td className={classes.TableBlack}>
+                  }
+                  fourthData={exchange.up}
+                  fifthData={exchange.down}
+                  sixthData={exchange.price}
+                  seventhData={exchange.volume}
+                  eighthData={exchange.spread}
+                  ninthData={
                     <Button
                       radius="xl"
                       size="xs"
@@ -137,8 +117,8 @@ export const CryptoMarket = () => {
                         width: "20px",
                       }}
                     />
-                  </td>
-                </tr>
+                  }
+                />
               );
             })
             .slice(0, 6)}

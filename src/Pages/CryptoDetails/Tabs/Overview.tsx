@@ -43,8 +43,6 @@ export const Overview = () => {
 
   const description = crypto?.description?.split(". ");
 
-  console.log(description);
-
   return (
     <Container fluid px={0}>
       <Text size="lg" weight="bold" pb="xl">

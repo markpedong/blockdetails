@@ -31,9 +31,6 @@ export const TableStyles = createStyles((theme) => ({
 
   TablePercentage: {
     textAlign: "right",
-
-    span: {
-      fontWeight: "800",
-    },
+    fontWeight: "800",
   },
 }));

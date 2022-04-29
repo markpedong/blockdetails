@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import React from "react";
 import { RiArrowDropRightLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 import { useCoinContext } from "../../Context/CoinContext";
 import { MarketContext } from "../../Context/MarketContext";
 import {
@@ -27,16 +28,28 @@ export const CryptoDetail = () => {
   const { colorScheme } = useMantineColorScheme();
   const { crypto } = useCoinContext();
 
+  let navigate = useNavigate();
+
   return (
     <Paper sx={{ borderRadius: 0 }}>
       <Container size="xl" px="xs" py="xl">
         {/* Categories Header */}
         <div style={{ display: "flex" }}>
-          <Text size="xs" weight="bold">
+          <Text
+            size="xs"
+            weight="bold"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          >
             {crypto.categories1}
           </Text>
           <RiArrowDropRightLine />
-          <Text size="xs" weight="bold">
+          <Text
+            size="xs"
+            weight="bold"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          >
             {crypto.categories2}
           </Text>
           <RiArrowDropRightLine />

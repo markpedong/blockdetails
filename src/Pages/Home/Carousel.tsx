@@ -35,6 +35,7 @@ export const Carousel = () => {
           key={coin.id}
           onClick={() => navigateCoin(coin.id)}
           px={10}
+          style={{ cursor: "pointer" }}
         >
           <Image src={coin.image} alt={coin.name} width={50} radius={360} />
           <Container className={classes.description} px={10}>
