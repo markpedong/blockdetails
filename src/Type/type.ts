@@ -221,3 +221,33 @@ export type TCrypto = {
   volume: string;
   volumetomcap: number;
 };
+
+export type TMarketType = TErrorLoading & {
+  data: {
+    name: string;
+    tickers: {
+      base: string;
+      bid_ask_spread_percentage: number;
+      coin_id: string;
+      converted_last: {
+        usd: number;
+      };
+      converted_volume: {
+        usd: number;
+      };
+      cost_to_move_down_usd: number;
+      cost_to_move_up_usd: number;
+      market: {
+        identifier: string;
+        logo: string;
+        name: string;
+      };
+      target: string;
+      target_coin_id: string;
+      trade_url: string;
+      trust_score: string;
+    }[];
+  };
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+};

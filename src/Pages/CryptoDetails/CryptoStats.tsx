@@ -19,8 +19,6 @@ export const CryptoStats = () => {
   const price30d = crypto.price_30d >= 0.0;
   const price1yr = crypto.price_1yr >= 0.0;
 
-  console.log(crypto);
-
   return (
     <StyledContainer color={colorScheme} fluid>
       <Text size="xl" weight="bolder" mb="xl">

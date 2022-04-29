@@ -1,5 +1,4 @@
 import {
-  Button,
   Container,
   Grid,
   MediaQuery,
@@ -8,7 +7,6 @@ import {
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
-import { ReaderIcon } from "@radix-ui/react-icons";
 import parse from "html-react-parser";
 import React from "react";
 import { ChartState } from "../../../Context/ChartContext";
@@ -44,6 +42,8 @@ export const Overview = () => {
     .slice(0, 5);
 
   const description = crypto?.description?.split(". ");
+
+  console.log(description);
 
   return (
     <Container fluid px={0}>

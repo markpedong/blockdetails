@@ -3,7 +3,7 @@ import React from "react";
 import { TableContext } from "../Context/TableContext";
 import { TrendingCoinContext } from "../Context/TrendingCoinContext";
 import { Carousel } from "./Home/Carousel";
-import PaginationComp from "./Home/PaginationComp";
+import { PaginationComp } from "./Home/PaginationComp";
 import { CryptoTable } from "./Home/Table";
 import { TodaysCrypto } from "./Home/TodaysCrypto";
 

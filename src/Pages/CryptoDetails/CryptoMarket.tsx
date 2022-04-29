@@ -15,41 +15,14 @@ import { useCoinContext } from "../../Context/CoinContext";
 import { GlobalState } from "../../Context/GlobalContext";
 import { useFetchAPISingle } from "../../Hooks/useFetchAPISingle";
 import { TableStyles } from "../../Theme/CreateStyles/Table";
-import { TErrorLoading } from "../../Type/type";
-
-export type TMarketType = TErrorLoading & {
-  data: {
-    name: string;
-    tickers: {
-      base: string;
-      bid_ask_spread_percentage: number;
-      coin_id: string;
-      converted_last: {
-        usd: number;
-      };
-      converted_volume: {
-        usd: number;
-      };
-      cost_to_move_down_usd: number;
-      cost_to_move_up_usd: number;
-      market: {
-        identifier: string;
-        logo: string;
-        name: string;
-      };
-      target: string;
-      target_coin_id: string;
-      trade_url: string;
-      trust_score: string;
-    }[];
-  };
-};
+import { TErrorLoading, TMarketType } from "../../Type/type";
 
 export const CryptoMarket = () => {
   const { crypto } = useCoinContext();
-  const { data, loading, error } = useFetchAPISingle(
+  const { data, loading } = useFetchAPISingle(
     MarketList(crypto.id, 1)
   ) as unknown as TMarketType;
+
   const { colorScheme } = useMantineColorScheme();
   const darkColor = colorScheme === "dark" ? "white" : "black";
   const { classes } = TableStyles();
@@ -140,8 +113,12 @@ export const CryptoMarket = () => {
                     </Text>
                   </td>
                   <td className={classes.TableBlack}>
-                    <a href={exchange.url} target="_blank">
-                      {exchange.base}/{exchange.target}
+                    <a
+                      style={{ textTransform: "uppercase" }}
+                      href={exchange.url}
+                      target="_blank"
+                    >
+                      {crypto.symbol}/{exchange.target}
                     </a>
                   </td>
                   <td className={classes.TableBlack}>{exchange.price}</td>

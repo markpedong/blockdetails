@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { RiArrowDropRightLine } from "react-icons/ri";
 import { useCoinContext } from "../../Context/CoinContext";
+import { MarketContext } from "../../Context/MarketContext";
 import {
   CryptoName,
   GrayContainer,
@@ -20,7 +21,7 @@ import { CoinNameLinks } from "./CoinNameLinks";
 import { Price } from "./Price";
 import { Market } from "./Tabs/Market";
 import { Overview } from "./Tabs/Overview";
-import { Social } from "./Tabs/Social";
+import { Wallet } from "./Tabs/Walllet";
 
 export const CryptoDetail = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -72,17 +73,19 @@ export const CryptoDetail = () => {
       <Container fluid>
         {/* TABS */}
         <Container size="xl" px="xs">
-          <StyledTabs initialTab={0} tabPadding="xl">
-            <Tabs.Tab label="Overview">
-              <Overview />
-            </Tabs.Tab>
-            <Tabs.Tab label="Market">
-              <Market />
-            </Tabs.Tab>
-            <Tabs.Tab label="Social">
-              <Social />
-            </Tabs.Tab>
-          </StyledTabs>
+          <MarketContext>
+            <StyledTabs initialTab={0} tabPadding="xl">
+              <Tabs.Tab label="Overview">
+                <Overview />
+              </Tabs.Tab>
+              <Tabs.Tab label="Market">
+                <Market />
+              </Tabs.Tab>
+              <Tabs.Tab label="Wallet">
+                <Wallet />
+              </Tabs.Tab>
+            </StyledTabs>
+          </MarketContext>
         </Container>
       </Container>
     </Paper>
