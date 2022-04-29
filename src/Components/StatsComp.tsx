@@ -81,8 +81,8 @@ export const StatsComp = ({
           )}
           {perChange && (
             <ProfitChange profit={profit}>
-              {profit ? <TiArrowSortedUp /> : <TiArrowSortedDown />} {perChange}{" "}
-              %
+              {profit ? <TiArrowSortedUp /> : <TiArrowSortedDown />}{" "}
+              {perChange.toString().replace("-", "")} %
             </ProfitChange>
           )}
           {low24h && high24h && (

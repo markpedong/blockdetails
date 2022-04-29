@@ -9,6 +9,7 @@ import {
 import numeral from "numeral";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { LoaderComp } from "../../Components/Loader";
 import { MarketList } from "../../Config/API";
 import { useCoinContext } from "../../Context/CoinContext";
 import { GlobalState } from "../../Context/GlobalContext";
@@ -46,7 +47,7 @@ export type TMarketType = TErrorLoading & {
 
 export const CryptoMarket = () => {
   const { crypto } = useCoinContext();
-  const { data } = useFetchAPISingle(
+  const { data, loading, error } = useFetchAPISingle(
     MarketList(crypto.id, 1)
   ) as unknown as TMarketType;
   const { colorScheme } = useMantineColorScheme();
@@ -62,7 +63,11 @@ export const CryptoMarket = () => {
     navigate(`/exchanges/${id}`);
   };
 
-  return (
+  return loading ? (
+    <>
+      <LoaderComp />
+    </>
+  ) : (
     <>
       <Table
         fontSize="xs"

@@ -88,38 +88,42 @@ export const CoinNameLinks = (props: Props) => {
         </Menu>
       </GrayContainerLinks>
       {/* Reddit */}
-      <GrayContainerLinks size="xs" pb={5} color={colorScheme}>
-        <CgLink size={15} />
-        <GrayTextLink component="a" href={crypto.reddit} target="_blank">
-          {removeHTTP(crypto.reddit)}
-        </GrayTextLink>
-        <RiExternalLinkFill />
-      </GrayContainerLinks>
+      {crypto.reddit && (
+        <GrayContainerLinks size="xs" pb={5} color={colorScheme}>
+          <CgLink size={15} />
+          <GrayTextLink component="a" href={crypto.reddit} target="_blank">
+            {removeHTTP(crypto.reddit)}
+          </GrayTextLink>
+          <RiExternalLinkFill />
+        </GrayContainerLinks>
+      )}
       {/* Source Code */}
-      <GrayContainerLinks size="xs" pb={5} color={colorScheme}>
-        <RiCodeSSlashFill size={15} />
-        <GrayTextLink>Source Code</GrayTextLink>
-        <Menu
-          trigger="hover"
-          delay={300}
-          transition="pop"
-          placement="center"
-          position="bottom"
-          gutter={20}
-          withArrow
-          control={<CaretDownIcon />}
-        >
-          {crypto.source_code?.map((site) => (
-            <Menu.Item key={site}>
-              <StyledDiv>
-                <a href={site} target="_blank">
-                  {removeHTTP(site)} <RiExternalLinkFill />
-                </a>
-              </StyledDiv>
-            </Menu.Item>
-          ))}
-        </Menu>
-      </GrayContainerLinks>
+      {crypto.source_code?.length > 0 && (
+        <GrayContainerLinks size="xs" pb={5} color={colorScheme}>
+          <RiCodeSSlashFill size={15} />
+          <GrayTextLink>Source Code</GrayTextLink>
+          <Menu
+            trigger="hover"
+            delay={300}
+            transition="pop"
+            placement="center"
+            position="bottom"
+            gutter={20}
+            withArrow
+            control={<CaretDownIcon />}
+          >
+            {crypto.source_code?.map((site) => (
+              <Menu.Item key={site}>
+                <StyledDiv>
+                  <a href={site} target="_blank">
+                    {removeHTTP(site)} <RiExternalLinkFill />
+                  </a>
+                </StyledDiv>
+              </Menu.Item>
+            ))}
+          </Menu>
+        </GrayContainerLinks>
+      )}
     </Container>
   );
 };

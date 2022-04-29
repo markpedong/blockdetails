@@ -21,8 +21,6 @@ export const TrendingCoinContext = ({ children }: Props) => {
   const fetchTrendingCoins = async () => {
     const { data } = await axios.get(TrendingCoins(currency));
 
-    console.log(data);
-
     setTrending(data);
   };
   useEffect(() => {

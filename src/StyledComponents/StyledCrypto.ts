@@ -50,8 +50,7 @@ export const PriceChange = styled(Text)`
   display: flex;
   gap: 0.2rem;
   align-items: center;
-  background-color: ${({ profit }: StyledColor) =>
-    profit ? "#16c784" : "#ea3943"};
+  background-color: ${({ profit }: StyledColor) => profit};
   color: #fff;
   padding: 0.3rem 0.5rem;
   border-radius: var(--radius-2);
@@ -100,6 +99,7 @@ export const StyledNum = styled(Text)`
   font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
+  text-align: end;
 `;
 
 export const StyledContainer = styled(Container)`
@@ -109,10 +109,3 @@ export const StyledContainer = styled(Container)`
   border-radius: var(--radius-2);
   padding-block: 2rem;
 `;
-
-// backgroundColor:
-// colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.white,
-// boxShadow: "var(--shadow-2)",
-// borderRadius: "var(--radius-2)",
-// paddingBlock: "2rem",
-// marginTop: "3rem",

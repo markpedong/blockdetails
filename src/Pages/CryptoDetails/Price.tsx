@@ -23,6 +23,7 @@ export const Price = () => {
   const { colorScheme } = useMantineColorScheme();
   const { symbol } = GlobalState();
   const priceProfit = crypto.price_per >= 0.0;
+  const colorProfit = priceProfit ? "#16c784" : "#ea3943";
   const profitMCAP = crypto.mcap_per >= 0.0;
 
   return (
@@ -47,13 +48,13 @@ export const Price = () => {
         <WhiteText color={colorScheme} style={{ fontSize: 30 }}>
           {symbol} {crypto.price}
         </WhiteText>
-        <PriceChange profit={`${priceProfit}`} size="sm">
+        <PriceChange profit={colorProfit} size="sm">
           {priceProfit ? (
             <AiFillCaretUp size={15} />
           ) : (
             <AiFillCaretDown size={15} />
           )}{" "}
-          {crypto.price_per?.toFixed(2)} %
+          {crypto.price_per?.toFixed(2).replace("-", "")} %
         </PriceChange>
       </div>
       {/* High and Low 24h */}

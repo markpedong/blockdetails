@@ -1,7 +1,7 @@
 import { Container, Image, Text, useMantineColorScheme } from "@mantine/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TRENDING_LINK } from "../../Config/Links";
 import {
   GrayContainer,
@@ -30,6 +30,8 @@ export const TrendingCoins = () => {
     const coin = axios.get(TRENDING_LINK).then(({ data }) => setTrending(data));
   };
 
+  let navigate = useNavigate();
+
   useEffect(() => {
     fetchData();
   }, [id]);
@@ -44,7 +46,13 @@ export const TrendingCoins = () => {
           ?.map((coin) => (
             <GrayContainer style={{ paddingTop: "1rem" }} key={coin.item.id}>
               <Image src={coin.item.large} height={20} />
-              <Text weight="bold">{coin.item.name}</Text>
+              <Text
+                weight="bold"
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/cryptocurrency/${coin.item.id}`)}
+              >
+                {coin.item.name}
+              </Text>
               <Text
                 style={{ opacity: 0.5, flexGrow: 1 }}
                 size="sm"

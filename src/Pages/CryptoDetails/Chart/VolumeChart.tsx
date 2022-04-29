@@ -32,7 +32,12 @@ export const VolumeChart = () => {
   return loading ? (
     <ChartComponent />
   ) : (
-    <>
+    <div
+      style={{
+        blockSize: 420,
+        marginBottom: "5rem",
+      }}
+    >
       <Line
         options={LineOptions}
         data={{
@@ -66,6 +71,6 @@ export const VolumeChart = () => {
           </Button>
         ))}
       </StyledPaper>
-    </>
+    </div>
   );
 };
