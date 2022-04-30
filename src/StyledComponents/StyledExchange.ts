@@ -11,3 +11,10 @@ export const Currency = styled.div`
   flex-direction: row;
   justify-content: end;
 `;
+
+export const Trust_Score = styled.span`
+  background-color: rgb(22, 199, 132);
+  padding: 0.3rem 0.8rem;
+  border-radius: 0.3rem;
+  color: white;
+`;

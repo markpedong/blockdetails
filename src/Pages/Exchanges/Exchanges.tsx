@@ -9,7 +9,11 @@ import { TableHeader } from "../../Components/TableHeader";
 import { ExchangesList, Exchange_PAPRIKA, SingleCoin } from "../../Config/API";
 import { GlobalState } from "../../Context/GlobalContext";
 import { useFetchAPISingle } from "../../Hooks/useFetchAPISingle";
-import { Currency, StyledDiv } from "../../StyledComponents/StyledExchange";
+import {
+  Currency,
+  StyledDiv,
+  Trust_Score,
+} from "../../StyledComponents/StyledExchange";
 import {
   matchData,
   Paprika_Exchange,
@@ -156,16 +160,7 @@ export const Exchanges = () => {
                             !exchange.trust_score ? (
                               "--"
                             ) : (
-                              <span
-                                style={{
-                                  backgroundColor: "rgb(22, 199, 132)",
-                                  padding: "0.2rem 0.5rem",
-                                  borderRadius: "0.3rem",
-                                  color: "white",
-                                }}
-                              >
-                                {exchange.trust_score}
-                              </span>
+                              <Trust_Score>{exchange.trust_score}</Trust_Score>
                             )
                           }
                         />
