@@ -30,3 +30,6 @@ export const ExchangesList = (page: number, per_page: number) => `
 
 export const Exchange_PAPRIKA = () =>
   `https://api.coinpaprika.com/v1/exchanges`;
+
+export const Exchange_DETAILS = (id: string) =>
+  `https://api.coingecko.com/api/v3/exchanges/${id}`;

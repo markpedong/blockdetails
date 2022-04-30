@@ -12,7 +12,7 @@ export const Currency = styled.div`
   justify-content: end;
 `;
 
-export const Trust_Score = styled.span`
+export const TRUST_SCORE = styled.span`
   background-color: rgb(22, 199, 132);
   padding: 0.3rem 0.8rem;
   border-radius: 0.3rem;

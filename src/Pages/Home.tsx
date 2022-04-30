@@ -1,6 +1,5 @@
 import { Container, Paper } from "@mantine/core";
 import React from "react";
-import { TableContext } from "../Context/TableContext";
 import { TrendingCoinContext } from "../Context/TrendingCoinContext";
 import { Carousel } from "./Main/Carousel";
 import { CryptoTable } from "./Main/Table";
@@ -19,9 +18,8 @@ export const Home = () => {
           <Carousel />
           <TodaysCrypto />
           {/* <Trending /> */}
-          <TableContext>
-            <CryptoTable />
-          </TableContext>
+
+          <CryptoTable />
         </TrendingCoinContext>
       </Container>
     </Paper>

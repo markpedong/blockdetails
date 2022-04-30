@@ -18,7 +18,7 @@ type TCoinContext = {
 
 const CoinContext = createContext({} as TCoinContext);
 
-export const SinglePage = () => {
+export const SingleCoinPage = () => {
   const [date, setDate] = useState(1);
   const { id } = useParams();
   const { data, error, loading } = useFetchAPISingle(

@@ -1,6 +1,8 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { SinglePage } from "../Context/CoinContext";
+import { SingleCoinPage } from "../Context/CoinContext";
+import { SingleExchangeDetail } from "../Context/ExchangeContext";
+import { TableContext } from "../Context/TableContext";
 import { Exchanges } from "./Exchanges/Exchanges";
 import { Footer } from "./Footer";
 import { GlobalData } from "./GlobalData";
@@ -20,13 +22,16 @@ export const Main = () => {
           { link: "/nft", label: "NFT" },
         ]}
       />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/cryptocurrency/:id" element={<SinglePage />} />
-        <Route path="/exchanges" element={<Exchanges />} />
-        <Route path="/nft" element={<NFT />} />
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
+      <TableContext>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/cryptocurrency/:id" element={<SingleCoinPage />} />
+          <Route path="/exchanges" element={<Exchanges />} />
+          <Route path="/exchanges/:id" element={<SingleExchangeDetail />} />
+          <Route path="/nft" element={<NFT />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </TableContext>
       <Footer />
     </>
   );

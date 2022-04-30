@@ -20,6 +20,7 @@ export const TableComponent = ({
   symbol,
   thirdData,
   query,
+  height,
 }: TTableComponent) => {
   const { classes } = TableStyles();
 
@@ -27,12 +28,12 @@ export const TableComponent = ({
     <>
       <tr>
         <td className={classes.rank}>{rank}</td>
-        <td className={classes.TableName}>
+        <td className={classes.TableName} style={{ height: `${height}` }}>
           <Image radius={"lg"} src={image} alt={alt} width={22} height={22} />
           <Text
             size="xs"
-            sx={{ cursor: "pointer" }}
-            onClick={() => navigateCrypto(id)}
+            sx={{ cursor: "pointer", textTransform: "capitalize" }}
+            onClick={() => navigateCrypto?.(id)}
           >
             {name}
           </Text>

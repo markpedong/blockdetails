@@ -12,7 +12,7 @@ import { useFetchAPISingle } from "../../Hooks/useFetchAPISingle";
 import {
   Currency,
   StyledDiv,
-  Trust_Score,
+  TRUST_SCORE,
 } from "../../StyledComponents/StyledExchange";
 import {
   matchData,
@@ -117,6 +117,7 @@ export const Exchanges = () => {
                           image={exchange.image}
                           key={exchange.id}
                           name={exchange.name}
+                          height="90px"
                           navigateCrypto={() => navigateCoin(exchange.id)}
                           query={true}
                           rank={exchange.trust_score_rank}
@@ -129,7 +130,11 @@ export const Exchanges = () => {
                               <StyledDiv>
                                 <Currency>
                                   {paprikaData?.fiats
-                                    .map((fiat) => <span>{fiat.symbol}, </span>)
+                                    .map((fiat) => (
+                                      <span key={fiat.name}>
+                                        {fiat.symbol},{" "}
+                                      </span>
+                                    ))
                                     .slice(0, 3)}
                                 </Currency>
                                 {paprikaData?.fiats.length > 0 ? (
@@ -160,7 +165,7 @@ export const Exchanges = () => {
                             !exchange.trust_score ? (
                               "--"
                             ) : (
-                              <Trust_Score>{exchange.trust_score}</Trust_Score>
+                              <TRUST_SCORE>{exchange.trust_score}</TRUST_SCORE>
                             )
                           }
                         />

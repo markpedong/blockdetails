@@ -12,13 +12,13 @@ export const TableContext = ({ children }: Context) => {
   const [coins, setCoins] = useState([]);
   const [res_page, setResPage] = useState(100);
 
-  const fetchCoins = async () => {
-    const { data } = await axios.get(CoinList(currency, page, res_page));
-    setCoins(data);
-    setPage(page);
-  };
-
   useEffect(() => {
+    const fetchCoins = async () => {
+      const { data } = await axios.get(CoinList(currency, page, res_page));
+      setCoins(data);
+      setPage(page);
+    };
+
     fetchCoins();
   }, [currency, page, res_page]);
 

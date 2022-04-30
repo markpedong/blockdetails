@@ -278,13 +278,14 @@ export type TTableComponent = {
   fourthData?: string | ReactNode;
   image: string;
   id: string;
-  navigateCrypto: (id: string) => void;
+  navigateCrypto?: (id: string) => void;
   ninthData?: string | number | ReactNode;
   rank: string | number;
   seventhData?: string | number;
   sixthData?: string | number;
   query: boolean;
   symbol?: string;
+  height?: string;
   thirdData?: string | ReactNode;
 };
 
@@ -295,12 +296,18 @@ export type TrendingInterface = {
 export type matchData = {
   active: boolean;
   currencies: number;
+  description: string;
+  confidence_score: number;
   id: string;
   name: string;
   fiats: {
     name: string;
     symbol: string;
   }[];
+  links: {
+    twitter: string[];
+    website: string[];
+  };
   markets: number;
   quotes: {
     USD: {
@@ -318,28 +325,101 @@ export type matchData = {
 };
 
 export type Paprika_Exchange = {
+  data: matchData[];
+};
+
+export type FetchedData = TErrorLoading & {
   data: {
-    active: boolean;
-    currencies: number;
-    id: string;
+    country: string;
+    description: string;
+    facebook_url: string;
+    image: string;
     name: string;
-    fiats: {
-      name: string;
-      symbol: string;
+    other_url_1: string;
+    other_url_2: string;
+    reddit_url: string;
+    status_updates: {
+      created_at: string;
+      description: string;
     }[];
-    markets: number;
-    quotes: {
-      USD: {
-        adjusted_volume_7d: number;
-        adjusted_volume_24h: number;
-        adjusted_volume_30d: number;
-        reported_volume_7d: number;
-        reported_volume_24h: number;
-        reported_volume_30d: number;
-      };
-    };
-    reported_rank: number;
-    website_status: boolean;
-    sessions_per_month: number;
+    tickers: {
+      base: string;
+      bid_ask_spread_percentage: number;
+      coin_id: string;
+      converted_last: { usd: number };
+      converted_volume: { usd: number };
+      market: {
+        identifier: string;
+        name: string;
+      }[];
+      target: string;
+      target_coin_id: string;
+      trade_url: string;
+      trust_score: string;
+      volume: number;
+    }[];
+    trade_volume_24h_btc: number;
+    trade_volume_24h_btc_normalized: number;
+    trust_score: number;
+    trust_score_rank: number;
+    url: string;
+    year_established: number;
+  };
+};
+
+export type ExchangeMerged = {
+  currencies: number;
+  country: string;
+  confidence_score: number;
+  description: string;
+  fiats: {
+    name: string;
+    symbol: string;
   }[];
+  id: string;
+  fb_url: string;
+  image: string;
+  name: string;
+  links: {
+    twitter: string[];
+    website: string[];
+  };
+  markets: number;
+  other_url1: string;
+  other_url2: string;
+  reddit: string;
+  status: {
+    created_at: string;
+    description: string;
+  }[];
+  tickers: {
+    base: string;
+    bid_ask_spread_percentage: number;
+    coin_id: string;
+    target: string;
+    target_coin_id: string;
+    trade_url: string;
+    volume: number;
+    converted_last: {
+      usd: number;
+    };
+    converted_volume: {
+      usd: number;
+    };
+    trust_score: string;
+  }[];
+  rank: number;
+  score: number;
+  volume_btc: number;
+  volume24h: number | string;
+  volume7d: number | string;
+  volume30d: number | string;
+  sessionPerMonth: number;
+  web_Status: boolean;
+  url: string;
+  year: number;
+};
+
+export type TExchangeDetail = {
+  exchange: ExchangeMerged;
 };

@@ -7,6 +7,7 @@ import {
   Text,
   Button,
   SimpleGrid,
+  Paper,
 } from "@mantine/core";
 import error from "../../Images/error.svg";
 import { useNavigate } from "react-router-dom";
@@ -52,32 +53,34 @@ export const ErrorPage = () => {
   const navigate = useNavigate();
 
   return (
-    <Container size="xl" className={classes.root}>
-      <SimpleGrid
-        spacing={80}
-        cols={2}
-        breakpoints={[{ maxWidth: "sm", cols: 1, spacing: 40 }]}
-      >
-        <Image src={error} className={classes.mobileImage} />
-        <div>
-          <Title className={classes.title}>Something is not right...</Title>
-          <Text color="dimmed" size="lg">
-            Page you are trying to open does not exist. You may have mistyped
-            the address, or the page has been moved to another URL. If you think
-            this is an error contact support.
-          </Text>
-          <Button
-            variant="outline"
-            size="md"
-            mt="xl"
-            className={classes.control}
-            onClick={() => navigate("/")}
-          >
-            Get back to home page
-          </Button>
-        </div>
-        <Image src={error} className={classes.desktopImage} />
-      </SimpleGrid>
-    </Container>
+    <Paper radius={0}>
+      <Container size="xl" className={classes.root}>
+        <SimpleGrid
+          spacing={80}
+          cols={2}
+          breakpoints={[{ maxWidth: "sm", cols: 1, spacing: 40 }]}
+        >
+          <Image src={error} className={classes.mobileImage} />
+          <div>
+            <Title className={classes.title}>Something is not right...</Title>
+            <Text color="dimmed" size="lg">
+              Page you are trying to open does not exist. You may have mistyped
+              the address, or the page has been moved to another URL. If you
+              think this is an error contact support.
+            </Text>
+            <Button
+              variant="outline"
+              size="md"
+              mt="xl"
+              className={classes.control}
+              onClick={() => navigate("/")}
+            >
+              Get back to home page
+            </Button>
+          </div>
+          <Image src={error} className={classes.desktopImage} />
+        </SimpleGrid>
+      </Container>
+    </Paper>
   );
 };
