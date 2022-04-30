@@ -2,7 +2,7 @@ import { Button, Table, Text } from "@mantine/core";
 import numeral from "numeral";
 import { useNavigate } from "react-router-dom";
 import { LoaderComp } from "../../../Components/Loader";
-import { TableComponent } from "../../../Components/TableBodyComp";
+import { TableComponent } from "../../../Components/TableBody";
 import { TableHeader } from "../../../Components/TableHeader";
 import { useCoinContext } from "../../../Context/CoinContext";
 import { useMarketContext } from "../../../Context/MarketContext";

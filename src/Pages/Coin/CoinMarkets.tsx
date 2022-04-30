@@ -3,7 +3,7 @@ import numeral from "numeral";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { LoaderComp } from "../../Components/Loader";
-import { TableComponent } from "../../Components/TableBodyComp";
+import { TableComponent } from "../../Components/TableBody";
 import { TableHeader } from "../../Components/TableHeader";
 import { MarketList } from "../../Config/API";
 import { useCoinContext } from "../../Context/CoinContext";

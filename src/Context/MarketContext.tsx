@@ -1,16 +1,12 @@
 import React, { createContext, useContext, useState } from "react";
 import { MarketList } from "../Config/API";
 import { useFetchAPISingle } from "../Hooks/useFetchAPISingle";
-import { TMarketType } from "../Type/type";
+import { Context, TMarketType } from "../Type/type";
 import { useCoinContext } from "./CoinContext";
-
-type Props = {
-  children: React.ReactNode;
-};
 
 export const MarketAppInterface = createContext({} as TMarketType);
 
-export const MarketContext = ({ children }: Props) => {
+export const MarketContext = ({ children }: Context) => {
   const { crypto } = useCoinContext();
   const [page, setPage] = useState(1);
 

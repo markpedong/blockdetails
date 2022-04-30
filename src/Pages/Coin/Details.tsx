@@ -18,7 +18,7 @@ import {
   GrayText,
 } from "../../StyledComponents/StyledCrypto";
 import { StyledTabs } from "../../Theme/CreateStyles/CryptoDetails";
-import { CoinNameLinks } from "./CoinNameLinks";
+import { CoinNameLinks } from "./Links";
 import { Price } from "./Price";
 import { Market } from "./Tabs/Market";
 import { Overview } from "./Tabs/Overview";

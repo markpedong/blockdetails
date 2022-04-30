@@ -4,11 +4,11 @@ import React, { createContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { LoaderComp } from "../Components/Loader";
 import { SingleCoin } from "../Config/API";
-import { GlobalState } from "./GlobalContext";
 import { useFetchAPISingle } from "../Hooks/useFetchAPISingle";
-import { TCrypto, TCryptoDetail } from "../Type/type";
+import { CryptoDetail } from "../Pages/Coin/Details";
 import { ErrorPage } from "../Pages/Other/Error";
-import { CryptoDetail } from "../Pages/CryptoDetails/CryptoDetail";
+import { TCrypto, TCryptoDetail } from "../Type/type";
+import { GlobalState } from "./GlobalContext";
 
 type TCoinContext = {
   crypto: TCrypto;
