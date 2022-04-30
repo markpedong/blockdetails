@@ -1,9 +1,11 @@
-import { Container, Grid, Select, Text } from "@mantine/core";
+import { Container, Select, Text } from "@mantine/core";
 import React from "react";
-import { TableState } from "../../Context/TableContext";
 
-export const ShowRow = () => {
-  const { setResPage, res_page } = TableState();
+type Props = {
+  setResPage: React.Dispatch<React.SetStateAction<number>>;
+  res_page: number;
+};
+export const ShowRow = ({ setResPage, res_page }: Props) => {
   return (
     <Container
       fluid

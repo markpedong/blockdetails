@@ -41,9 +41,7 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
     <Link
       to={link.link}
       key={link.label}
-      className={cx(classes.link, {
-        [classes.linkActive]: active === link.link,
-      })}
+      className={cx(classes.link)}
       onClick={() => {
         setActive(link.link);
         toggleOpened(false);

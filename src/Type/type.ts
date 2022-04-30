@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type Context = {
   children: React.ReactNode;
 };
@@ -265,4 +267,26 @@ export type TExchangeType = TErrorLoading & {
     url: string;
     year_established: number;
   }[];
+};
+
+export type TTableComponent = {
+  alt: string;
+  name: string;
+  name_symbol?: string;
+  eighthData?: string | number;
+  fifthData?: string | ReactNode;
+  fourthData?: string | ReactNode;
+  image: string;
+  id: string;
+  navigateCrypto: (id: string) => void;
+  ninthData?: string | number | ReactNode;
+  rank: string | number;
+  seventhData?: string;
+  sixthData?: string | number;
+  symbol?: string;
+  thirdData?: string | ReactNode;
+};
+
+export type TrendingInterface = {
+  trending: TTrending[];
 };

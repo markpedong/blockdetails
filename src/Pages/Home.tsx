@@ -2,10 +2,9 @@ import { Container, Paper } from "@mantine/core";
 import React from "react";
 import { TableContext } from "../Context/TableContext";
 import { TrendingCoinContext } from "../Context/TrendingCoinContext";
-import { Carousel } from "./Home/Carousel";
-import { PaginationComp } from "./Home/PaginationComp";
-import { CryptoTable } from "./Home/Table";
-import { TodaysCrypto } from "./Home/TodaysCrypto";
+import { Carousel } from "./Main/Carousel";
+import { CryptoTable } from "./Main/Table";
+import { TodaysCrypto } from "./Main/TodaysCrypto";
 
 export const Home = () => {
   return (
@@ -22,7 +21,6 @@ export const Home = () => {
           {/* <Trending /> */}
           <TableContext>
             <CryptoTable />
-            <PaginationComp />
           </TableContext>
         </TrendingCoinContext>
       </Container>

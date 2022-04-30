@@ -7,18 +7,18 @@ import {
   Table,
   Text,
 } from "@mantine/core";
+import numeral from "numeral";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoaderComp } from "../../Components/Loader";
-import { TableComponent } from "../../Components/TableBodyComp";
+import { PaginationComp } from "../../Components/Pagination";
+import { TableComponent } from "../../Components/TableBody";
 import { TableHeader } from "../../Components/TableHeader";
 import { ExchangesList, SingleCoin } from "../../Config/API";
 import { GlobalState } from "../../Context/GlobalContext";
 import { useFetchAPISingle } from "../../Hooks/useFetchAPISingle";
 import { TCryptoDetail, TExchangeType } from "../../Type/type";
 import { ErrorPage } from "../Other/Error";
-import numeral from "numeral";
-import { ProfitChange } from "../../StyledComponents/StyledCarousel";
 
 export const Exchanges = () => {
   const [opened, setOpen] = useState(false);
@@ -39,6 +39,9 @@ export const Exchanges = () => {
   const navigateCoin = (id: string) => {
     navigate(`/exchanges/${id}`);
   };
+
+  const first = data?.[0];
+  const last = data?.[99];
 
   return (
     <Container size="xl" px="xs" mt="xl">
@@ -115,8 +118,16 @@ export const Exchanges = () => {
                           navigateCrypto={() => navigateCoin(exchange.id)}
                           symbol={symbol}
                           thirdData={converted_volume.volume}
-                          fourthData={exchange.year_established}
-                          fifthData={exchange.trust_score}
+                          fourthData={
+                            exchange.year_established === null
+                              ? "--"
+                              : exchange.year_established
+                          }
+                          fifthData={
+                            exchange.trust_score === null
+                              ? "--"
+                              : exchange.trust_score
+                          }
                         />
                       );
                     })}
@@ -126,6 +137,16 @@ export const Exchanges = () => {
             )
           )}
         </div>
+        <PaginationComp
+          first={first?.trust_score_rank}
+          last={last?.trust_score_rank}
+          loading={loading}
+          setPage={setPage}
+          setResPage={setResPage}
+          page={page}
+          res_page={resPage}
+          total={5}
+        />
       </Paper>
     </Container>
   );

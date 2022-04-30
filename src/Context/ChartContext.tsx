@@ -1,13 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 import { CoinChart } from "../Config/API";
 import { useFetchAPISingle } from "../Hooks/useFetchAPISingle";
-import { TErrorLoading } from "../Type/type";
+import { Context, TErrorLoading } from "../Type/type";
 import { useCoinContext } from "./CoinContext";
 import { GlobalState } from "./GlobalContext";
-
-type Props = {
-  children: React.ReactNode;
-};
 
 export type CoinChartData = TErrorLoading & {
   data: {
@@ -24,7 +20,7 @@ type TChartContext = CoinChartData & {
 
 export const ChartContext = createContext({} as TChartContext);
 
-export const ChartState = ({ children }: Props) => {
+export const ChartState = ({ children }: Context) => {
   const { crypto } = useCoinContext();
   const { currency } = GlobalState();
   const [days, setDays] = useState(1 as number | string);

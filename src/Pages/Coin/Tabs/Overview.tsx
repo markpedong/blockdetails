@@ -19,12 +19,12 @@ import {
   StyledDesc2,
 } from "../../../StyledComponents/StyledCrypto";
 import { StyledPriceTabs } from "../../../Theme/CreateStyles/CryptoDetails";
-import { MarketCapChart } from "../Chart/MarketCapChart";
-import { PriceChart } from "../Chart/PriceChart";
-import { VolumeChart } from "../Chart/VolumeChart";
-import { CryptoMarket } from "../CryptoMarket";
-import { CryptoStats } from "../CryptoStats";
-import { PeopleAlsoWatch } from "../PeopleAlsoWatch";
+import { PeopleAlsoWatch } from "../AlsoWatch";
+import { MarketCapChart } from "../Chart/MarketCap";
+import { PriceChart } from "../Chart/Price";
+import { VolumeChart } from "../Chart/Volume";
+import { CryptoMarket } from "../CoinMarkets";
+import { CryptoStats } from "../Statistics";
 import { TrendingCoins } from "../TrendingCoins";
 
 export const Overview = () => {

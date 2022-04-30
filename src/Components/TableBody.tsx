@@ -1,24 +1,7 @@
 import { Image, MediaQuery, Text } from "@mantine/core";
-import React, { ReactNode } from "react";
+import React from "react";
 import { TableStyles } from "../Theme/CreateStyles/Table";
-
-type Props = {
-  alt: string;
-  name: string;
-  name_symbol?: string;
-  eighthData?: string | number;
-  fifthData?: string | ReactNode;
-  fourthData?: string | ReactNode;
-  image: string;
-  id: string;
-  navigateCrypto: (id: string) => void;
-  ninthData?: string | number | ReactNode;
-  rank: string | number;
-  seventhData?: string;
-  sixthData?: string | number;
-  symbol?: string;
-  thirdData?: string | ReactNode;
-};
+import { TTableComponent } from "../Type/type";
 
 export const TableComponent = ({
   alt,
@@ -36,7 +19,7 @@ export const TableComponent = ({
   sixthData,
   symbol,
   thirdData,
-}: Props) => {
+}: TTableComponent) => {
   const { classes } = TableStyles();
 
   return (
