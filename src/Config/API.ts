@@ -27,3 +27,6 @@ export const MarketList = (id: string, page: number) => `
 export const ExchangesList = (page: number, per_page: number) => `
   https://api.coingecko.com/api/v3/exchanges?per_page=${per_page}&page=${page}
   `;
+
+export const Exchange_PAPRIKA = () =>
+  `https://api.coinpaprika.com/v1/exchanges`;

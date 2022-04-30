@@ -19,6 +19,7 @@ export const TableComponent = ({
   sixthData,
   symbol,
   thirdData,
+  query,
 }: TTableComponent) => {
   const { classes } = TableStyles();
 
@@ -44,35 +45,48 @@ export const TableComponent = ({
             {symbol} {thirdData}
           </Text>
         </td>
-        <MediaQuery query="(max-width: 1200px)" styles={{ display: "none" }}>
+
+        <MediaQuery
+          query={query ? "(max-width: 1200px)" : ""}
+          styles={{ display: "none" }}
+        >
           <td className={classes.TablePercentage}>{fourthData}</td>
         </MediaQuery>
 
-        <MediaQuery query="(max-width: 1200px)" styles={{ display: "none" }}>
+        <MediaQuery
+          query={query ? "(max-width: 1200px)" : ""}
+          styles={{ display: "none" }}
+        >
           <td className={classes.TablePercentage}>{fifthData}</td>
         </MediaQuery>
 
         <td>
           <Text size="xs" className={classes.TableBlack}>
-            {sixthData ? `${symbol} ${sixthData}` : ""}
+            {sixthData && symbol ? `${symbol} ${sixthData}` : sixthData}
           </Text>
         </td>
 
         <td>
           <Text size="xs" className={classes.TableBlack}>
-            {seventhData ? `${symbol} ${seventhData}` : ""}
+            {seventhData && symbol ? `${symbol} ${seventhData}` : seventhData}
           </Text>
         </td>
         <td>
           <Text size="xs" className={classes.TableBlack}>
-            {eighthData}
+            {eighthData && symbol ? `${symbol} ${eighthData}` : eighthData}
           </Text>
         </td>
-        <td>
-          <Text size="xs" transform="uppercase" className={classes.TableBlack}>
-            {ninthData}
-          </Text>
-        </td>
+        {ninthData && (
+          <td>
+            <Text
+              size="xs"
+              transform="uppercase"
+              className={classes.TableBlack}
+            >
+              {ninthData}
+            </Text>
+          </td>
+        )}
       </tr>
     </>
   );

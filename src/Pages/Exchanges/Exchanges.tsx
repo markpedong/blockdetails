@@ -1,12 +1,4 @@
-import {
-  Button,
-  Collapse,
-  Container,
-  Grid,
-  Paper,
-  Table,
-  Text,
-} from "@mantine/core";
+import { Container, Paper, Table } from "@mantine/core";
 import numeral from "numeral";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,14 +6,20 @@ import { LoaderComp } from "../../Components/Loader";
 import { PaginationComp } from "../../Components/Pagination";
 import { TableComponent } from "../../Components/TableBody";
 import { TableHeader } from "../../Components/TableHeader";
-import { ExchangesList, SingleCoin } from "../../Config/API";
+import { ExchangesList, Exchange_PAPRIKA, SingleCoin } from "../../Config/API";
 import { GlobalState } from "../../Context/GlobalContext";
 import { useFetchAPISingle } from "../../Hooks/useFetchAPISingle";
-import { TCryptoDetail, TExchangeType } from "../../Type/type";
+import { Currency, StyledDiv } from "../../StyledComponents/StyledExchange";
+import {
+  matchData,
+  Paprika_Exchange,
+  TCryptoDetail,
+  TExchangeType,
+} from "../../Type/type";
 import { ErrorPage } from "../Other/Error";
+import { ExchangeHeader } from "./ExchangeHeader";
 
 export const Exchanges = () => {
-  const [opened, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [resPage, setResPage] = useState(100);
   const { currency, symbol } = GlobalState();
@@ -34,6 +32,10 @@ export const Exchanges = () => {
     ExchangesList(page, resPage)
   ) as unknown as TExchangeType;
 
+  const { data: coin_paprika } = useFetchAPISingle(
+    Exchange_PAPRIKA()
+  ) as unknown as Paprika_Exchange;
+
   let navigate = useNavigate();
 
   const navigateCoin = (id: string) => {
@@ -43,30 +45,14 @@ export const Exchanges = () => {
   const first = data?.[0];
   const last = data?.[99];
 
-  return (
-    <Container size="xl" px="xs" mt="xl">
-      <Paper>
-        <Grid>
-          <Grid.Col xs={7}>
-            <Text size="xl" weight="bolder" pb="lg">
-              Top Cryptocurrency Spot Exchanges
-            </Text>
-            <Text size="sm" weight="normal" pb="lg">
-              CoinMarketCap and Coingecko ranks and scores exchanges based on
-              traffic, liquidity, trading volumes, and confidence in the
-              legitimacy of trading volumes reported.{" "}
-              <Button
-                onClick={() => setOpen((o) => !o)}
-                variant="light"
-                compact
-              >
-                Read More
-              </Button>
-            </Text>
-            <Collapse in={opened}>test</Collapse>
-          </Grid.Col>
-        </Grid>
+  const filteredExchanges = coin_paprika?.filter(
+    (exchange) => exchange.active === true && exchange.website_status === true
+  );
 
+  return (
+    <Paper radius={0}>
+      <Container size="xl" px="xs" pt="xl">
+        <ExchangeHeader />
         <div>
           {loading ? (
             <>
@@ -84,16 +70,23 @@ export const Exchanges = () => {
                   verticalSpacing="xl"
                   style={{
                     maxWidth: "100%",
+                    maxHeight: "100%",
                     whiteSpace: "nowrap",
                   }}
                 >
                   <thead>
                     <TableHeader
                       firstHeader="#"
-                      query={false}
+                      query={true}
                       secondHeader="Exchange"
                       thirdHeader="Volume (24h)"
-                      fourthToFifthHeader={["Year Established", "Trust Score"]}
+                      fourthToFifthHeader={[
+                        "Markets",
+                        "Currencies",
+                        "Year Established",
+                        "Sessions/ Month",
+                        "Trust Score",
+                      ]}
                     />
                   </thead>
                   <tbody>
@@ -107,26 +100,73 @@ export const Exchanges = () => {
                         ).format("0,0.00"),
                       };
 
+                      const paprikaData = filteredExchanges?.find(
+                        (paprika) =>
+                          paprika.id === exchange.id ||
+                          paprika.name === exchange.name
+                      ) as matchData;
+
                       return (
                         <TableComponent
                           alt={exchange.name}
-                          image={exchange.image}
-                          name={exchange.name}
-                          key={exchange.name}
-                          rank={exchange.trust_score_rank}
                           id={exchange.id}
+                          image={exchange.image}
+                          key={exchange.id}
+                          name={exchange.name}
                           navigateCrypto={() => navigateCoin(exchange.id)}
-                          symbol={symbol}
-                          thirdData={converted_volume.volume}
+                          query={true}
+                          rank={exchange.trust_score_rank}
+                          thirdData={`${symbol} ${converted_volume.volume}`}
                           fourthData={
-                            exchange.year_established === null
+                            !paprikaData?.markets ? "--" : paprikaData?.markets
+                          }
+                          fifthData={
+                            paprikaData?.fiats.length > 0 ? (
+                              <StyledDiv>
+                                <Currency>
+                                  {paprikaData?.fiats
+                                    .map((fiat) => <span>{fiat.symbol}, </span>)
+                                    .slice(0, 3)}
+                                </Currency>
+                                {paprikaData?.fiats.length > 0 ? (
+                                  <span>
+                                    and +{paprikaData?.fiats.length} more
+                                  </span>
+                                ) : (
+                                  ""
+                                )}
+                              </StyledDiv>
+                            ) : (
+                              "--"
+                            )
+                          }
+                          sixthData={
+                            !exchange.year_established
                               ? "--"
                               : exchange.year_established
                           }
-                          fifthData={
-                            exchange.trust_score === null
+                          seventhData={
+                            !paprikaData?.sessions_per_month
                               ? "--"
-                              : exchange.trust_score
+                              : numeral(paprikaData?.sessions_per_month).format(
+                                  "0,0"
+                                )
+                          }
+                          eighthData={
+                            !exchange.trust_score ? (
+                              "--"
+                            ) : (
+                              <span
+                                style={{
+                                  backgroundColor: "rgb(22, 199, 132)",
+                                  padding: "0.2rem 0.5rem",
+                                  borderRadius: "0.3rem",
+                                  color: "white",
+                                }}
+                              >
+                                {exchange.trust_score}
+                              </span>
+                            )
                           }
                         />
                       );
@@ -147,7 +187,7 @@ export const Exchanges = () => {
           res_page={resPage}
           total={5}
         />
-      </Paper>
-    </Container>
+      </Container>
+    </Paper>
   );
 };

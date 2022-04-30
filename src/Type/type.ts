@@ -273,7 +273,7 @@ export type TTableComponent = {
   alt: string;
   name: string;
   name_symbol?: string;
-  eighthData?: string | number;
+  eighthData?: string | number | ReactNode;
   fifthData?: string | ReactNode;
   fourthData?: string | ReactNode;
   image: string;
@@ -281,12 +281,65 @@ export type TTableComponent = {
   navigateCrypto: (id: string) => void;
   ninthData?: string | number | ReactNode;
   rank: string | number;
-  seventhData?: string;
+  seventhData?: string | number;
   sixthData?: string | number;
+  query: boolean;
   symbol?: string;
   thirdData?: string | ReactNode;
 };
 
 export type TrendingInterface = {
   trending: TTrending[];
+};
+
+export type matchData = {
+  active: boolean;
+  currencies: number;
+  id: string;
+  name: string;
+  fiats: {
+    name: string;
+    symbol: string;
+  }[];
+  markets: number;
+  quotes: {
+    USD: {
+      adjusted_volume_7d: number;
+      adjusted_volume_24h: number;
+      adjusted_volume_30d: number;
+      reported_volume_7d: number;
+      reported_volume_24h: number;
+      reported_volume_30d: number;
+    };
+  };
+  reported_rank: number;
+  website_status: boolean;
+  sessions_per_month: number;
+};
+
+export type Paprika_Exchange = {
+  data: {
+    active: boolean;
+    currencies: number;
+    id: string;
+    name: string;
+    fiats: {
+      name: string;
+      symbol: string;
+    }[];
+    markets: number;
+    quotes: {
+      USD: {
+        adjusted_volume_7d: number;
+        adjusted_volume_24h: number;
+        adjusted_volume_30d: number;
+        reported_volume_7d: number;
+        reported_volume_24h: number;
+        reported_volume_30d: number;
+      };
+    };
+    reported_rank: number;
+    website_status: boolean;
+    sessions_per_month: number;
+  }[];
 };

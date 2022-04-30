@@ -89,6 +89,7 @@ export const CryptoMarket = () => {
                       {exchange.base}/{exchange.target}
                     </a>
                   }
+                  query={false}
                   fourthData={exchange.up}
                   fifthData={exchange.down}
                   sixthData={exchange.price}

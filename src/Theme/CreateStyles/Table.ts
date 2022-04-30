@@ -21,6 +21,7 @@ export const TableStyles = createStyles((theme) => ({
     fontWeight: "var(--font-weight-8)",
     color: theme.colorScheme === "dark" ? "white" : "black",
     alignItems: "center",
+    height: "90px",
   },
 
   TableBlack: {

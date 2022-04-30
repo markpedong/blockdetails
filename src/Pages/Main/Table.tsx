@@ -72,6 +72,7 @@ export const CryptoTable = () => {
 
                   return (
                     <TableComponent
+                      query={true}
                       alt={coin.name}
                       image={coin.image}
                       name={coin.name}

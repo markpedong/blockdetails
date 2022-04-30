@@ -81,6 +81,7 @@ export const Market = () => {
                   name={ticker.market.name}
                   rank={index + 1}
                   id={exchange.id}
+                  query={false}
                   navigateCrypto={() => navigateCoin(exchange.id)}
                   thirdData={
                     <a href={exchange.url} target="_blank" rel="noreferrer">
