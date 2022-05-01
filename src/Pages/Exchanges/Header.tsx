@@ -1,7 +1,7 @@
 import { Button, Collapse, Grid, Text } from "@mantine/core";
 import React, { useState } from "react";
 
-export const ExchangeHeader = () => {
+export const Header = () => {
   const [opened, setOpen] = useState(false);
 
   return (

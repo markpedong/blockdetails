@@ -21,7 +21,7 @@ import {
   TExchangeType,
 } from "../../Type/type";
 import { ErrorPage } from "../Other/Error";
-import { ExchangeHeader } from "./ExchangeHeader";
+import { Header } from "./Header";
 
 export const Exchanges = () => {
   const [page, setPage] = useState(1);
@@ -56,7 +56,7 @@ export const Exchanges = () => {
   return (
     <Paper radius={0}>
       <Container size="xl" px="xs" pt="xl">
-        <ExchangeHeader />
+        <Header />
         <div>
           {loading ? (
             <>

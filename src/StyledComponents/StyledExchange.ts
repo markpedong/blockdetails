@@ -1,3 +1,4 @@
+import { Grid } from "@mantine/core";
 import styled from "styled-components";
 
 export const StyledDiv = styled.div`
@@ -17,4 +18,9 @@ export const TRUST_SCORE = styled.span`
   padding: 0.3rem 0.8rem;
   border-radius: 0.3rem;
   color: white;
+`;
+
+export const StyledCol = styled(Grid.Col)`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 `;

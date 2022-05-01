@@ -8,7 +8,7 @@ import { Footer } from "./Footer";
 import { GlobalData } from "./GlobalData";
 import { Home } from "./Home";
 import { NavbarSec } from "./Navbar";
-import { NFT } from "./NFT/NFT";
+import { Project } from "./Project/Project";
 import { ErrorPage } from "./Other/Error";
 
 export const Main = () => {
@@ -17,9 +17,9 @@ export const Main = () => {
       <GlobalData />
       <NavbarSec
         links={[
-          { link: "/", label: "Crypto" },
+          { link: "/", label: "Coins" },
           { link: "/exchanges", label: "Exchanges" },
-          { link: "/nft", label: "NFT" },
+          { link: "/projects", label: "Projects" },
         ]}
       />
       <TableContext>
@@ -28,7 +28,7 @@ export const Main = () => {
           <Route path="/cryptocurrency/:id" element={<SingleCoinPage />} />
           <Route path="/exchanges" element={<Exchanges />} />
           <Route path="/exchanges/:id" element={<SingleExchangeDetail />} />
-          <Route path="/nft" element={<NFT />} />
+          <Route path="/projects" element={<Project />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </TableContext>

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { LoaderComp } from "../Components/Loader";
 import { Exchange_DETAILS, Exchange_PAPRIKA } from "../Config/API";
 import { useFetchAPISingle } from "../Hooks/useFetchAPISingle";
-import { ExchangeDetail } from "../Pages/Exchanges/ExchangeDetail";
+import { Detail } from "../Pages/Exchanges/Detail";
 import { ErrorPage } from "../Pages/Other/Error";
 import {
   ExchangeMerged,
@@ -85,7 +85,7 @@ export const SingleExchangeDetail = () => {
     </Paper>
   ) : (
     <ExchangeContextInterface.Provider value={{ exchange }}>
-      <ExchangeDetail />
+      <Detail />
     </ExchangeContextInterface.Provider>
   );
 };

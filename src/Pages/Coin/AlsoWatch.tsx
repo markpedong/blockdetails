@@ -8,6 +8,7 @@ import {
 import numeral from "numeral";
 import AliceCarousel from "react-alice-carousel";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import { responsive2 } from "../../Config/Transition";
 import { useCoinContext } from "../../Context/CoinContext";
 import { GlobalState } from "../../Context/GlobalContext";
@@ -20,6 +21,8 @@ export const PeopleAlsoWatch = () => {
   const { crypto } = useCoinContext();
   const filteredTrending = trending.filter((coin) => coin.id !== crypto.id);
   const { colorScheme } = useMantineColorScheme();
+
+  let navigate = useNavigate();
 
   const items = filteredTrending?.map((coin) => {
     const profit = coin.price_change_percentage_24h >= 0.0;
@@ -43,6 +46,7 @@ export const PeopleAlsoWatch = () => {
       >
         <Image src={coin.image} alt={coin.name} width={50} radius={360} />
         <Container
+          onClick={() => navigate(`/cryptocurrency/${coin.id}`)}
           fluid
           px={0}
           style={{
@@ -50,6 +54,7 @@ export const PeopleAlsoWatch = () => {
             display: "flex",
             flexDirection: "column",
             gap: "0.3rem",
+            cursor: "pointer",
           }}
         >
           <Text weight="bold" transform="uppercase">
