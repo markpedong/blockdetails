@@ -18,7 +18,6 @@ export const Home = () => {
           <Carousel />
           <TodaysCrypto />
           {/* <Trending /> */}
-
           <CryptoTable />
         </TrendingCoinContext>
       </Container>

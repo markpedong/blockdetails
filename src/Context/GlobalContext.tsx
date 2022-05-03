@@ -45,6 +45,4 @@ export const GlobalContext = ({ children }: Context) => {
   );
 };
 
-export const GlobalState = () => {
-  return useContext(GlobalData);
-};
+export const GlobalState = () => useContext(GlobalData);

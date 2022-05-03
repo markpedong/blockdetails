@@ -6,6 +6,7 @@ import {
 import React, { useState } from "react";
 import "../src/Styles/App.css";
 import { GlobalContext } from "./Context/GlobalContext";
+import { ProjectContext } from "./Context/ProjectContext";
 import { Main } from "./Pages/Main";
 
 export const App = () => {
@@ -26,7 +27,9 @@ export const App = () => {
       >
         <MantineProvider theme={customTheme}>
           <GlobalContext>
-            <Main />
+            <ProjectContext>
+              <Main />
+            </ProjectContext>
           </GlobalContext>
         </MantineProvider>
       </ColorSchemeProvider>

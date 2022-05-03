@@ -2,42 +2,63 @@ import {
   ActionIcon,
   Autocomplete,
   Burger,
+  Button,
   Container,
   Grid,
   Group,
   Header,
   MediaQuery,
+  Modal,
   Paper,
   Select,
+  Text,
   Transition,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MoonStars, Sun } from "tabler-icons-react";
+import { MoonStars, Search, Sun } from "tabler-icons-react";
 import { scaleY } from "../Config/Transition";
-import { GlobalState } from "../Context/GlobalContext";
-import { NavGrid } from "../StyledComponents/StyledNavbar";
 import { HEADER_HEIGHT } from "../Config/Variable";
-import { NavStyles } from "../Theme/CreateStyles/Navbar";
+import { GlobalState } from "../Context/GlobalContext";
+import { useFetchAPISingle } from "../Hooks/useFetchAPISingle";
 import logodark from "../Images/logo-darkmode.svg";
 import logo from "../Images/logo.svg";
+import { NavGrid } from "../StyledComponents/StyledNavbar";
+import { NavStyles } from "../Theme/CreateStyles/Navbar";
+import { TErrorLoading } from "../Type/type";
+import { TrendingCoins } from "./Coin/TrendingCoins";
 interface HeaderResponsiveProps {
   links: { link: string; label: string }[];
 }
 
-export function NavbarSec({ links }: HeaderResponsiveProps) {
+type Search = TErrorLoading & {
+  data: {
+    id: string;
+    name: string;
+    symbol: string;
+  }[];
+};
+export const NavbarSec = ({ links }: HeaderResponsiveProps) => {
+  const [value, setValue] = useState("");
   const [opened, toggleOpened] = useBooleanToggle(false);
-  const [active, setActive] = useState(links[0].link);
+  const [search, setSearch] = useState(false);
+  const [_, setActive] = useState(links[0].link);
   const { classes, cx } = NavStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const dark = colorScheme === "dark";
   const { setCurrency } = GlobalState();
+  const { data } = useFetchAPISingle(
+    `https://api.coingecko.com/api/v3/search?query=${value}`
+  ) as unknown as Search;
   const navigate = useNavigate();
+  const dark = colorScheme === "dark";
 
-  const items = links.map((link) => (
+  //set a value in data to be used in the autocomplete
+  // const dataValue = (data || []).map((item) => ({ ...item, value: item.id }));
+
+  const items = links?.map((link) => (
     <Link
       to={link.link}
       key={link.label}
@@ -50,6 +71,16 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
       {link.label}
     </Link>
   ));
+
+  // const result = data?.filter((val) => {
+  //   if (value == "") return val;
+
+  //   return val.name.toLowerCase().includes(value.toLowerCase());
+  // });
+
+  // console.log(result);
+
+  console.log(data);
 
   return (
     <Header height={HEADER_HEIGHT} className={classes.root}>
@@ -64,19 +95,37 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
         </Paper>
         <Group spacing={5} className={classes.links}>
           {items}
-          <Autocomplete
-            placeholder="Search"
-            icon={<MagnifyingGlassIcon fontSize={16} />}
-            data={[
-              "React",
-              "Angular",
-              "Vue",
-              "Next.js",
-              "Riot.js",
-              "Svelte",
-              "Blitz.js",
-            ]}
-          />
+
+          <Modal centered opened={search} onClose={() => setSearch(false)}>
+            {/* <Select
+              searchable
+              nothingFound="No Cryptocurrency Found"
+              data={result}
+              placeholder="eg. Ethereum, Avalanche, Binance"
+              label="Search:"
+              description="All the data that you can search here are from Coingecko API"
+              icon={<MagnifyingGlassIcon fontSize={16} />}
+              onChange={(e) => {
+                setValue(e as string);
+                navigate(`/cryptocurrency/${e}`);
+                setSearch(false);
+              }}
+            /> */}
+            <input onChange={(e) => setValue(e.target.value)} />
+            <>
+              <TrendingCoins setSearch={setSearch} />
+            </>
+          </Modal>
+          <Button
+            onClick={() => setSearch(true)}
+            variant="light"
+            size="sm"
+            color="gray"
+            radius="xs"
+            leftIcon={<Search size={14} />}
+          >
+            Search for a Crypto!
+          </Button>
         </Group>
 
         <Burger
@@ -149,4 +198,4 @@ export function NavbarSec({ links }: HeaderResponsiveProps) {
       </Container>
     </Header>
   );
-}
+};

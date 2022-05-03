@@ -1,6 +1,9 @@
 export const TrendingCoins = (currency: string) =>
   `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=gecko_desc&per_page=15&page=1&sparkline=false&price_change_percentage=24h`;
 
+export const PROJECT_COINS = (id: string, currency: string) =>
+  `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&category=${id}&order=volume_desc&sparkline=false`;
+
 export const GLOBAL_API = "https://api.coingecko.com/api/v3/global";
 export const DEFI_API =
   "https://api.coingecko.com/api/v3/global/decentralized_finance_defi";
@@ -33,3 +36,6 @@ export const Exchange_PAPRIKA = () =>
 
 export const Exchange_DETAILS = (id: string) =>
   `https://api.coingecko.com/api/v3/exchanges/${id}`;
+
+export const BLOCKCHAIN_LIST = () =>
+  `https://api.coingecko.com/api/v3/coins/categories`;
