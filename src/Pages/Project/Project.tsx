@@ -9,9 +9,12 @@ import {
   Text,
 } from "@mantine/core";
 import React, { forwardRef } from "react";
-import { data } from "../../Config/Variable";
+import { LoaderComp } from "../../Components/Loader";
+import { PROJECT_ECOSYSTEM } from "../../Config/Variable";
+import { useProjectContext } from "../../Context/ProjectContext";
 import project from "../../Images/project.svg";
 import { ItemProps } from "../../Type/Project";
+import { ProjectTable } from "./ProjectTable";
 
 const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ image, label, description, ...others }: ItemProps, ref) => (
@@ -31,6 +34,8 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
 );
 
 export const Project = () => {
+  const { setEcosystem, loading } = useProjectContext();
+
   return (
     <Paper>
       <Container size="xl" px="xs" py="xl">
@@ -43,6 +48,7 @@ export const Project = () => {
               Check out which projects are listed on a certain network. And
               checkout where are they listed on major exchanges!
             </Text>
+
             <Text size="sm" color="dimmed" pb="1rem">
               Why should you be aware of the projects available on different
               blockchains? <br /> Because you'll be able to move tokens and
@@ -51,13 +57,15 @@ export const Project = () => {
             </Text>
             <Select
               clearable
-              label="Choose a Network:"
-              placeholder="e.g. Ethereum, Avalanche, etc."
+              data={PROJECT_ECOSYSTEM}
+              defaultValue=""
               itemComponent={SelectItem}
-              data={data}
-              searchable
+              label="Choose a Network:"
               maxDropdownHeight={400}
               nothingFound="Nobody here"
+              onChange={(e) => setEcosystem(e as string)}
+              placeholder="e.g. Ethereum, Avalanche, etc."
+              searchable
               filter={(value, item) =>
                 item?.label
                   ?.toLowerCase()
@@ -73,6 +81,7 @@ export const Project = () => {
           </Grid.Col>
         </Grid>
       </Container>
+      {loading ? <LoaderComp /> : <ProjectTable />}
     </Paper>
   );
 };

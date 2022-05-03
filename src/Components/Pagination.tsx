@@ -3,13 +3,13 @@ import React from "react";
 import { ShowRow } from "./ShowRow";
 
 type Props = {
-  first: number;
-  last: number;
+  first?: number;
+  last?: number;
   active?: number;
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setResPage: React.Dispatch<React.SetStateAction<number>>;
-  loading: boolean | null;
+  loading?: boolean | null;
   res_page: number;
   total: number;
 };

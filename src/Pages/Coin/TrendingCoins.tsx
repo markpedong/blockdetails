@@ -2,6 +2,7 @@ import { Container, Image, Text, useMantineColorScheme } from "@mantine/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { LoaderComp } from "../../Components/Loader";
 import { TRENDING_LINK } from "../../Config/Links";
 import {
   GrayContainer,
@@ -21,7 +22,11 @@ type Props = {
   }[];
 };
 
-export const TrendingCoins = () => {
+type TrendingProps = {
+  setSearch?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const TrendingCoins = ({ setSearch }: TrendingProps) => {
   const { colorScheme } = useMantineColorScheme();
   const { id } = useParams();
   const [trending, setTrending] = useState([] as unknown as Props);
@@ -36,7 +41,9 @@ export const TrendingCoins = () => {
     fetchData();
   }, [id]);
 
-  return (
+  return !trending ? (
+    <LoaderComp />
+  ) : (
     <StyledContainer fluid color={colorScheme} style={{ marginTop: "2rem" }}>
       <Text size="lg" weight="bolder" style={{ paddingBottom: "1rem" }}>
         Trending Coins and Tokens 🔥
@@ -49,7 +56,10 @@ export const TrendingCoins = () => {
               <Text
                 weight="bold"
                 style={{ cursor: "pointer" }}
-                onClick={() => navigate(`/cryptocurrency/${coin.item.id}`)}
+                onClick={() => {
+                  navigate(`/cryptocurrency/${coin.item.id}`);
+                  setSearch?.(false);
+                }}
               >
                 {coin.item.name}
               </Text>

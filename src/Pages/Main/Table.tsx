@@ -115,7 +115,7 @@ export const CryptoTable = () => {
               </tbody>
             </Table>
             <PaginationComp
-              total={130}
+              total={134}
               first={first?.market_cap_rank}
               last={last?.market_cap_rank}
               loading={loading}

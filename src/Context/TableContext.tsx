@@ -15,6 +15,7 @@ export const TableContext = ({ children }: Context) => {
   useEffect(() => {
     const fetchCoins = async () => {
       const { data } = await axios.get(CoinList(currency, page, res_page));
+
       setCoins(data);
       setPage(page);
     };

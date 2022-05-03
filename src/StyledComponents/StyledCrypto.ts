@@ -104,7 +104,7 @@ export const StyledNum = styled(Text)`
 
 export const StyledContainer = styled(Container)`
   background-color: ${({ color }: StyledColor) =>
-    color === "dark" ? "#2C2E33" : "#eff2f5"};
+    color === "dark" ? "#2C2E33" : "#fff"};
   box-shadow: var(--shadow-2);
   border-radius: var(--radius-2);
   padding-block: 2rem;
