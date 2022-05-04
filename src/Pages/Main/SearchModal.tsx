@@ -75,6 +75,7 @@ export const SearchModal = ({
                       onClick={() => {
                         navigate(`/cryptocurrency/${item.id}`);
                         setSearch(false);
+                        setValue("");
                       }}
                     >
                       {item.name}

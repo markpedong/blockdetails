@@ -11,7 +11,25 @@ import { numberWithCommas } from "../../Config/Function";
 import { GlobalState } from "../../Context/GlobalContext";
 import { TableState } from "../../Context/TableContext";
 import { ProfitChange } from "../../StyledComponents/StyledCarousel";
+import { TCryptoDetail } from "../../Type/type";
 import { ErrorPage } from "../Other/Error";
+
+type FilterAction = {
+  type: string;
+  payload: any;
+};
+
+const filterReducer = (state: TCryptoDetail, action: FilterAction) => {
+  switch (action.type) {
+    case "FILTER_BY_NAME":
+      return {
+        ...state,
+      };
+
+    default:
+      return state;
+  }
+};
 
 export const CryptoTable = () => {
   const { coins, loading, page, setPage, setResPage, res_page, error } =
@@ -26,6 +44,13 @@ export const CryptoTable = () => {
 
   const first = Object.values(coins)[0];
   const last = Object.values(coins)[99];
+
+  // const filterCoinsbyName = coins.sort((first, second) => {
+  //   //sort coins by name
+  //   return first.id.localeCompare(second.id);
+  // });
+
+  // console.log(filterCoinsbyName);
 
   return (
     <div>
