@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Autocomplete,
   Burger,
   Button,
   Container,
@@ -8,7 +7,6 @@ import {
   Group,
   Header,
   MediaQuery,
-  Modal,
   Paper,
   Select,
   Text,
@@ -16,10 +14,11 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import React, { forwardRef, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MoonStars, Search, Sun } from "tabler-icons-react";
+import { ModalComponent } from "../Components/ModalComponent";
+import { SEARCH_FILTER } from "../Config/API";
 import { scaleY } from "../Config/Transition";
 import { HEADER_HEIGHT } from "../Config/Variable";
 import { GlobalState } from "../Context/GlobalContext";
@@ -28,36 +27,22 @@ import logodark from "../Images/logo-darkmode.svg";
 import logo from "../Images/logo.svg";
 import { NavGrid } from "../StyledComponents/StyledNavbar";
 import { NavStyles } from "../Theme/CreateStyles/Navbar";
-import { TErrorLoading } from "../Type/type";
-import { TrendingCoins } from "./Coin/TrendingCoins";
+import { TSearch } from "../Type/Navbar";
 interface HeaderResponsiveProps {
   links: { link: string; label: string }[];
 }
 
-type Search = TErrorLoading & {
-  data: {
-    id: string;
-    name: string;
-    symbol: string;
-  }[];
-};
 export const NavbarSec = ({ links }: HeaderResponsiveProps) => {
+  const [search, setSearch] = useState(false);
   const [value, setValue] = useState("");
   const [opened, toggleOpened] = useBooleanToggle(false);
-  const [search, setSearch] = useState(false);
-  const [_, setActive] = useState(links[0].link);
+  // eslint-disable-next-line
+  const [active, setActive] = useState(links[0].link);
   const { classes, cx } = NavStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { setCurrency } = GlobalState();
-  const { data } = useFetchAPISingle(
-    `https://api.coingecko.com/api/v3/search?query=${value}`
-  ) as unknown as Search;
   const navigate = useNavigate();
   const dark = colorScheme === "dark";
-
-  //set a value in data to be used in the autocomplete
-  // const dataValue = (data || []).map((item) => ({ ...item, value: item.id }));
-
   const items = links?.map((link) => (
     <Link
       to={link.link}
@@ -72,15 +57,9 @@ export const NavbarSec = ({ links }: HeaderResponsiveProps) => {
     </Link>
   ));
 
-  // const result = data?.filter((val) => {
-  //   if (value == "") return val;
-
-  //   return val.name.toLowerCase().includes(value.toLowerCase());
-  // });
-
-  // console.log(result);
-
-  console.log(data);
+  const { data } = useFetchAPISingle(
+    SEARCH_FILTER(value)
+  ) as unknown as TSearch;
 
   return (
     <Header height={HEADER_HEIGHT} className={classes.root}>
@@ -96,28 +75,18 @@ export const NavbarSec = ({ links }: HeaderResponsiveProps) => {
         <Group spacing={5} className={classes.links}>
           {items}
 
-          <Modal centered opened={search} onClose={() => setSearch(false)}>
-            {/* <Select
-              searchable
-              nothingFound="No Cryptocurrency Found"
-              data={result}
-              placeholder="eg. Ethereum, Avalanche, Binance"
-              label="Search:"
-              description="All the data that you can search here are from Coingecko API"
-              icon={<MagnifyingGlassIcon fontSize={16} />}
-              onChange={(e) => {
-                setValue(e as string);
-                navigate(`/cryptocurrency/${e}`);
-                setSearch(false);
-              }}
-            /> */}
-            <input onChange={(e) => setValue(e.target.value)} />
-            <>
-              <TrendingCoins setSearch={setSearch} />
-            </>
-          </Modal>
+          <ModalComponent
+            data={data}
+            search={search}
+            setSearch={setSearch}
+            setValue={setValue}
+            value={value}
+          />
           <Button
-            onClick={() => setSearch(true)}
+            onClick={() => {
+              toggleOpened(false);
+              setSearch(true);
+            }}
             variant="light"
             size="sm"
             color="gray"
@@ -147,19 +116,26 @@ export const NavbarSec = ({ links }: HeaderResponsiveProps) => {
 
               <NavGrid>
                 <Grid.Col xs={9} sm={8}>
-                  <Autocomplete
-                    placeholder="Search"
-                    icon={<MagnifyingGlassIcon fontSize={16} />}
-                    data={[
-                      "React",
-                      "Angular",
-                      "Vue",
-                      "Next.js",
-                      "Riot.js",
-                      "Svelte",
-                      "Blitz.js",
-                    ]}
+                  <ModalComponent
+                    data={data}
+                    search={search}
+                    setSearch={setSearch}
+                    setValue={setValue}
+                    value={value}
                   />
+                  <Text
+                    align="center"
+                    onClick={() => {
+                      toggleOpened(false);
+                      setSearch(true);
+                    }}
+                    size="sm"
+                    color="gray"
+                    style={{ backgroundColor: "rgba(248, 249, 250, 1)" }}
+                    py="0.5rem"
+                  >
+                    Search for a Crypto!
+                  </Text>
                 </Grid.Col>
                 <MediaQuery
                   query="(max-width: 645px)"

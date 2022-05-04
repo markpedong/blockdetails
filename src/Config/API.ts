@@ -39,3 +39,6 @@ export const Exchange_DETAILS = (id: string) =>
 
 export const BLOCKCHAIN_LIST = () =>
   `https://api.coingecko.com/api/v3/coins/categories`;
+
+export const SEARCH_FILTER = (value: string) =>
+  `https://api.coingecko.com/api/v3/search?query=${value}`;
