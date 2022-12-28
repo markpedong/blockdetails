@@ -1,40 +1,34 @@
-import {
-  ColorScheme,
-  ColorSchemeProvider,
-  MantineProvider,
-} from "@mantine/core";
-import React, { useState } from "react";
-import "../src/Styles/App.css";
-import { GlobalContext } from "./Context/GlobalContext";
-import { ProjectContext } from "./Context/ProjectContext";
-import { Main } from "./Pages/Main";
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import "./App.css";
 
-export const App = () => {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
-
-  const customTheme = {
-    fontFamily: "Inter",
-    colorScheme: colorScheme,
-  };
+function App() {
+  const [count, setCount] = useState(0);
 
   return (
     <div className="App">
-      <ColorSchemeProvider
-        colorScheme={colorScheme}
-        toggleColorScheme={toggleColorScheme}
-      >
-        <MantineProvider theme={customTheme}>
-          <GlobalContext>
-            <ProjectContext>
-              <Main />
-            </ProjectContext>
-          </GlobalContext>
-        </MantineProvider>
-      </ColorSchemeProvider>
+      <div>
+        <a href="https://vitejs.dev" target="_blank">
+          <img src="/vite.svg" className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://reactjs.org" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
     </div>
   );
-};
+}
 
 export default App;

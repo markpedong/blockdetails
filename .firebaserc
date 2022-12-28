@@ -1,7 +1,0 @@
-{
-  "projects": {
-    "default": "block-details",
-    "blockdetails": "block-details"
-  },
-  "targets": {}
-}
