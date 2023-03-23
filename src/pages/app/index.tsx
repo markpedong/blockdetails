@@ -1,39 +1,44 @@
-import { ProColumnType, ProTable } from "@ant-design/pro-components";
-import { Layout } from "antd";
-import { getAllCoins } from "../../api";
-import { PRO_TABLE_PROPS } from "../../constants";
+import { ProColumnType, ProSkeleton, ProTable } from '@ant-design/pro-components';
+import { Layout } from 'antd';
+import { CoinData, getAllCoins } from '../../api';
+import { PRO_TABLE_PROPS } from '../../constants';
 
 type Props = {};
 
 const App = () => {
-  const columns: ProColumnType[] = [
-    {
-      title: "#",
-      align: "right",
-    },
-    {
-      title: "Name",
-      align: "left",
-    },
-    {
-      title: "Price",
-      align: "right",
-    },
-  ];
+	const columns: ProColumnType<CoinData>[] = [
+		{
+			title: '#',
+			align: 'right',
+		},
+		{
+			title: 'Name',
+			align: 'left',
+			dataIndex: 'name',
+		},
+		{
+			title: 'Price',
+			align: 'right',
+		},
+	];
 
-  const getAllData = async (params: {}) => {
-    const data = await getAllCoins({ ...params, currency: "usd" });
+	const getAllData = async (params: { pageSize: string }) => {
+		const paramsNew = new URLSearchParams();
+		paramsNew.append('vs_currency', 'usd');
+		paramsNew.append('per_page', params.pageSize);
 
-    console.log(data.data.data);
+		const data = await getAllCoins(paramsNew.toString());
 
-    return {};
-  };
+		return {
+			data: data.data,
+		};
+	};
 
-  return (
-    <Layout.Content>
-      <ProTable {...PRO_TABLE_PROPS} columns={columns} request={getAllData} />
-    </Layout.Content>
-  );
+	return (
+		<Layout.Content>
+			<ProTable {...PRO_TABLE_PROPS} columns={columns} request={getAllData} />
+		</Layout.Content>
+	);
 };
 
 export default App;
