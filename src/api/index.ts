@@ -14,4 +14,4 @@ export type CoinData = {
 	symbol: string;
 	total_volume: number;
 };
-export const getAllCoins = (params: {}) => get<CoinData[]>(`${HOST}/coins/markets?`, params);
+export const getAllCoins = (params: {}) => get<CoinData[]>(`${HOST}/coins/markets`, params);

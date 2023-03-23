@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosPromise } from 'axios';
+import { stringify } from 'qs';
 
 type ApiResponse<T = null> = {
 	token: any;
@@ -17,6 +18,7 @@ const post = <T>(url: string, data = {}): AxiosPromise<ApiResponse<T>> =>
 		},
 	});
 
-const get = <T>(url: string, data = {}): AxiosPromise => instance.get(`${url}${data}`);
+const get = <T>(url: string, data = {}): AxiosPromise =>
+	instance.get(`${url}${stringify(data) ? '?' + stringify(data) : ''}`);
 
 export { post, get };

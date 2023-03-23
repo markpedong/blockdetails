@@ -23,11 +23,11 @@ const App = () => {
 	];
 
 	const getAllData = async (params: { pageSize: string }) => {
-		const paramsNew = new URLSearchParams();
-		paramsNew.append('vs_currency', 'usd');
-		paramsNew.append('per_page', params.pageSize);
+		const data = await getAllCoins({
+			vs_currency: 'usd',
+		});
 
-		const data = await getAllCoins(paramsNew.toString());
+		console.log(data.data);
 
 		return {
 			data: data.data,
