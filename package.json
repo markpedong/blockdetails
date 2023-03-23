@@ -12,6 +12,7 @@
     "@ant-design/pro-components": "2.4.2",
     "antd": "5.3.1",
     "axios": "^1.3.4",
+    "concent": "^2.21.7",
     "qs": "^6.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",

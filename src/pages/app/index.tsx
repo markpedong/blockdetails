@@ -1,11 +1,14 @@
-import { ProColumnType, ProSkeleton, ProTable } from '@ant-design/pro-components';
+import { ProColumnType, ProTable } from '@ant-design/pro-components';
 import { Image, Layout, Space, Typography } from 'antd';
+import { useConcent } from 'concent';
 import { CoinData, getAllCoins } from '../../api';
 import { PRO_TABLE_PROPS } from '../../constants';
 
-type Props = {};
-
 const App = () => {
+	const test = useConcent('$$global');
+
+	console.log(test);
+
 	const columns: ProColumnType<CoinData>[] = [
 		{
 			title: '#',
