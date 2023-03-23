@@ -1,5 +1,5 @@
 type STATE = {
-	currency: 'usd';
+	currency: string;
 };
 
 export const state: STATE = {

@@ -5,9 +5,8 @@ import { CoinData, getAllCoins } from '../../api';
 import { PRO_TABLE_PROPS } from '../../constants';
 
 const App = () => {
-	const test = useConcent('$$global');
-
-	console.log(test);
+	const { state } = useConcent('$$global');
+	const { currency } = state;
 
 	const columns: ProColumnType<CoinData>[] = [
 		{
@@ -43,7 +42,7 @@ const App = () => {
 
 	const getAllData = async (params: { pageSize: string }) => {
 		const data = await getAllCoins({
-			vs_currency: 'usd',
+			vs_currency: currency,
 		});
 
 		console.log(data.data);
