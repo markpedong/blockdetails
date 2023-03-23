@@ -1,5 +1,5 @@
 import { ProColumnType, ProSkeleton, ProTable } from '@ant-design/pro-components';
-import { Layout } from 'antd';
+import { Image, Layout, Space, Typography } from 'antd';
 import { CoinData, getAllCoins } from '../../api';
 import { PRO_TABLE_PROPS } from '../../constants';
 
@@ -10,15 +10,31 @@ const App = () => {
 		{
 			title: '#',
 			align: 'right',
+			render: (_, _1, index) => index + 1,
 		},
 		{
 			title: 'Name',
 			align: 'left',
 			dataIndex: 'name',
+			render: (_, record) => {
+				return (
+					<Space>
+						<Image
+							preview={false}
+							src={record.image}
+							alt={record.name}
+							height={20}
+							width={20}
+						/>
+						<Typography.Link>{record.name}</Typography.Link>
+					</Space>
+				);
+			},
 		},
 		{
 			title: 'Price',
 			align: 'right',
+			dataIndex: 'current_price',
 		},
 	];
 
