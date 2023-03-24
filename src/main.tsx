@@ -5,10 +5,16 @@ import Root from './pages/root';
 import './styles/global.module.scss';
 import $$global from './state/index';
 import { run } from 'concent';
+import CryptoCurrency from './pages/cryptocurrency';
+import Exchanges from './pages/exchanges';
 
 run({ $$global });
 
-const router = createBrowserRouter([{ path: '/', element: <Root /> }]);
+const router = createBrowserRouter([
+	{ path: '/', element: <Root /> },
+	{ path: '/cryptocurrency', element: <CryptoCurrency /> },
+	{ path: '/exchanges', element: <Exchanges /> },
+]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>

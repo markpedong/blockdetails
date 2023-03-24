@@ -1,4 +1,4 @@
-import { get, post } from './http';
+import { get } from './http';
 
 const HOST = 'https://api.coingecko.com/api/v3';
 
@@ -13,5 +13,6 @@ export type CoinData = {
 	name: string;
 	symbol: string;
 	total_volume: number;
+	price_change_percentage_24h: number;
 };
 export const getAllCoins = (params: {}) => get<CoinData[]>(`${HOST}/coins/markets`, params);

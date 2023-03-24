@@ -1,12 +1,14 @@
 import { ProColumnType, ProTable } from '@ant-design/pro-components';
 import { Image, Layout, Space, Typography } from 'antd';
 import { useConcent } from 'concent';
+import { useNavigate } from 'react-router-dom';
 import { CoinData, getAllCoins } from '../../api';
 import { PRO_TABLE_PROPS } from '../../constants';
 
 const App = () => {
 	const { state } = useConcent('$$global');
-	const { currency } = state;
+	const { currency, symbol } = state;
+	const navigate = useNavigate();
 
 	const columns: ProColumnType<CoinData>[] = [
 		{
@@ -27,8 +29,11 @@ const App = () => {
 							alt={record.name}
 							height={20}
 							width={20}
+							onClick={() => navigate('/cryptocurrency')}
 						/>
-						<Typography.Link>{record.name}</Typography.Link>
+						<Typography.Link onClick={() => navigate('/cryptocurrency')}>
+							{record.name}
+						</Typography.Link>
 					</Space>
 				);
 			},
@@ -37,6 +42,17 @@ const App = () => {
 			title: 'Price',
 			align: 'right',
 			dataIndex: 'current_price',
+			render: (_, record) => (
+				<Space>
+					<span>{symbol}</span>
+					<span>{record.current_price}</span>
+				</Space>
+			),
+		},
+		{
+			title: '24%',
+			align: 'center',
+			dataIndex: 'price_change_percentage_24h',
 		},
 	];
 
