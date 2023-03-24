@@ -53,6 +53,15 @@ const App = () => {
 			title: '24%',
 			align: 'center',
 			dataIndex: 'price_change_percentage_24h',
+			render: (_, record) => (
+				<span
+					style={{
+						color: record.price_change_percentage_24h > 0.0 ? '#16c784' : '#ea3943',
+					}}
+				>
+					{record.price_change_percentage_24h.toFixed(2).replace('-', '')}
+				</span>
+			),
 		},
 	];
 
