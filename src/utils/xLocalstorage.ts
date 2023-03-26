@@ -1,9 +1,9 @@
+import { isArray, isObject, isString } from 'lodash';
 import { compress, decompress } from 'lz-string';
-import { isArray, isObject } from 'lodash';
 
 export const setLocalStorage = (key: string, value: string | object | [any]) => {
-	if (isObject(value) || isArray(value)) {
-		JSON.stringify(value);
+	if (isObject(value) || isArray(value) || isString(value)) {
+		value = JSON.stringify(value);
 	}
 
 	localStorage[compress(key)] = compress(value as string);
@@ -11,12 +11,12 @@ export const setLocalStorage = (key: string, value: string | object | [any]) => 
 
 export const getLocalStorage = (key: string) => {
 	try {
-		let value = decompress(key);
+		let value = localStorage.getItem(compress(key));
 
-		console.log(value);
-
-		value = JSON.parse(value);
-
-		return value;
+		if (value !== null) {
+			value = decompress(value);
+			value = JSON.parse(value);
+			return value;
+		}
 	} catch {}
 };
