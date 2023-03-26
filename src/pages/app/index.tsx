@@ -5,6 +5,7 @@ import { useConcent } from 'concent';
 import { useNavigate } from 'react-router-dom';
 import { CoinData, getAllCoins } from '../../api';
 import { PRO_TABLE_PROPS } from '../../constants';
+import { formatNumber } from '../../utils';
 import { setLocalStorage } from '../../utils/xLocalstorage';
 
 const App = () => {
@@ -55,10 +56,10 @@ const App = () => {
 			dataIndex: 'current_price',
 			render: (_, record) => {
 				return (
-					<Space>
-						<span>{symbol}</span>
-						<span>{record.current_price}</span>
-					</Space>
+					<span>
+						{symbol}
+						{formatNumber(record.current_price, '0,0.00')}
+					</span>
 				);
 			},
 		},
@@ -88,7 +89,7 @@ const App = () => {
 				return (
 					<span>
 						{symbol}
-						{record.market_cap}
+						{formatNumber(record.market_cap)}
 					</span>
 				);
 			},
@@ -100,21 +101,16 @@ const App = () => {
 				return (
 					<span>
 						{symbol}
-						{record.total_volume}
+						{formatNumber(record.total_volume)}
 					</span>
 				);
 			},
 		},
 		{
-			title: 'Volume',
+			title: 'Circulating Supply',
 			align: 'center',
 			render: (_, record) => {
-				return (
-					<span>
-						{symbol}
-						{record.circulating_supply}
-					</span>
-				);
+				return <span>{formatNumber(record.total_volume)}</span>;
 			},
 		},
 	];
