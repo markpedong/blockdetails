@@ -1,5 +1,6 @@
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { ProColumnType, ProTable } from '@ant-design/pro-components';
-import { Image, Layout, Space, Typography } from 'antd';
+import { Col, Image, Row, Space, Typography } from 'antd';
 import { useConcent } from 'concent';
 import { useNavigate } from 'react-router-dom';
 import { CoinData, getAllCoins } from '../../api';
@@ -22,6 +23,7 @@ const App = () => {
 			align: 'left',
 			dataIndex: 'name',
 			render: (_, record) => {
+				const { id } = record;
 				return (
 					<Space>
 						<Image
@@ -31,18 +33,14 @@ const App = () => {
 							height={20}
 							width={20}
 							onClick={() => {
-								navigate('/cryptocurrency', {
-									state: { record },
-								});
-								setLocalStorage('coin', record);
+								navigate('/cryptocurrency');
+								setLocalStorage('coin', id);
 							}}
 						/>
 						<Typography.Link
 							onClick={() => {
-								navigate('/cryptocurrency', {
-									state: { record },
-								});
-								setLocalStorage('coin', record);
+								navigate('/cryptocurrency');
+								setLocalStorage('coin', id);
 							}}
 						>
 							{record.name}
@@ -55,26 +53,69 @@ const App = () => {
 			title: 'Price',
 			align: 'right',
 			dataIndex: 'current_price',
-			render: (_, record) => (
-				<Space>
-					<span>{symbol}</span>
-					<span>{record.current_price}</span>
-				</Space>
-			),
+			render: (_, record) => {
+				return (
+					<Space>
+						<span>{symbol}</span>
+						<span>{record.current_price}</span>
+					</Space>
+				);
+			},
 		},
 		{
 			title: '24%',
 			align: 'center',
 			dataIndex: 'price_change_percentage_24h',
-			render: (_, record) => (
-				<span
-					style={{
-						color: record.price_change_percentage_24h > 0.0 ? '#16c784' : '#ea3943',
-					}}
-				>
-					{record.price_change_percentage_24h.toFixed(2).replace('-', '')}
-				</span>
-			),
+			render: (_, record) => {
+				const { price_change_percentage_24h: per } = record;
+
+				return (
+					<span
+						style={{
+							color: record.price_change_percentage_24h > 0.0 ? '#16c784' : '#ea3943',
+						}}
+					>
+						{+per.toFixed(2) > 0.0 ? <CaretUpOutlined /> : <CaretDownOutlined />}
+						{record.price_change_percentage_24h.toFixed(2).replace('-', '')}
+					</span>
+				);
+			},
+		},
+		{
+			title: 'Market Cap',
+			align: 'center',
+			render: (_, record) => {
+				return (
+					<span>
+						{symbol}
+						{record.market_cap}
+					</span>
+				);
+			},
+		},
+		{
+			title: 'Volume',
+			align: 'center',
+			render: (_, record) => {
+				return (
+					<span>
+						{symbol}
+						{record.total_volume}
+					</span>
+				);
+			},
+		},
+		{
+			title: 'Volume',
+			align: 'center',
+			render: (_, record) => {
+				return (
+					<span>
+						{symbol}
+						{record.circulating_supply}
+					</span>
+				);
+			},
 		},
 	];
 
@@ -82,19 +123,23 @@ const App = () => {
 		const data = await getAllCoins({
 			vs_currency: currency,
 			price_change_percentage: '1h,24h,7d',
+			per_page: 250,
 		});
 
-		console.log(data.data);
+		console.log(data.data.length);
 
 		return {
 			data: data.data,
+			total: Number(data.data.length),
 		};
 	};
 
 	return (
-		<Layout.Content>
-			<ProTable {...PRO_TABLE_PROPS} columns={columns} request={getAllData} />
-		</Layout.Content>
+		<Row justify="center">
+			<Col span={23}>
+				<ProTable {...PRO_TABLE_PROPS} columns={columns} request={getAllData} />
+			</Col>
+		</Row>
 	);
 };
 
