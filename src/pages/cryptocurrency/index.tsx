@@ -1,9 +1,12 @@
 import { FC } from 'react';
+import { getLocalStorage } from '../../utils/xLocalstorage';
 
-type Props = {};
+const CryptoCurrency: FC = () => {
+	const coin = getLocalStorage('coin');
 
-const CryptoCurrency: FC = (props: Props) => {
-	return <div>CryptoCurrency</div>;
+	console.log(coin);
+
+	return <div>cryptocurrency</div>;
 };
 
 export default CryptoCurrency;

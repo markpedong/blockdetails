@@ -4,6 +4,7 @@ import { useConcent } from 'concent';
 import { useNavigate } from 'react-router-dom';
 import { CoinData, getAllCoins } from '../../api';
 import { PRO_TABLE_PROPS } from '../../constants';
+import { setLocalStorage } from '../../utils/xLocalstorage';
 
 const App = () => {
 	const { state } = useConcent('$$global');
@@ -29,9 +30,21 @@ const App = () => {
 							alt={record.name}
 							height={20}
 							width={20}
-							onClick={() => navigate('/cryptocurrency')}
+							onClick={() => {
+								navigate('/cryptocurrency', {
+									state: { record },
+								});
+								setLocalStorage('coin', record);
+							}}
 						/>
-						<Typography.Link onClick={() => navigate('/cryptocurrency')}>
+						<Typography.Link
+							onClick={() => {
+								navigate('/cryptocurrency', {
+									state: { record },
+								});
+								setLocalStorage('coin', record);
+							}}
+						>
 							{record.name}
 						</Typography.Link>
 					</Space>
@@ -68,6 +81,7 @@ const App = () => {
 	const getAllData = async (params: { pageSize: string }) => {
 		const data = await getAllCoins({
 			vs_currency: currency,
+			price_change_percentage: '1h,24h,7d',
 		});
 
 		console.log(data.data);
