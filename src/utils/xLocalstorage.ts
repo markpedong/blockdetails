@@ -10,13 +10,10 @@ export const setLocalStorage = (key: string, value: string | object | [any]) => 
 };
 
 export const getLocalStorage = (key: string) => {
-	try {
-		let value = localStorage.getItem(compress(key));
+	let value = decompress(localStorage[compress(key)]);
 
-		if (value !== null) {
-			value = decompress(value);
-			value = JSON.parse(value);
-			return value;
-		}
-	} catch {}
+	if (value !== null) {
+		value = JSON.parse(value);
+		return value;
+	}
 };
