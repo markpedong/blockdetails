@@ -1,16 +1,36 @@
-import { Layout } from "antd";
-import React from "react";
+import { ProCard } from '@ant-design/pro-components';
+import { Carousel } from 'antd';
 
 const Header = () => {
-  const headerStyle: React.CSSProperties = {
-    textAlign: "center",
-    color: "#fff",
-    height: "20vh",
-    paddingInline: 50,
-    lineHeight: "64px",
-    backgroundColor: "#7dbcea",
-  };
-  return <Layout.Header style={headerStyle}>Header</Layout.Header>;
+	return (
+		<Carousel>
+			<ProCard title="默认尺寸" extra="extra" tooltip="这是提示" style={{ maxWidth: 300 }}>
+				<div>Card content</div>
+				<div>Card content</div>
+				<div>Card content</div>
+			</ProCard>
+			<ProCard title="默认尺寸" extra="extra" tooltip="这是提示" style={{ maxWidth: 300 }}>
+				<div>Card content</div>
+				<div>Card content</div>
+				<div>Card content</div>
+			</ProCard>
+			<ProCard title="默认尺寸" extra="extra" tooltip="这是提示" style={{ maxWidth: 300 }}>
+				<div>Card content</div>
+				<div>Card content</div>
+				<div>Card content</div>
+			</ProCard>
+			<ProCard title="默认尺寸" extra="extra" tooltip="这是提示" style={{ maxWidth: 300 }}>
+				<div>Card content</div>
+				<div>Card content</div>
+				<div>Card content</div>
+			</ProCard>
+			<ProCard title="默认尺寸" extra="extra" tooltip="这是提示" style={{ maxWidth: 300 }}>
+				<div>Card content</div>
+				<div>Card content</div>
+				<div>Card content</div>
+			</ProCard>
+		</Carousel>
+	);
 };
 
 export default Header;
