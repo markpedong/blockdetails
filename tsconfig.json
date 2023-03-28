@@ -1,27 +1,22 @@
 {
-	"compilerOptions": {
-		"target": "ES6",
-		"useDefineForClassFields": true,
-		"lib": ["DOM", "DOM.Iterable", "ESNext"],
-		"allowJs": false,
-		"skipLibCheck": true,
-		"esModuleInterop": false,
-		"allowSyntheticDefaultImports": true,
-		"strict": true,
-		"forceConsistentCasingInFileNames": true,
-		"module": "ES6",
-		"moduleResolution": "Node",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react-jsx",
-		"noUnusedLocals": true,
-		"noUnusedParameters": false,
-		"paths": {
-			"@/*": ["./src/*"]
-		}
-	},
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "target": "ES6",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "allowJs": false,
+        "strict": true,
+        "module": "ES6",
+        "moduleResolution": "Node",
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "paths": {
+            "@/*": ["*"]
+        }
+    },
 
-	"include": ["src"],
-	"references": [{ "path": "./tsconfig.node.json" }]
+    "include": ["src"],
+    "references": [{ "path": "./tsconfig.node.json" }]
 }
