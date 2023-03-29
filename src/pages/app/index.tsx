@@ -6,7 +6,7 @@ import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import { ProColumnType, ProTable } from "@ant-design/pro-components";
 import { Col, Image, Row, Space, Typography } from "antd";
 import { useConcent } from "concent";
-import { FC } from "react";
+import React, { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 const App: FC = () => {
@@ -18,7 +18,7 @@ const App: FC = () => {
         {
             title: "#",
             align: "right",
-            render: (_, _1, index) => index + 1,
+            render: (_, _1, index) => index + 1
         },
         {
             title: "Name",
@@ -49,7 +49,7 @@ const App: FC = () => {
                         </Typography.Link>
                     </Space>
                 );
-            },
+            }
         },
         {
             title: "Price",
@@ -62,7 +62,7 @@ const App: FC = () => {
                         {formatNumber(record.current_price, "0,0.00")}
                     </span>
                 );
-            },
+            }
         },
         {
             title: "24%",
@@ -77,7 +77,7 @@ const App: FC = () => {
                             color:
                                 record.price_change_percentage_24h > 0.0
                                     ? "#16c784"
-                                    : "#ea3943",
+                                    : "#ea3943"
                         }}
                     >
                         {+per.toFixed(2) > 0.0 ? (
@@ -90,7 +90,7 @@ const App: FC = () => {
                             .replace("-", "")}
                     </span>
                 );
-            },
+            }
         },
         {
             title: "Market Cap",
@@ -102,7 +102,7 @@ const App: FC = () => {
                         {formatNumber(record.market_cap)}
                     </span>
                 );
-            },
+            }
         },
         {
             title: "Volume",
@@ -114,29 +114,29 @@ const App: FC = () => {
                         {formatNumber(record.total_volume)}
                     </span>
                 );
-            },
+            }
         },
         {
             title: "Circulating Supply",
             align: "center",
             render: (_, record) => {
                 return <span>{formatNumber(record.circulating_supply)}</span>;
-            },
-        },
+            }
+        }
     ];
 
-    const getAllData = async () => {
+    const getAllData = async params => {
         const data = await getAllCoins({
             vs_currency: currency,
             price_change_percentage: "1h,24h,7d",
-            per_page: 250,
+            per_page: 250
         });
 
         console.log(data.data.length);
 
         return {
             data: data.data,
-            total: Number(data.data.length),
+            total: Number(data.data.length)
         };
     };
 
