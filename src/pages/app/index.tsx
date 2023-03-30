@@ -6,7 +6,7 @@ import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import { ProColumnType, ProTable } from "@ant-design/pro-components";
 import { Col, Image, Row, Space, Typography } from "antd";
 import { useConcent } from "concent";
-import React, { FC } from "react";
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 const App: FC = () => {

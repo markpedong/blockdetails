@@ -14,8 +14,8 @@ const instance: AxiosInstance = axios.create({ timeout: 60000 });
 const post = <T>(url: string, data = {}): AxiosPromise<ApiResponse<T>> =>
 	instance.post(url, data, {
 		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
 	});
 
 const get = <T>(url: string, data = {}): AxiosPromise =>

@@ -1,19 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Root from './pages/root';
-import './styles/global.module.scss';
-import $$global from './state/index';
-import { run } from 'concent';
-import CryptoCurrency from './pages/cryptocurrency';
-import Exchanges from './pages/exchanges';
-
-run({ $$global });
+import '@/styles/global.module.scss';
+import '@/store/index.ts';
+import CryptoCurrency from '@/pages/cryptocurrency';
+import Exchanges from '@/pages/exchanges';
+import Root from '@/pages/root';
 
 const router = createBrowserRouter([
 	{ path: '/', element: <Root /> },
 	{ path: '/cryptocurrency', element: <CryptoCurrency /> },
-	{ path: '/exchanges', element: <Exchanges /> },
+	{ path: '/exchanges', element: <Exchanges /> }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

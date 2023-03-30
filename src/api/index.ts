@@ -1,4 +1,4 @@
-import { get } from './http';
+import { get } from '@/api/http';
 
 const HOST = 'https://api.coingecko.com/api/v3';
 
