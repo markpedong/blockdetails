@@ -1,6 +1,6 @@
 import logo from '@/assets/logo.png';
 import menus from '@/pages/menus';
-import { ActionType, ProLayout } from '@ant-design/pro-components';
+import { ActionType, ProFormText, ProLayout } from '@ant-design/pro-components';
 import { Typography } from 'antd';
 import { cloneDeep } from 'lodash';
 import { FC, useRef } from 'react';
@@ -36,6 +36,7 @@ const App: FC = () => {
 					</Typography.Link>
 				);
 			}}
+			actionsRender={() => [<ProFormText />]}
 		>
 			<Outlet />
 		</ProLayout>

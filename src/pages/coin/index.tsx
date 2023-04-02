@@ -1,7 +1,10 @@
+import { getLocalStorage } from '@/utils/xLocalstorage';
+import { useConcent } from 'concent';
 import { FC } from 'react';
 
 const Coin: FC = () => {
-	return <div>Coin</div>;
+	const coin = getLocalStorage('coin');
+	return <div>{coin}</div>;
 };
 
 export default Coin;
