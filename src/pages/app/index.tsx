@@ -1,3 +1,4 @@
+import logo from '@/assets/logo.png';
 import menus from '@/pages/menus';
 import { ActionType, ProLayout } from '@ant-design/pro-components';
 import { Typography } from 'antd';
@@ -19,9 +20,9 @@ const App: FC = () => {
 			fixedHeader
 			layout="mix"
 			headerTitleRender={() => (
-				<div>
-					<img src="../../assets/logo.png" />
-					<span>BlockDetails</span>
+				<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					<img src={logo} />
+					<h1>BlockDetails</h1>
 				</div>
 			)}
 			route={{ routes: cloneDeep(menus) }}
