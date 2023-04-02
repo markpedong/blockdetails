@@ -15,14 +15,28 @@ const App: FC = () => {
 			location={{ pathname }}
 			actionRef={actionRef}
 			title="Blockdetails"
+			fixSiderbar
+			fixedHeader
+			layout="mix"
+			headerTitleRender={() => (
+				<div>
+					<img src="../../assets/logo.png" />
+					<span>BlockDetails</span>
+				</div>
+			)}
 			route={{ routes: cloneDeep(menus) }}
 			menuItemRender={(item, dom) => {
-				return <Typography.Link onClick={() => navigate(item.path as string)}>{dom}</Typography.Link>;
+				return (
+					<Typography.Link
+						style={{ paddingBlockStart: '0.5rem' }}
+						onClick={() => navigate(item.path as string)}
+					>
+						{dom}
+					</Typography.Link>
+				);
 			}}
 		>
-			<div>
-				<Outlet />
-			</div>
+			<Outlet />
 		</ProLayout>
 	);
 };

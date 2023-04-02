@@ -15,7 +15,6 @@ const CryptoCurrency: FC = () => {
 	} = useConcent('$$global');
 	const { currency, symbol } = state;
 	const navigate = useNavigate();
-
 	const columns: ProColumnType<CoinData>[] = [
 		{
 			title: '#',
@@ -130,7 +129,7 @@ const CryptoCurrency: FC = () => {
 		};
 	};
 
-	return <ProTable {...PRO_TABLE_PROPS} columns={columns} request={getAllData} />;
+	return <ProTable {...PRO_TABLE_PROPS} rowKey="id" columns={columns} request={getAllData} />;
 };
 
 export default CryptoCurrency;
