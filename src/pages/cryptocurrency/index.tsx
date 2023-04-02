@@ -36,13 +36,13 @@ const CryptoCurrency: FC = () => {
 							height={20}
 							width={20}
 							onClick={() => {
-								navigate('/cryptocurrency');
+								navigate('/coin');
 								setLocalStorage('coin', id);
 							}}
 						/>
 						<Typography.Link
 							onClick={() => {
-								navigate('/cryptocurrency');
+								navigate('/coin');
 								setLocalStorage('coin', id);
 							}}
 						>
@@ -129,7 +129,7 @@ const CryptoCurrency: FC = () => {
 		};
 	};
 
-	return <ProTable {...PRO_TABLE_PROPS} rowKey="id" columns={columns} request={getAllData} />;
+	return <ProTable {...PRO_TABLE_PROPS} search={false} rowKey="id" columns={columns} request={getAllData} />;
 };
 
 export default CryptoCurrency;
