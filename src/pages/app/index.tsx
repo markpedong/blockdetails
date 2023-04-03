@@ -1,6 +1,6 @@
 import logo from '@/assets/logo.png';
 import menus from '@/pages/menus';
-import { ActionType, ProFormText, ProLayout } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProFormText, ProLayout } from '@ant-design/pro-components';
 import { Typography } from 'antd';
 import { cloneDeep } from 'lodash';
 import { FC, useRef } from 'react';
@@ -10,6 +10,19 @@ const App: FC = () => {
 	const { pathname } = useLocation();
 	const actionRef = useRef<ActionType>();
 	const navigate = useNavigate();
+
+	const renderSearchbar = () => {
+		return (
+			<ModalForm
+				onFinish={async value => {
+					console.log(value);
+				}}
+				trigger={<Typography.Link>Search</Typography.Link>}
+			>
+				<ProFormText label="Search" name="search" />
+			</ModalForm>
+		);
+	};
 
 	return (
 		<ProLayout
@@ -36,7 +49,7 @@ const App: FC = () => {
 					</Typography.Link>
 				);
 			}}
-			actionsRender={() => [<ProFormText />]}
+			actionsRender={() => [renderSearchbar()]}
 		>
 			<Outlet />
 		</ProLayout>
