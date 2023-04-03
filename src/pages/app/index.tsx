@@ -1,4 +1,5 @@
 import logo from '@/assets/logo.png';
+import { MODAL_FORM_PROPS } from '@/constants';
 import menus from '@/pages/menus';
 import { ActionType, ModalForm, ProFormText, ProLayout } from '@ant-design/pro-components';
 import { Typography } from 'antd';
@@ -14,10 +15,12 @@ const App: FC = () => {
 	const renderSearchbar = () => {
 		return (
 			<ModalForm
+				{...MODAL_FORM_PROPS}
+				title="Search"
+				trigger={<Typography.Link>Search</Typography.Link>}
 				onFinish={async value => {
 					console.log(value);
 				}}
-				trigger={<Typography.Link>Search</Typography.Link>}
 			>
 				<ProFormText label="Search" name="search" />
 			</ModalForm>

@@ -3,10 +3,10 @@ import { PRO_TABLE_PROPS } from '@/constants';
 import { formatNumber } from '@/utils';
 import { setLocalStorage } from '@/utils/xLocalstorage';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
-import { ProColumnType, ProTable } from '@ant-design/pro-components';
+import { ActionType, ProColumnType, ProTable } from '@ant-design/pro-components';
 import { Image, Space, Typography } from 'antd';
 import { useConcent } from 'concent';
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CryptoCurrency: FC = () => {
@@ -14,7 +14,7 @@ const CryptoCurrency: FC = () => {
 		state: { state }
 	} = useConcent('$$global');
 	const { currency, symbol } = state;
-	const navigate = useNavigate();
+	const actionRef = useRef<ActionType>();
 	const columns: ProColumnType<CoinData>[] = [
 		{
 			title: '#',
@@ -117,6 +117,8 @@ const CryptoCurrency: FC = () => {
 		}
 	];
 
+	const navigate = useNavigate();
+
 	const getAllData = async params => {
 		const data = await getAllCoins({
 			vs_currency: currency,
@@ -129,7 +131,16 @@ const CryptoCurrency: FC = () => {
 		};
 	};
 
-	return <ProTable {...PRO_TABLE_PROPS} search={false} rowKey="id" columns={columns} request={getAllData} />;
+	return (
+		<ProTable<CoinData>
+			{...PRO_TABLE_PROPS}
+			rowKey="id"
+			search={false}
+			columns={columns}
+			request={getAllData}
+			actionRef={actionRef}
+		/>
+	);
 };
 
 export default CryptoCurrency;
