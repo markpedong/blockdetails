@@ -4,7 +4,7 @@ import { AreaChartOutlined, SlidersOutlined } from '@ant-design/icons';
 
 export default [
 	{
-		path: '/cryptocurrency',
+		path: '/',
 		name: 'Cryptocurrency',
 		element: <CryptoCurrency />,
 		icon: <SlidersOutlined />

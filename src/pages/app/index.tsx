@@ -16,13 +16,13 @@ const App: FC = () => {
 		return (
 			<ModalForm
 				{...MODAL_FORM_PROPS}
-				title="Search"
+				title="Search token name or exchanges"
 				trigger={<Typography.Link>Search</Typography.Link>}
 				onFinish={async value => {
 					console.log(value);
 				}}
 			>
-				<ProFormText label="Search" name="search" />
+				<ProFormText name="search" placeholder="eg. Bitcoin, Ethereum/ Binance, OKX" />
 			</ModalForm>
 		);
 	};
@@ -54,7 +54,9 @@ const App: FC = () => {
 			}}
 			actionsRender={() => [renderSearchbar()]}
 		>
-			<Outlet />
+			<div>
+				<Outlet />
+			</div>
 		</ProLayout>
 	);
 };

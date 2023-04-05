@@ -24,7 +24,6 @@ const CryptoCurrency: FC = () => {
 		{
 			title: 'Name',
 			align: 'left',
-			dataIndex: 'name',
 			render: (_, record) => {
 				const { id } = record;
 				return (
@@ -55,20 +54,16 @@ const CryptoCurrency: FC = () => {
 		{
 			title: 'Price',
 			align: 'right',
-			dataIndex: 'current_price',
-			render: (_, record) => {
-				return (
-					<span>
-						{symbol}
-						{formatNumber(record.current_price, '0,0.00')}
-					</span>
-				);
-			}
+			render: (_, record) => (
+				<span>
+					{symbol}
+					{formatNumber(record.current_price, '0,0.00')}
+				</span>
+			)
 		},
 		{
 			title: '24%',
 			align: 'center',
-			dataIndex: 'price_change_percentage_24h',
 			render: (_, record) => {
 				const { price_change_percentage_24h: per } = record;
 
@@ -87,33 +82,17 @@ const CryptoCurrency: FC = () => {
 		{
 			title: 'Market Cap',
 			align: 'center',
-			render: (_, record) => {
-				return (
-					<span>
-						{symbol}
-						{formatNumber(record.market_cap)}
-					</span>
-				);
-			}
+			render: (_, record) => `${symbol} ${formatNumber(record.market_cap)}`
 		},
 		{
 			title: 'Volume',
 			align: 'center',
-			render: (_, record) => {
-				return (
-					<span>
-						{symbol}
-						{formatNumber(record.total_volume)}
-					</span>
-				);
-			}
+			render: (_, record) => `${symbol} ${formatNumber(record.total_volume)}`
 		},
 		{
 			title: 'Circulating Supply',
 			align: 'center',
-			render: (_, record) => {
-				return <span>{formatNumber(record.circulating_supply)}</span>;
-			}
+			render: (_, record) => `${symbol} ${formatNumber(record.circulating_supply)}`
 		}
 	];
 
