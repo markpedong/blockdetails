@@ -5,7 +5,7 @@ type STATE = {
 };
 
 export const state: STATE = {
-	currency: 'usd',
+	currency: 'USD',
 	symbol: '$',
 	firstPath: '/cryptocurrency'
 };

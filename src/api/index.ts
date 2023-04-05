@@ -1,18 +1,26 @@
 import { get } from '@/api/http';
 
-const HOST = 'https://api.coingecko.com/api/v3';
+const HOST = 'https://pro-api.coinmarketcap.com/v1';
 
-// /api/v3/coins/markets
+// /cryptocurrency/listings/latest
 export type CoinData = {
-	id: string;
-	circulating_supply: number;
-	current_price: number;
-	image: string;
-	market_cap: number;
-	max_supply: number;
+	id: number;
 	name: string;
 	symbol: string;
-	total_volume: number;
-	price_change_percentage_24h: number;
+	slug: string;
+	max_supply: number;
+	circulating_supply: number;
+	total_supply: number;
+	cmc_rank: number;
+	quote: {
+		[currency: string]: {
+			price: number;
+			percent_change_1h: number;
+			percent_change_24h: number;
+			percent_change_7d: number;
+			market_cap: number;
+			volume_24h: number;
+		};
+	};
 };
-export const getAllCoins = (params: {}) => get<CoinData[]>(`${HOST}/coins/markets`, params);
+export const getAllCoins = (params: {}) => get<CoinData[]>(`${HOST}/cryptocurrency/listings/latest`, params);
