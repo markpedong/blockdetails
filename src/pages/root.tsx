@@ -2,7 +2,7 @@ import App from '@/pages/app';
 import Coin from '@/pages/coin';
 import menus from '@/pages/menus';
 import { cloneDeep } from 'lodash';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 
 const Root: FC = () => {
