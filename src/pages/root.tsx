@@ -16,6 +16,10 @@ const Root: FC = () => {
 				{
 					path: '/coin',
 					element: <Coin />
+				},
+				{
+					path: '*',
+					element: <Navigate to="/" />
 				}
 			]
 		},

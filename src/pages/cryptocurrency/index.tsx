@@ -32,13 +32,13 @@ const CryptoCurrency: FC = () => {
 							src={getImageLogo(record.id)}
 							onClick={() => {
 								navigate('/coin');
-								setLocalStorage('coin', record.slug);
+								setLocalStorage('coin', record);
 							}}
 						/>
 						<Typography.Link
 							onClick={() => {
 								navigate('/coin');
-								setLocalStorage('coin', record.slug);
+								setLocalStorage('coin', record);
 							}}
 						>
 							{record.name}
