@@ -1,7 +1,10 @@
-import { CoinData, getAllCoins } from '@/api';
+import { CoinData, getAllCoins, getImageLogo } from '@/api';
 import { PRO_TABLE_PROPS } from '@/constants';
 import { formatNumber } from '@/utils';
+import { setLocalStorage } from '@/utils/xLocalstorage';
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { ActionType, ProColumnType, ProTable } from '@ant-design/pro-components';
+import { Typography } from 'antd';
 import { useConcent } from 'concent';
 import { FC, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,59 +19,63 @@ const CryptoCurrency: FC = () => {
 		{
 			title: '#',
 			align: 'right',
-			render: (_, _1, i) => i + 1
-			// fix this must follow the length
+			render: (_, record) => record.cmc_rank
 		},
 		{
 			title: 'Name',
 			align: 'left',
-			render: (_, record) => record.name
-			// https://s2.coinmarketcap.com/static/img/coins/64x64/ for images
+			render: (_, record) => {
+				return (
+					<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+						<img
+							style={{ blockSize: '20px' }}
+							src={getImageLogo(record.id)}
+							onClick={() => {
+								navigate('/coin');
+								setLocalStorage('coin', record.slug);
+							}}
+						/>
+						<Typography.Link
+							onClick={() => {
+								navigate('/coin');
+								setLocalStorage('coin', record.slug);
+							}}
+						>
+							{record.name}
+						</Typography.Link>
+					</div>
+				);
+			}
 		},
 		{
 			title: 'Price',
 			align: 'right',
-			render: (_, record) => (
-				<span>
-					{symbol} {formatNumber(record.quote[currency].price, '0,0.00')}
-				</span>
-			)
+			render: (_, record) => `${symbol} ${formatNumber(record.price, '0,0.00')}`
 		},
 		{
 			title: '1h%',
-			align: 'center'
-			// render: (_, record) => {
-			// 	const { price_change_percentage_24h: per } = record;
-
-			// 	return (
-			// 		<span
-			// 			style={{
-			// 				color: record.price_change_percentage_24h > 0.0 ? '#16c784' : '#ea3943'
-			// 			}}
-			// 		>
-			// 			{+per.toFixed(2) > 0.0 ? <CaretUpOutlined /> : <CaretDownOutlined />}
-			// 			{record.price_change_percentage_24h.toFixed(2).replace('-', '')}
-			// 		</span>
-			// 	);
-			// }
+			align: 'center',
+			render: (_, record) => renderPercentage(record.percent_change_1h)
 		},
 		{
 			title: '24%',
-			align: 'center'
+			align: 'center',
+			render: (_, record) => renderPercentage(record.percent_change_24h)
 		},
 		{
 			title: '7d%',
-			align: 'center'
+			align: 'center',
+			render: (_, record) => renderPercentage(record.percent_change_7d)
 		},
 		{
 			title: 'Market Cap',
 			align: 'center',
-			render: (_, record) => `${symbol} ${formatNumber(record.quote[currency].market_cap)}`
+			render: (_, record) => `${symbol} ${formatNumber(record.market_cap)}`
 		},
 		{
 			title: 'Volume',
 			align: 'center',
-			render: (_, record) => `${symbol} ${formatNumber(record.quote[currency].volume_24h)}`
+			render: (_, record) => `${symbol} ${formatNumber(record.volume_24h)}`
 		},
 		{
 			title: 'Circulating Supply',
@@ -81,15 +88,31 @@ const CryptoCurrency: FC = () => {
 
 	const getAllData = async params => {
 		const data = await getAllCoins({
-			start: params.current > 1 ? params.current + 100 : params.current,
-			convert: currency
+			convert: currency,
+			limit: 5000
 		});
 
 		return {
-			data: data.data.data ?? [],
-			total: Number(data.data.status.total_count) ?? 0
+			data:
+				data.data.data.map(item => ({
+					...item,
+					...item.quote[currency]
+				})) ?? [],
+
+			total: Number(data.data.data.length) ?? 0
 		};
 	};
+
+	const renderPercentage = percentage => (
+		<span
+			style={{
+				color: percentage > 0.0 ? '#16c784' : '#ea3943'
+			}}
+		>
+			{percentage?.toFixed(2) > 0.0 ? <CaretUpOutlined /> : <CaretDownOutlined />}{' '}
+			{percentage?.toFixed(2).replace('-', '')}
+		</span>
+	);
 
 	return (
 		<ProTable<CoinData>
