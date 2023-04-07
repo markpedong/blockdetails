@@ -31,13 +31,13 @@ const CryptoCurrency: FC = () => {
 							style={{ blockSize: '20px' }}
 							src={getImageLogo(record.id)}
 							onClick={() => {
-								navigate('/coin');
+								navigate(`/cryptocurrency/${record.slug}`);
 								setLocalStorage('coin', record);
 							}}
 						/>
 						<Typography.Link
 							onClick={() => {
-								navigate('/coin');
+								navigate(`/cryptocurrency/${record.slug}`);
 								setLocalStorage('coin', record);
 							}}
 						>
@@ -88,6 +88,7 @@ const CryptoCurrency: FC = () => {
 
 	const getAllData = async params => {
 		const data = await getAllCoins({
+			CMC_PRO_API_KEY: '8549b864-032f-404a-83ce-a28bed9ef45b',
 			convert: currency,
 			limit: 5000
 		});

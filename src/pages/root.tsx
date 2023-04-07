@@ -1,5 +1,6 @@
 import App from '@/pages/app';
 import Coin from '@/pages/coin';
+import Exchange from '@/pages/exchange';
 import menus from '@/pages/menus';
 import { cloneDeep } from 'lodash';
 import { FC } from 'react';
@@ -14,8 +15,12 @@ const Root: FC = () => {
 			children: [
 				...menu,
 				{
-					path: '/coin',
+					path: '/cryptocurrency/:id',
 					element: <Coin />
+				},
+				{
+					path: '/exchanges/:id',
+					element: <Exchange />
 				},
 				{
 					path: '*',

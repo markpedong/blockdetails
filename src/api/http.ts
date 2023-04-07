@@ -18,12 +18,6 @@ const post = <T>(url: string, data = {}): AxiosPromise<ApiResponse<T>> =>
 	});
 
 const get = <T>(url: string, data = {}): AxiosPromise<ApiResponse<T>> =>
-	instance.get(
-		`${url}${
-			stringify(data)
-				? '?CMC_PRO_API_KEY=8549b864-032f-404a-83ce-a28bed9ef45b&' + stringify(data)
-				: '?CMC_PRO_API_KEY=8549b864-032f-404a-83ce-a28bed9ef45b'
-		}`
-	);
+	instance.get(`${url}${stringify(data) ? '?' + stringify(data) : ''}`);
 
 export { post, get };

@@ -1,128 +1,63 @@
-import { CoinData, getAllCoins, getImageLogo } from '@/api';
+import { Exchange, getExchanges } from '@/api';
 import { PRO_TABLE_PROPS } from '@/constants';
-import { formatNumber } from '@/utils';
-import { setLocalStorage } from '@/utils/xLocalstorage';
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
-import { ActionType, ProColumnType, ProTable } from '@ant-design/pro-components';
+import { ProColumns, ProTable } from '@ant-design/pro-components';
 import { Typography } from 'antd';
-import { useConcent } from 'concent';
-import { FC, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Exchanges: FC = () => {
-	const {
-		state: { state }
-	} = useConcent('$$global');
-	const { currency, symbol } = state;
-	const actionRef = useRef<ActionType>();
-	const columns: ProColumnType<CoinData>[] = [
+const Exchanges: React.FC = () => {
+	const [exchanges, setExchanges] = useState<Exchange[]>([]);
+	const [page, setPage] = useState<number>(1);
+	const navigate = useNavigate();
+	const columns: ProColumns<Exchange>[] = [
 		{
 			title: '#',
 			align: 'right',
-			render: (_, record) => record.cmc_rank
+			render: (_, record) => record.trust_score_rank
 		},
 		{
 			title: 'Name',
 			align: 'left',
 			render: (_, record) => {
+				console.log(record);
 				return (
 					<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-						<img
-							style={{ blockSize: '20px' }}
-							src={getImageLogo(record.id)}
-							onClick={() => {
-								navigate('/coin');
-								setLocalStorage('coin', record);
-							}}
-						/>
-						<Typography.Link
-							onClick={() => {
-								navigate('/coin');
-								setLocalStorage('coin', record);
-							}}
-						>
+						<Typography.Link onClick={() => navigate(`/exchanges/${record.id}`)}>
+							<img style={{ blockSize: '20px' }} src={record.image} />
+						</Typography.Link>
+						<Typography.Link onClick={() => navigate(`/exchanges/${record.id}`)}>
 							{record.name}
 						</Typography.Link>
 					</div>
 				);
 			}
-		},
-		{
-			title: 'Price',
-			align: 'right',
-			render: (_, record) => `${symbol} ${formatNumber(record.price, '0,0.00')}`
-		},
-		{
-			title: '1h%',
-			align: 'center',
-			render: (_, record) => renderPercentage(record.percent_change_1h)
-		},
-		{
-			title: '24%',
-			align: 'center',
-			render: (_, record) => renderPercentage(record.percent_change_24h)
-		},
-		{
-			title: '7d%',
-			align: 'center',
-			render: (_, record) => renderPercentage(record.percent_change_7d)
-		},
-		{
-			title: 'Market Cap',
-			align: 'center',
-			render: (_, record) => `${symbol} ${formatNumber(record.market_cap)}`
-		},
-		{
-			title: 'Volume',
-			align: 'center',
-			render: (_, record) => `${symbol} ${formatNumber(record.volume_24h)}`
-		},
-		{
-			title: 'Circulating Supply',
-			align: 'center',
-			render: (_, record) => formatNumber(record.circulating_supply)
 		}
 	];
 
-	const navigate = useNavigate();
+	const getTableData = async (page: number) => {
+		try {
+			const data = await getExchanges({ page, per_page: 250 });
 
-	const getAllData = async params => {
-		const data = await getAllCoins({
-			convert: currency,
-			limit: 5000
-		});
+			if (data.status !== 200) {
+				throw new Error('Failed to fetch exchanges');
+			}
 
-		return {
-			data:
-				data.data.data.map(item => ({
-					...item,
-					...item.quote[currency]
-				})) ?? [],
+			if (data.data.length === 0) {
+				return;
+			}
 
-			total: Number(data.data.data.length) ?? 0
-		};
+			setExchanges(prevExchanges => [...prevExchanges, ...data.data]);
+
+			setPage(prevPage => prevPage + 1);
+		} catch {}
 	};
 
-	const renderPercentage = percentage => (
-		<span
-			style={{
-				color: percentage > 0.0 ? '#16c784' : '#ea3943'
-			}}
-		>
-			{percentage?.toFixed(2) > 0.0 ? <CaretUpOutlined /> : <CaretDownOutlined />}{' '}
-			{percentage?.toFixed(2).replace('-', '')}
-		</span>
-	);
+	useEffect(() => {
+		getTableData(page);
+	}, [page]);
 
 	return (
-		<ProTable<CoinData>
-			{...PRO_TABLE_PROPS}
-			rowKey="id"
-			search={false}
-			columns={columns}
-			request={getAllData}
-			actionRef={actionRef}
-		/>
+		<ProTable<Exchange> {...PRO_TABLE_PROPS} rowKey="id" dataSource={exchanges} search={false} columns={columns} />
 	);
 };
 
