@@ -2,10 +2,7 @@ import axios, { AxiosInstance, AxiosPromise } from 'axios';
 import { stringify } from 'qs';
 
 type ApiResponse<T = null> = {
-	status: {
-		total_count: number;
-	};
-	data: any[];
+	data: any;
 };
 
 const instance: AxiosInstance = axios.create({ timeout: 60000 });

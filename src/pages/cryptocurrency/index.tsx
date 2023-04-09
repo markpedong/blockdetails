@@ -1,4 +1,4 @@
-import { CoinData, getAllCoins, getImageLogo } from '@/api';
+import { CoinData, getAllCoins, getGlobalData } from '@/api';
 import { PRO_TABLE_PROPS } from '@/constants';
 import { formatNumber } from '@/utils';
 import { setLocalStorage } from '@/utils/xLocalstorage';
@@ -13,13 +13,14 @@ const CryptoCurrency: FC = () => {
 	const {
 		state: { state }
 	} = useConcent('$$global');
+	const navigate = useNavigate();
 	const { currency, symbol } = state;
 	const actionRef = useRef<ActionType>();
 	const columns: ProColumnType<CoinData>[] = [
 		{
 			title: '#',
 			align: 'right',
-			render: (_, record) => record.cmc_rank
+			render: (_, record) => record.market_cap_rank
 		},
 		{
 			title: 'Name',
@@ -29,15 +30,15 @@ const CryptoCurrency: FC = () => {
 					<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
 						<img
 							style={{ blockSize: '20px' }}
-							src={getImageLogo(record.id)}
+							src={record.image}
 							onClick={() => {
-								navigate(`/cryptocurrency/${record.slug}`);
+								navigate(`/cryptocurrency/${record.id}`);
 								setLocalStorage('coin', record);
 							}}
 						/>
 						<Typography.Link
 							onClick={() => {
-								navigate(`/cryptocurrency/${record.slug}`);
+								navigate(`/cryptocurrency/${record.id}`);
 								setLocalStorage('coin', record);
 							}}
 						>
@@ -50,70 +51,144 @@ const CryptoCurrency: FC = () => {
 		{
 			title: 'Price',
 			align: 'right',
-			render: (_, record) => `${symbol} ${formatNumber(record.price, '0,0.00')}`
+			render: (_, record) => {
+				const price = record.current_price;
+
+				console.log(convertScientificToDecimal(price));
+
+				return (
+					<>
+						<span>{price ? symbol : ''}</span>{' '}
+						<span>{!price ? '' : formatNumber(price, formatNumberHandler(price))}</span>
+					</>
+				);
+			}
 		},
 		{
 			title: '1h%',
 			align: 'center',
-			render: (_, record) => renderPercentage(record.percent_change_1h)
+			render: (_, record) => renderPercentage(record.price_change_percentage_1h_in_currency)
 		},
 		{
 			title: '24%',
 			align: 'center',
-			render: (_, record) => renderPercentage(record.percent_change_24h)
+			render: (_, record) => renderPercentage(record.price_change_percentage_24h_in_currency)
 		},
 		{
 			title: '7d%',
 			align: 'center',
-			render: (_, record) => renderPercentage(record.percent_change_7d)
+			render: (_, record) => renderPercentage(record.price_change_percentage_7d_in_currency)
 		},
 		{
 			title: 'Market Cap',
 			align: 'center',
-			render: (_, record) => `${symbol} ${formatNumber(record.market_cap)}`
+			render: (_, record) => {
+				const price = record.market_cap;
+
+				return (
+					<>
+						<span>{price ? symbol : ''}</span>
+						<span>{price ? formatNumber(price, '0,0.00') : ''}</span>
+					</>
+				);
+			}
 		},
 		{
 			title: 'Volume',
 			align: 'center',
-			render: (_, record) => `${symbol} ${formatNumber(record.volume_24h)}`
+			render: (_, record) => {
+				const price = record.total_volume;
+
+				return (
+					<>
+						<span>{price ? symbol : ''}</span>
+						<span>{price ? formatNumber(price, '0,0.00') : ''}</span>
+					</>
+				);
+			}
 		},
 		{
 			title: 'Circulating Supply',
 			align: 'center',
-			render: (_, record) => formatNumber(record.circulating_supply)
+			render: (_, record) => {
+				const price = record.circulating_supply;
+
+				return price ? formatNumber(price, '0,0.00') : '';
+			}
 		}
 	];
 
-	const navigate = useNavigate();
+	const convertScientificToDecimal = number => {
+		if (typeof number === 'number') {
+			const numberString = number.toString();
+			if (numberString.includes('e') || numberString.includes('E')) {
+				return Number(number.toFixed(20));
+			} else {
+				return number;
+			}
+		} else {
+			return number;
+		}
+	};
+
+	const formatNumberHandler = (number: number) => {
+		switch (true) {
+			case number < 0.0000000001:
+				return '0,0.00000000000000';
+			case number < 0.00000001:
+				return '0,0.0000000000000';
+			case number < 0.0000001:
+				return '0,0.000000000000';
+			case number < 0.000001:
+				return '0,0.0000000000';
+			case number < 0.00001:
+				return '0,0.000000000';
+			case number < 0.0001:
+				return '0,0.00000000';
+			case number < 0.001:
+				return '0,0.0000000';
+			case number < 0.01:
+				return '0,0.000000';
+			case number < 0.1:
+				return '0,0.00000';
+			case number < 1:
+				return '0,0.00';
+			case number >= 1:
+				return '0,0.00';
+			default:
+				return number.toString();
+		}
+	};
 
 	const getAllData = async params => {
 		const data = await getAllCoins({
-			CMC_PRO_API_KEY: '8549b864-032f-404a-83ce-a28bed9ef45b',
-			convert: currency,
-			limit: 5000
+			vs_currency: currency,
+			per_page: params.pageSize,
+			page: params.current,
+			price_change_percentage: '1h,24h,7d'
 		});
+		const global = await getGlobalData();
+		const total = global.data.data.active_cryptocurrencies;
 
 		return {
-			data:
-				data.data.data.map(item => ({
-					...item,
-					...item.quote[currency]
-				})) ?? [],
-
-			total: Number(data.data.data.length) ?? 0
+			data: data.data,
+			total: Number(total - 1) ?? 0
 		};
 	};
 
-	const renderPercentage = percentage => (
-		<span
-			style={{
-				color: percentage > 0.0 ? '#16c784' : '#ea3943'
-			}}
-		>
-			{percentage?.toFixed(2) > 0.0 ? <CaretUpOutlined /> : <CaretDownOutlined />}{' '}
-			{percentage?.toFixed(2).replace('-', '')}
-		</span>
-	);
+	const renderPercentage = percentage => {
+		const per = percentage?.toFixed(2);
+		return (
+			<span
+				style={{
+					color: per > 0.0 ? '#16c784' : '#ea3943'
+				}}
+			>
+				{per > 0.0 ? <CaretUpOutlined /> : per < 0.0 ? <CaretDownOutlined /> : !per && ''}{' '}
+				{per?.replace('-', '')}
+			</span>
+		);
+	};
 
 	return (
 		<ProTable<CoinData>
@@ -121,6 +196,7 @@ const CryptoCurrency: FC = () => {
 			rowKey="id"
 			search={false}
 			columns={columns}
+			// @ts-ignore
 			request={getAllData}
 			actionRef={actionRef}
 		/>
