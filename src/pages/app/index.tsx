@@ -54,9 +54,7 @@ const App: FC = () => {
 			}}
 			actionsRender={() => [renderSearchbar()]}
 		>
-			<div>
-				<Outlet />
-			</div>
+			<Outlet />
 		</ProLayout>
 	);
 };

@@ -1,6 +1,7 @@
 import { CoinData, getAllCoins, getGlobalData } from '@/api';
 import { PRO_TABLE_PROPS } from '@/constants';
 import { formatNumber } from '@/utils';
+import { renderPercentage } from '@/utils/antd';
 import { setLocalStorage } from '@/utils/xLocalstorage';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { ActionType, ProColumnType, ProTable } from '@ant-design/pro-components';
@@ -54,7 +55,7 @@ const CryptoCurrency: FC = () => {
 			render: (_, record) => {
 				const price = record.current_price;
 
-				console.log(convertScientificToDecimal(price));
+				console.log(formatNumber(parseFloat(String(price)), '0,0.00'));
 
 				return (
 					<>
@@ -118,19 +119,6 @@ const CryptoCurrency: FC = () => {
 		}
 	];
 
-	const convertScientificToDecimal = number => {
-		if (typeof number === 'number') {
-			const numberString = number.toString();
-			if (numberString.includes('e') || numberString.includes('E')) {
-				return Number(number.toFixed(20));
-			} else {
-				return number;
-			}
-		} else {
-			return number;
-		}
-	};
-
 	const formatNumberHandler = (number: number) => {
 		switch (true) {
 			case number < 0.0000000001:
@@ -172,22 +160,8 @@ const CryptoCurrency: FC = () => {
 
 		return {
 			data: data.data,
-			total: Number(total - 1) ?? 0
+			total: Number(total) ?? 0
 		};
-	};
-
-	const renderPercentage = percentage => {
-		const per = percentage?.toFixed(2);
-		return (
-			<span
-				style={{
-					color: per > 0.0 ? '#16c784' : '#ea3943'
-				}}
-			>
-				{per > 0.0 ? <CaretUpOutlined /> : per < 0.0 ? <CaretDownOutlined /> : !per && ''}{' '}
-				{per?.replace('-', '')}
-			</span>
-		);
 	};
 
 	return (
