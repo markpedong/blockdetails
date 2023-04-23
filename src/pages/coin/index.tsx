@@ -25,6 +25,7 @@ const Coin: FC = () => {
 							<Typography.Text strong>{coin.name}</Typography.Text>
 						</Space>
 					</div>
+					<br />
 					<div>
 						<Space direction="horizontal" align="center">
 							<Image src={coin.image} preview={false} height={40} width={40} />
@@ -44,9 +45,11 @@ const Coin: FC = () => {
 					</div>
 				</Col>
 				<Col span={8}>
-					{symbol}
-					{formatNumber(coin.current_price)}
-					{renderPercentage(coin.price_change_percentage_24h_in_currency)}
+					<Typography.Title>
+						{symbol}
+						{formatNumber(coin.current_price)}
+						{renderPercentage(coin.price_change_percentage_24h_in_currency)}
+					</Typography.Title>
 				</Col>
 				<Col span={8}></Col>
 			</Row>
