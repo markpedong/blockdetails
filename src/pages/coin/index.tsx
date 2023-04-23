@@ -1,11 +1,11 @@
-import { CoinData } from '@/api';
+import { CoinData, getCoinData } from '@/api';
 import { formatNumber } from '@/utils';
 import { renderPercentage } from '@/utils/antd';
 import { getLocalStorage } from '@/utils/xLocalstorage';
-import { RightOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, CaretUpOutlined, RightOutlined } from '@ant-design/icons';
 import { Col, Image, Row, Space, Typography } from 'antd';
 import { useConcent } from 'concent';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 const Coin: FC = () => {
 	const coin = getLocalStorage('coin') as unknown as CoinData;
@@ -13,7 +13,24 @@ const Coin: FC = () => {
 		state: { state }
 	} = useConcent('$$global');
 	const { symbol } = state;
-	console.log(state);
+	const price_per_bg = coin.price_change_percentage_24h_in_currency > 0.0 ? '#16c784' : '#ea3943';
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const data = await getCoinData({
+				localization: false,
+				tickers: false,
+				market_data: true,
+				community_data: true,
+				developer_data: true,
+				sparkline: false
+			});
+
+			console.log(data.data);
+		};
+		fetchData();
+	}, []);
+
 	return (
 		<div>
 			<Row>
@@ -43,13 +60,39 @@ const Coin: FC = () => {
 							</Typography.Text>
 						</Space>
 					</div>
+					<br />
+					<Space>
+						<Typography.Text>Rank: #{coin.market_cap_rank}</Typography.Text>
+						<Typography.Text>{}</Typography.Text>
+					</Space>
 				</Col>
-				<Col span={8}>
-					<Typography.Title>
-						{symbol}
-						{formatNumber(coin.current_price)}
-						{renderPercentage(coin.price_change_percentage_24h_in_currency)}
-					</Typography.Title>
+				<Col span={8} style={{ paddingTop: '1.5rem' }}>
+					<div>
+						{coin.name} ({coin.symbol.toUpperCase()})
+					</div>
+					<Space align="center">
+						<Typography.Title style={{ margin: 0 }}>
+							{symbol}
+							{formatNumber(coin.current_price)}
+						</Typography.Title>
+						<div style={{ background: price_per_bg, borderRadius: '0.5rem', padding: '0.2rem 0.5rem' }}>
+							<Typography.Text
+								style={{
+									margin: 0,
+									color: 'white'
+								}}
+							>
+								{coin.price_change_percentage_24h_in_currency > 0.0 ? (
+									<CaretUpOutlined />
+								) : coin.price_change_percentage_24h_in_currency < 0.0 ? (
+									<CaretDownOutlined />
+								) : (
+									!coin.price_change_percentage_24h_in_currency && ''
+								)}
+								{coin.price_change_percentage_24h_in_currency.toFixed(2).replace('-', '')}
+							</Typography.Text>
+						</div>
+					</Space>
 				</Col>
 				<Col span={8}></Col>
 			</Row>

@@ -55,8 +55,6 @@ const CryptoCurrency: FC = () => {
 			render: (_, record) => {
 				const price = record.current_price;
 
-				console.log(formatNumber(parseFloat(String(price)), '0,0.00'));
-
 				return (
 					<>
 						<span>{price ? symbol : ''}</span>{' '}

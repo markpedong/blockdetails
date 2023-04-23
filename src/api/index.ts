@@ -42,3 +42,6 @@ export type GLOBAL_DATA = {
 };
 
 export const getGlobalData = () => get<GLOBAL_DATA>(`${HOST}/global`);
+
+// ${host}
+export const getCoinData = params => get(`${HOST}/coins/bitcoin?`, params);
