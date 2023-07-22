@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import React from "react";
 import StyledComponentsRegistry from "../lib/AntdRegistry";
 import "./globals.css";
-import NavBar from "@/app/NavBar";
+import Layout from "@/app/components/pro-layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +15,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
   <html lang="en">
     <body className={inter.className}>
       <StyledComponentsRegistry>
-        <NavBar>{children}</NavBar>
+        <Layout>{children}</Layout>
       </StyledComponentsRegistry>
     </body>
   </html>

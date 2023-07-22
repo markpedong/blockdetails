@@ -1,5 +1,5 @@
-import Cryptocurrency from "@/app/cryptocurrency/pages";
-import Exchanges from "@/app/exchanges/pages";
+import Cryptocurrency from "@/app/cryptocurrency/page";
+import Exchanges from "@/app/exchanges/page";
 import { ClusterOutlined, GlobalOutlined } from "@ant-design/icons";
 
 export default [
