@@ -32,8 +32,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         collapsed={collapsed}
         collapsedButtonRender={false}
         menuProps={{
-          onMouseEnter: () => setCollapsed(false),
-          onMouseLeave: () => setCollapsed(true),
+          onMouseEnter: () => setTimeout(() => setCollapsed(false), 150),
+          onMouseLeave: () => setTimeout(() => setCollapsed(true), 150),
         }}
         layout="mix"
         headerTitleRender={() => (
