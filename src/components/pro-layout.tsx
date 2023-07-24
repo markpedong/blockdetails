@@ -61,7 +61,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }}
         //actionsRender={() => [renderSearchbar()]}
       >
-        {/* <div onPointerEnter={() => setCollapsed(true)}>{children}</div> */}
         {children}
       </ProLayout>
     </ConfigProvider>

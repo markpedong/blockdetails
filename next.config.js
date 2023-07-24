@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 
-const withAntdLess = require("next-plugin-antd-less");
-
-const nextConfig = withAntdLess({});
+const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/cryptocurrency",
+        permanent: true,
+      },
+    ];
+  },
+};
 
 module.exports = nextConfig;
