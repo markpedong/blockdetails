@@ -59,7 +59,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Typography.Link>
           );
         }}
-        //actionsRender={() => [renderSearchbar()]}
       >
         {children}
       </ProLayout>
