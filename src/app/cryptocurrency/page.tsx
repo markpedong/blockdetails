@@ -1,5 +1,6 @@
 "use client";
 
+import { PRO_TABLE_PROPS } from "@/constants";
 import { ProColumns, ProTable } from "@ant-design/pro-components";
 
 async function getCryptocurrency() {
@@ -37,5 +38,7 @@ export default async function Cryptocurrency() {
     };
   };
 
-  return <ProTable columns={columns} request={getTableData} />;
+  return (
+    <ProTable {...PRO_TABLE_PROPS} columns={columns} request={getTableData} />
+  );
 }
