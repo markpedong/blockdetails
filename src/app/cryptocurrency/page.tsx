@@ -26,15 +26,21 @@ const columns: ProColumns[] = [
     title: "Name",
     dataIndex: "name",
   },
+  {
+    title: "Price",
+    dataIndex: "price",
+  },
 ];
 
 export default async function Cryptocurrency() {
   const getTableData = async () => {
     const data = await getCryptocurrency();
 
-    console.log(data.data);
     return {
-      data: data.data,
+      data: data.data?.map((coin) => ({
+        ...coin,
+        price: coin?.quote?.USD?.price,
+      })),
     };
   };
 
