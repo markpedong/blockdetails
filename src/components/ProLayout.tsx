@@ -4,13 +4,20 @@ import logo from "@/assets/logo.svg";
 import menus from "@/menus";
 import theme from "@/theme/*";
 import { ActionType } from "@ant-design/pro-components";
-import { ConfigProvider, Typography } from "antd";
-import enUS from "antd/es/locale/en_US";
+import { Typography } from "antd";
+import enUS from "antd/lib/locale/en_US";
 import { cloneDeep } from "lodash";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
+
+const ConfigProvider = dynamic(
+  () => import("antd").then((mod) => mod.ConfigProvider),
+  {
+    ssr: false,
+  }
+);
 
 const ProLayout = dynamic(() => import("@ant-design/pro-layout"), {
   ssr: false,
