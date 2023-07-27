@@ -2,7 +2,7 @@
 
 import logo from "@/assets/logo.svg";
 import menus from "@/menus";
-import theme from "@/theme/*";
+// import theme from "@/";
 import { ActionType } from "@ant-design/pro-components";
 import { Typography } from "antd";
 import enUS from "antd/lib/locale/en_US";
@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(true);
 
   return (
-    <ConfigProvider theme={theme} locale={enUS}>
+    <ConfigProvider locale={enUS}>
       <ProLayout
         location={{ pathname }}
         actionRef={actionRef}
