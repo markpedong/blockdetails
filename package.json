@@ -12,29 +12,21 @@
     "@ant-design/cssinjs": "^1.13.2",
     "@ant-design/icons": "^5.1.4",
     "@ant-design/pro-components": "^2.6.7",
-    "@ant-design/pro-layout": "^7.16.3",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
     "antd": "^5.7.2",
+    "axios": "^1.4.0",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.11",
     "lodash": "^4.17.21",
     "next": "13.4.11",
+    "qs": "^6.11.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.1.6"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195"
-  },
-  "prettier": {
-    "prettier.arrowParens": "avoid",
-    "prettier.printWidth": 120,
-    "prettier.singleQuote": true,
-    "prettier.useTabs": true,
-    "prettier.tabWidth": 4,
-    "prettier.semi": false,
-    "prettier.trailingComma": "none"
   }
 }
