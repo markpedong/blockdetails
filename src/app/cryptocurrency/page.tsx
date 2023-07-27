@@ -2,6 +2,7 @@
 
 import { PRO_TABLE_PROPS } from "@/constants";
 import { ProColumns, ProTable } from "@ant-design/pro-components";
+import { Button } from "antd";
 
 async function getCryptocurrency() {
   const res = await fetch(
@@ -29,6 +30,10 @@ const columns: ProColumns[] = [
   {
     title: "Price",
     dataIndex: "price",
+  },
+  {
+    title: "TEST",
+    render: () => <Button type="primary">TEST</Button>,
   },
 ];
 

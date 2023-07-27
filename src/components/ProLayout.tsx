@@ -12,16 +12,15 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 
-const ConfigProvider = dynamic(
-  () => import("antd").then((mod) => mod.ConfigProvider),
-  {
-    ssr: false,
-  }
+const ConfigProvider = dynamic(() =>
+  import("antd").then((mod) => mod.ConfigProvider)
 );
 
-const ProLayout = dynamic(() => import("@ant-design/pro-layout"), {
-  ssr: false,
-});
+const ProLayout = dynamic(() =>
+  import("@ant-design/pro-components").then((com) => com.ProLayout)
+);
+
+const GlobalData = dynamic(() => import("@/components/GlobalData/GlobalData"));
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -38,11 +37,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         fixedHeader
         collapsed={collapsed}
         collapsedButtonRender={false}
+        route={{ routes: cloneDeep(menus) }}
+        layout="mix"
+        headerContentRender={() => <GlobalData />}
         menuProps={{
           onMouseEnter: () => setTimeout(() => setCollapsed(false), 150),
           onMouseLeave: () => setTimeout(() => setCollapsed(true), 150),
         }}
-        layout="mix"
         headerTitleRender={() => (
           <div
             style={{
@@ -55,7 +56,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <h1>Block Details</h1>
           </div>
         )}
-        route={{ routes: cloneDeep(menus) }}
         menuItemRender={(item, dom) => {
           return (
             <Typography.Link
