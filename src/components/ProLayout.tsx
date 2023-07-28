@@ -1,16 +1,18 @@
 'use client'
 
 import logo from '@/assets/logo.svg'
+import logoDark from '@/assets/logo-darkmode.svg'
 import GlobalData from '@/components/GlobalData/GlobalData'
 import menus from '@/menus'
 import { ActionType } from '@ant-design/pro-components'
-import { Typography } from 'antd'
+import { Typography, theme } from 'antd'
 import enUS from 'antd/locale/en_US'
 import { cloneDeep } from 'lodash'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useRef, useState } from 'react'
+import Provider from '@/components/Provider'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout))
 
@@ -21,55 +23,59 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 	const actionRef = useRef<ActionType>()
 	const pathname = usePathname()
 	const [collapsed, setCollapsed] = useState(true)
+	const [darkMode, setDarkMode] = useState<boolean>(false)
 
 	return (
 		<ConfigProvider
 			theme={{
 				token: {
 					colorPrimary: '#52c41a'
-				}
+				},
+				algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm
 			}}
 			locale={enUS}
 		>
-			<ProLayout
-				location={{ pathname }}
-				actionRef={actionRef}
-				title='Block Details'
-				fixedHeader
-				collapsed={collapsed}
-				collapsedButtonRender={false}
-				route={{ routes: cloneDeep(menus) }}
-				layout='mix'
-				headerContentRender={() => <GlobalData />}
-				menuProps={{
-					onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
-					onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)
-				}}
-				headerTitleRender={() => (
-					<div
-						style={{
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}
-					>
-						<Image src={logo} alt='logo' style={{ width: 30, height: 30 }} />
-						<h1>Block Details</h1>
-					</div>
-				)}
-				menuItemRender={(item, dom) => {
-					return (
-						<Typography.Link
-							style={{ paddingBlockStart: '0.5rem' }}
-							onClick={() => router.push(item.path as string)}
+			<Provider darkMode={darkMode}>
+				<ProLayout
+					location={{ pathname }}
+					actionRef={actionRef}
+					title='Block Details'
+					fixedHeader
+					collapsed={collapsed}
+					collapsedButtonRender={false}
+					route={{ routes: cloneDeep(menus) }}
+					layout='mix'
+					headerContentRender={() => <GlobalData darkMode={darkMode} setDarkMode={setDarkMode} />}
+					menuProps={{
+						onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
+						onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)
+					}}
+					headerTitleRender={() => (
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}
 						>
-							{dom}
-						</Typography.Link>
-					)
-				}}
-			>
-				{children}
-			</ProLayout>
+							<Image src={darkMode ? logoDark : logo} alt='logo' style={{ width: 30, height: 30 }} />
+							<h1>Block Details</h1>
+						</div>
+					)}
+					menuItemRender={(item, dom) => {
+						return (
+							<Typography.Link
+								style={{ paddingBlockStart: '0.5rem' }}
+								onClick={() => router.push(item.path as string)}
+							>
+								{dom}
+							</Typography.Link>
+						)
+					}}
+				>
+					{children}
+				</ProLayout>
+			</Provider>
 		</ConfigProvider>
 	)
 }

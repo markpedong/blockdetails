@@ -36,6 +36,10 @@ const post = <T>(url: string, data = {}): AxiosPromise<ApiResponse<T>> =>
 	})
 
 const get = <T>(url: string, data = {}): AxiosPromise<ApiResponse<T>> =>
-	instance.get(`${url}${stringify(data) ? '?' + stringify(data) : ''}`)
+	instance.get(`${url}${stringify(data) ? '?' + stringify(data) : ''}`, {
+		headers: {
+			'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY
+		}
+	})
 
 export { post, get }

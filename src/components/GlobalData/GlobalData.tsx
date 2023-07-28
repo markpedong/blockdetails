@@ -1,6 +1,6 @@
 'use client'
 
-import { Space } from 'antd'
+import { Col, Row, Space, Switch } from 'antd'
 import dynamic from 'next/dynamic'
 import { use } from 'react'
 
@@ -17,13 +17,16 @@ const getGlobalData = async () => {
 // prevents infinite loop
 const globalData = getGlobalData()
 
-const GlobalData = () => {
+const GlobalData = ({ darkMode, setDarkMode }) => {
 	const { data } = use(globalData)
 
 	return (
-		<Space>
-			<div>Cryptos: {data?.active_cryptocurrencies}</div>
-		</Space>
+		<Row justify='space-between'>
+			<Col>Cryptos: {data?.active_cryptocurrencies}</Col>
+			<Col>
+				<Switch onChange={() => setDarkMode(!darkMode)} />
+			</Col>
+		</Row>
 	)
 }
 
