@@ -42,4 +42,20 @@ const get = <T>(url: string, data = {}): AxiosPromise<ApiResponse<T>> =>
 		}
 	})
 
-export { post, get }
+const fetchGet = async (url: string, data = {}) => {
+	const res = await fetch(`${url}${stringify(data) ? '?' + stringify(data) : ''}`, {
+		method: 'GET',
+		headers: {
+			'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY
+		} as {}
+	})
+
+	if (!res.ok) {
+		// This will activate the closest `error.js` Error Boundary
+		throw new Error('Failed to fetch data')
+	}
+
+	return res.json()
+}
+
+export { post, get, fetchGet }

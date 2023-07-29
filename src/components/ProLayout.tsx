@@ -1,9 +1,11 @@
 'use client'
 
-import logo from '@/assets/logo.svg'
 import logoDark from '@/assets/logo-darkmode.svg'
+import logo from '@/assets/logo.svg'
 import GlobalData from '@/components/GlobalData/GlobalData'
+import Provider from '@/components/Provider'
 import menus from '@/menus'
+import { useAppSelector } from '@/redux/store'
 import { ActionType } from '@ant-design/pro-components'
 import { Typography, theme } from 'antd'
 import enUS from 'antd/locale/en_US'
@@ -12,7 +14,6 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useRef, useState } from 'react'
-import Provider from '@/components/Provider'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout))
 
@@ -23,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 	const actionRef = useRef<ActionType>()
 	const pathname = usePathname()
 	const [collapsed, setCollapsed] = useState(true)
-	const [darkMode, setDarkMode] = useState<boolean>(false)
+	const darkMode = useAppSelector(state => state.themeReducer.value.isDark)
 
 	return (
 		<ConfigProvider
@@ -45,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 					collapsedButtonRender={false}
 					route={{ routes: cloneDeep(menus) }}
 					layout='mix'
-					headerContentRender={() => <GlobalData darkMode={darkMode} setDarkMode={setDarkMode} />}
+					headerContentRender={() => <GlobalData />}
 					menuProps={{
 						onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
 						onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)

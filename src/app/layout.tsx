@@ -2,6 +2,7 @@ import Layout from '@/components/ProLayout'
 import { Inter } from 'next/font/google'
 import React from 'react'
 import StyledComponentsRegistry from '../lib/AntdRegistry'
+import { ReduxProvider } from '@/redux/provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,7 +15,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
 	<html lang='en'>
 		<body className={inter.className}>
 			<StyledComponentsRegistry>
-				<Layout>{children}</Layout>
+				<ReduxProvider>
+					<Layout>{children}</Layout>
+				</ReduxProvider>
 			</StyledComponentsRegistry>
 		</body>
 	</html>

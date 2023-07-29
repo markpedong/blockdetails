@@ -1,4 +1,4 @@
-import { get } from '@/api/http'
+import { fetchGet, get } from '@/api/http'
 
 const HOST = process.env.NEXT_PUBLIC_HOST
 
@@ -25,3 +25,5 @@ export type Cryptocurrency = {
 
 export const getCryptocurrency = (params = {}) =>
 	get<Cryptocurrency>(`${HOST}/v1/cryptocurrency/listings/latest`, params)
+
+export const fetchCryptocurrency = (params: any = {}) => fetchGet(`${HOST}/v1/cryptocurrency/listings/latest`, params)
