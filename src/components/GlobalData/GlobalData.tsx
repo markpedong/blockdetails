@@ -1,29 +1,25 @@
 'use client'
 
 import { darkMode } from '@/redux/features/themeSlice'
+import { getTotalCrypto } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { Col, Row, Switch } from 'antd'
 import dynamic from 'next/dynamic'
-import { use } from 'react'
+import { use, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-
-const getGlobalData = async () => {
-	const res = await fetch('https://sandbox-api.coinmarketcap.com/v1/global-metrics/quotes/latest', {
-		headers: {
-			'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
-		}
-	})
-
-	return res.json()
-}
+import { getGlobalCrypto } from '@/api'
 
 // prevents infinite loop
-const globalData = getGlobalData()
+const globalData = getGlobalCrypto()
 
 const GlobalData = () => {
 	const { data } = use(globalData)
 	const dispatch = useDispatch<AppDispatch>()
-	const theme1 = useAppSelector(state => state.themeReducer.value.isDark)
+	const darkTheme = useAppSelector(state => state.themeReducer.value.isDark)
+
+	useEffect(() => {
+		dispatch(getTotalCrypto(data?.active_cryptocurrencies))
+	}, [])
 
 	return (
 		<Row justify='space-between'>
@@ -31,7 +27,7 @@ const GlobalData = () => {
 			<Col>
 				<Switch
 					onChange={() => {
-						dispatch(darkMode(!theme1))
+						dispatch(darkMode(!darkTheme))
 					}}
 				/>
 				{/* <Switch onChange={() => setDarkMode(!darkMode)} /> */}

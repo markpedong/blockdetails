@@ -1,68 +1,88 @@
 'use client'
 
-import { Cryptocurrency, fetchCryptocurrency, getCryptocurrency } from '@/api'
+import { Cryptocurrency, getCryptocurrency } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
+import { useAppSelector } from '@/redux/store'
+import { renderPercentage } from '@/utils/antd'
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
-import { Button } from 'antd'
+import { Space, Tag, Typography } from 'antd'
+import Image from 'next/image'
 
 const Cryptocurrency = () => {
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
-			render: (_, record) => record.cmc_rank,
-			align: 'center'
+			align: 'center',
+			render: (_, record) => record.cmc_rank
 		},
 		{
 			title: 'Name',
-			render: (_, record) => record.name,
-			align: 'left'
+			align: 'left',
+			render: (_, record) => {
+				const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
+
+				return (
+					<Space align='center'>
+						<Image loader={() => src} src={src} alt='logo' width={25} height={25} />
+						<Typography.Link>{record.name}</Typography.Link>
+					</Space>
+				)
+			}
 		},
 		{
 			title: 'Price',
-			render: (_, record) => record.quote['USD'].price,
-			align: 'right'
+			align: 'right',
+			render: (_, record) => record.quote['USD'].price
 		},
 		{
 			title: '1h %',
-			render: (_, record) => record.quote['USD'].percent_change_1h,
-			align: 'center'
+			align: 'center',
+			render: (_, record) => renderPercentage(record.quote['USD'].percent_change_1h)
 		},
 		{
 			title: '24 %',
-			render: (_, record) => record.quote['USD'].percent_change_24h,
-			align: 'center'
+			align: 'center',
+			render: (_, record) => renderPercentage(record.quote['USD'].percent_change_24h)
 		},
 		{
 			title: '7d %',
-			render: (_, record) => record.quote['USD'].percent_change_7d,
-			align: 'center'
+			align: 'center',
+			render: (_, record) => renderPercentage(record.quote['USD'].percent_change_7d)
 		},
 		{
 			title: 'Market Cap',
-			render: (_, record) => record.quote['USD'].market_cap,
-			align: 'right'
+			align: 'right',
+			render: (_, record) => record.quote['USD'].market_cap
 		},
 		{
 			title: 'Volume(24h)',
-			render: (_, record) => record.quote['USD'].volume_24h,
-			align: 'right'
+			align: 'right',
+			render: (_, record) => record.quote['USD'].volume_24h
 		},
 		{
 			title: 'Circulating Supply',
-			render: (_, record) => record.quote['USD'].volume_24h,
-			align: 'right'
+			align: 'right',
+			render: (_, record) => record.quote['USD'].volume_24h
 		}
 	]
 
-	const getTableData = async () => {
-		const data = await fetchCryptocurrency({
-			aux: 'cmc_rank'
+	const totalCrypto = useAppSelector(state => state.globalReducer.value.totalCrypto)
+
+	const getTableData = async params => {
+		const data = await getCryptocurrency({
+			aux: 'cmc_rank',
+			start: params.current,
+			limit: 5000
 		})
 
-		const result = data.data
+		const result = data.data?.map(crypto => ({
+			...crypto
+		}))
 
 		return {
 			data: result
+			// total: data.status.total_count
 		}
 	}
 	return <ProTable {...PRO_TABLE_PROPS} rowKey='id' request={getTableData} columns={columns} search={false} />
