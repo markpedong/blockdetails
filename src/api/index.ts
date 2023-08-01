@@ -39,3 +39,10 @@ export const getCryptocurrency = (params: any = {}) =>
 	get<Cryptocurrency[]>(`${HOST}/v1/cryptocurrency/listings/latest`, params)
 
 // /v1/fiat/map
+export type Fiat = {
+	id: number
+	name: string
+	sign: string
+	symbol: string
+}
+export const getFiats = () => get<Fiat[]>(`${HOST}/v1/fiat/map`)
