@@ -3,6 +3,7 @@
 import { Cryptocurrency, getCryptocurrency } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
+import { numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Typography } from 'antd'
@@ -38,7 +39,7 @@ const CryptocurrencyTable = () => {
 			align: 'right',
 			render: (_, record) => (
 				<div>
-					{sign} {record.quote[symbol]?.price}
+					{sign} {numberWithCommas(record.quote[symbol]?.price)}
 				</div>
 			)
 		},
@@ -62,7 +63,7 @@ const CryptocurrencyTable = () => {
 			align: 'right',
 			render: (_, record) => (
 				<div>
-					{sign} {record.quote[symbol]?.market_cap}
+					{sign} {numberWithCommas(record.quote[symbol]?.market_cap)}
 				</div>
 			)
 		},
@@ -71,21 +72,23 @@ const CryptocurrencyTable = () => {
 			align: 'right',
 			render: (_, record) => (
 				<div>
-					{sign} {record.quote[symbol]?.volume_24h}
+					<div>
+						{sign} {numberWithCommas(record.quote[symbol]?.volume_24h)}
+					</div>
+					{/* <div>{record.}</div> */}
 				</div>
 			)
 		},
 		{
 			title: 'Circulating Supply',
 			align: 'right',
-			render: (_, record) => record.circulating_supply
+			render: (_, record) => numberWithCommas(record.circulating_supply)
 		}
 	]
 
 	const getTableData = async (params: any) => {
 		const data = await getCryptocurrency({
 			aux: 'cmc_rank,circulating_supply',
-			start: params.current,
 			limit: 5000,
 			convert: symbol
 		})
