@@ -8,7 +8,7 @@ import { renderPercentage } from '@/utils/antd'
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Typography } from 'antd'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 const CryptocurrencyTable = () => {
 	const actionRef = useRef<ActionType>()

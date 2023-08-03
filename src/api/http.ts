@@ -23,7 +23,7 @@ const get = async <T>(url: string, data = {}): Promise<ApiResponse<T>> => {
 
 	if (!res.ok) {
 		// This will activate the closest `error.js` Error Boundary
-		throttleAlert(`${res.status} ${res.statusText}`)
+		throttleAlert(`Error: ${res.status}!`)
 	}
 
 	return res.json()

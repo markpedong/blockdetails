@@ -6,3 +6,7 @@ export const renderPercentage = (per: number) => (
 		{per > 0.01 ? <CaretUpOutlined /> : <CaretDownOutlined />} {per?.toFixed(2).replace('-', '')}
 	</Tag>
 )
+
+export const renderScore = (per: number) => (
+	<Tag color={per > 6.1 ? 'green' : per <= 6 ? 'orange' : 'red'}>{per?.toFixed(2)}</Tag>
+)
