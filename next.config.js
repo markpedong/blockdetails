@@ -11,7 +11,7 @@ const nextConfig = {
 		]
 	},
 	images: {
-		domains: ['s2.coinmarketcap.com']
+		domains: ['assets.coingecko.com, s2.coinmarketcap.com']
 	}
 }
 

@@ -28,7 +28,7 @@ const CryptocurrencyTable = () => {
 
 				return (
 					<Space align='center'>
-						<Image src={src} alt='logo' width={25} height={25} />
+						<Image loader={() => src} src={src} alt='logo' width={25} height={25} />
 						<Typography.Link>{record.name}</Typography.Link>
 					</Space>
 				)
@@ -117,7 +117,7 @@ const CryptocurrencyTable = () => {
 			rowKey='id'
 			columns={columns}
 			search={false}
-			request={getTableData}
+			// request={getTableData}
 		/>
 	)
 }

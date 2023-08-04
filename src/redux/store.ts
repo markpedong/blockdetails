@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import themeReducer from './features/themeSlice'
 import setCurrency from './features/currencySlice'
+import setTotal from './features/globalSlice'
 import { TypedUseSelectorHook, useSelector } from 'react-redux'
 
 export const storeTheme = configureStore({
 	reducer: {
 		themeReducer,
-		setCurrency
+		setCurrency,
+		setTotal
 	}
 })
 

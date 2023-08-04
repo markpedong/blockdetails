@@ -13,12 +13,14 @@ type ApiResponse<T = null> = {
 	}
 }
 
-const get = async <T>(url: string, data = {}): Promise<ApiResponse<T>> => {
+const get = async <T>(url: string, data = {}, key = true): Promise<ApiResponse<T>> => {
 	const res = await fetch(`${url}${stringify(data) ? '?' + stringify(data) : ''}`, {
 		method: 'GET',
-		headers: {
-			'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY_PROD
-		} as {}
+		headers: key
+			? ({
+					'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY_PROD
+			  } as {})
+			: {}
 	})
 
 	if (!res.ok) {
