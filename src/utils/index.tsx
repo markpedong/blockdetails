@@ -1,3 +1,4 @@
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
 import { message } from 'antd'
 import { throttle } from 'lodash'
 import numeral from 'numeral'
@@ -31,6 +32,13 @@ export const numberWithSuffix = (number: number) => {
 		return numeral(formattedNumber).format('0.0') + suffix
 	} else {
 		// For numbers less than 1000 or 1, return the actual value
-		return number.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+		return number?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 	}
 }
+
+export const renderPer = (per: number) => (
+	<span style={{ color: per > 0.01 ? '#16c784' : '#ea3943' }}>
+		{per > 0.01 ? <CaretUpOutlined /> : <CaretDownOutlined />}
+		{per?.toFixed(2).replace('-', '')}%
+	</span>
+)
