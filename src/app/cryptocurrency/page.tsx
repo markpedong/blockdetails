@@ -1,24 +1,24 @@
 'use client'
 
-import { Cryptocurrency, getCryptocurrency } from '@/api'
-import { PRO_TABLE_PROPS } from '@/constants'
-import { useAppSelector } from '@/redux/store'
-import { numberWithCommas } from '@/utils'
-import { renderPercentage } from '@/utils/antd'
+import { useEffect, useRef } from 'react'
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Typography } from 'antd'
 import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import { getCryptocurrency, Cryptocurrency } from '@/api'
+import { useAppSelector } from '@/redux/store'
+import { numberWithCommas } from '@/utils'
+import { renderPercentage } from '@/utils/antd'
+import { PRO_TABLE_PROPS } from '@/constants'
 
 const CryptocurrencyTable = () => {
 	const actionRef = useRef<ActionType>()
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
-
+	const formatPrice = price => `${sign} ${numberWithCommas(price)}`
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
 			align: 'center',
-			render: (_, record) => record.cmc_rank
+			render: (_, { cmc_rank }) => cmc_rank
 		},
 		{
 			title: 'Name',
@@ -37,52 +37,41 @@ const CryptocurrencyTable = () => {
 		{
 			title: 'Price',
 			align: 'right',
-			render: (_, record) => (
-				<div>
-					{sign} {numberWithCommas(record.quote[symbol]?.price)}
-				</div>
-			)
+			render: (_, { quote }) => <div>{formatPrice(quote[symbol]?.price)}</div>
 		},
 		{
 			title: '1h %',
 			align: 'center',
-			render: (_, record) => renderPercentage(record.quote[symbol]?.percent_change_1h)
+			render: (_, { quote }) => renderPercentage(quote[symbol]?.percent_change_1h)
 		},
 		{
 			title: '24 %',
 			align: 'center',
-			render: (_, record) => renderPercentage(record.quote[symbol]?.percent_change_24h)
+			render: (_, { quote }) => renderPercentage(quote[symbol]?.percent_change_24h)
 		},
 		{
 			title: '7d %',
 			align: 'center',
-			render: (_, record) => renderPercentage(record.quote[symbol]?.percent_change_7d)
+			render: (_, { quote }) => renderPercentage(quote[symbol]?.percent_change_7d)
 		},
 		{
 			title: 'Market Cap',
 			align: 'right',
-			render: (_, record) => (
-				<div>
-					{sign} {numberWithCommas(record.quote[symbol]?.market_cap)}
-				</div>
-			)
+			render: (_, { quote }) => <div>{formatPrice(quote[symbol]?.market_cap)}</div>
 		},
 		{
 			title: 'Volume(24h)',
 			align: 'right',
-			render: (_, record) => (
+			render: (_, { quote }) => (
 				<div>
-					<div>
-						{sign} {numberWithCommas(record.quote[symbol]?.volume_24h)}
-					</div>
-					{/* <div>{record.}</div> */}
+					<div>{formatPrice(quote[symbol]?.volume_24h)}</div>
 				</div>
 			)
 		},
 		{
 			title: 'Circulating Supply',
 			align: 'right',
-			render: (_, record) => numberWithCommas(record.circulating_supply)
+			render: (_, { circulating_supply }) => numberWithCommas(circulating_supply)
 		}
 	]
 
@@ -103,10 +92,8 @@ const CryptocurrencyTable = () => {
 	}
 
 	useEffect(() => {
-		// Whenever 'symbol' changes, ProTable will fetch new data using the 'request' prop.
-		// The 'actionRef' is used to trigger reload when necessary.
 		if (actionRef.current) {
-			actionRef.current.reload()
+			actionRef.current?.reload()
 		}
 	}, [symbol])
 
@@ -117,7 +104,7 @@ const CryptocurrencyTable = () => {
 			rowKey='id'
 			columns={columns}
 			search={false}
-			// request={getTableData}
+			request={getTableData}
 		/>
 	)
 }
