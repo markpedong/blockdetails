@@ -69,10 +69,14 @@ const GlobalData = () => {
 				</Link>
 			</Space>
 			<Space>
-				<Switch onChange={() => dispatch(darkMode(!darkTheme))} />
+				<Switch
+					onChange={() => dispatch(darkMode(!darkTheme))}
+					checkedChildren='Dark'
+					unCheckedChildren='Light'
+				/>
 				<Select
 					showSearch
-					placeholder='Select Currency:'
+					placeholder='USD, PHP, CNY'
 					options={fiats?.map(item => ({ label: `${item.sign} ${item.name}`, value: item.id }))}
 					filterOption={(input, option) =>
 						String(option?.label ?? '')
@@ -83,6 +87,7 @@ const GlobalData = () => {
 						const selected = fiats.find(fiat => fiat.id === val)
 						dispatch(setCurrency(selected))
 					}}
+					style={{ width: 150 }}
 				/>
 			</Space>
 		</Row>
