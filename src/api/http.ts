@@ -2,6 +2,7 @@ import { throttleAlert } from '@/utils/index'
 import { stringify } from 'qs'
 
 type ApiResponse<T = null> = {
+	[x: string]: any
 	data: T[] | any
 	status: {
 		timestamp: string

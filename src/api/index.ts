@@ -2,6 +2,7 @@ import { get } from '@/api/http'
 
 const HOST_CG = process.env.NEXT_PUBLIC_HOST_CG
 const HOST_CMC = process.env.NEXT_PUBLIC_HOST_CMC
+const HOST_PAP = process.env.NEXT_PUBLIC_HOST_PAP
 
 // /v1/global-metrics/quotes/latest
 export type GlobalData = {
@@ -70,6 +71,6 @@ export type Exchange = {
 	trade_volume_24h_btc: number
 	trade_volume_24h_btc_normalized: number
 }
-export const getExchanges = params => get<Exchange>(`${HOST_CG}/exchanges`, params)
+export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, params)
 
-export const exchangeTest = params => get('https://api.coinpaprika.com/v1/exchanges', params)
+export const getExchangesPaprika = params => get(`${HOST_PAP}/exchanges`, params, false)
