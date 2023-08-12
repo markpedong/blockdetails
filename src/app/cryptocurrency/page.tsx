@@ -98,7 +98,7 @@ const CryptocurrencyTable = () => {
 	}, [symbol])
 
 	return (
-		<ProTable
+		<ProTable<Cryptocurrency>
 			{...PRO_TABLE_PROPS}
 			actionRef={actionRef}
 			rowKey='id'

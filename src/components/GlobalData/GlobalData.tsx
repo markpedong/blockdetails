@@ -45,8 +45,9 @@ const GlobalData = () => {
 	useEffect(() => {
 		// Dispatch actions and trigger reload
 		dispatch(setTotal(data.active))
+
 		actionRef?.current?.reload()
-	}, [symbol, sign, data.active, dispatch])
+	}, [symbol, sign, data.active, data.exchanges, dispatch])
 
 	return (
 		<Row style={{ display: 'flex', justifyContent: 'space-between' }}>

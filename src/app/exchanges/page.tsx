@@ -13,6 +13,7 @@ import { useEffect, useRef } from 'react'
 export const Exchanges = () => {
 	const actionRef = useRef<ActionType>()
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
+	const { totalCrypto, totalExchange } = useAppSelector(state => state.setTotal.value)
 
 	const columns: ProColumns<Exchange>[] = [
 		{
@@ -26,7 +27,7 @@ export const Exchanges = () => {
 			render: (_, record) => {
 				return (
 					<Space align='center'>
-						<Image src={record.image} alt='logo' width={25} height={25} />
+						<Image unoptimized src={record.image} alt='logo' width={25} height={25} />
 						<Typography.Link>{record.name}</Typography.Link>
 					</Space>
 				)
@@ -97,13 +98,13 @@ export const Exchanges = () => {
 	}, [symbol])
 
 	return (
-		<ProTable
+		<ProTable<Exchange>
 			{...PRO_TABLE_PROPS}
 			actionRef={actionRef}
 			rowKey='id'
 			columns={columns}
 			search={false}
-			// request={getTableData}
+			request={getTableData}
 		/>
 	)
 }
