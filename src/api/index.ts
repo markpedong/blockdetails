@@ -43,6 +43,7 @@ export type Cryptocurrency = {
 	}
 	slug: string
 	symbol: string
+	sparkline_in_7d: { price: number[] }
 	total_supply: number
 }
 
@@ -59,17 +60,20 @@ export const getFiats = params => get<Fiat[]>(`${HOST_CMC}/v1/fiat/map`, params)
 
 // /v3/exchanges
 export type Exchange = {
-	id: string
-	name: string
-	year_established: number
 	country: string
 	description: string
-	url: string
+	fiats: { name: string; symbol: string }[]
+	id: string
 	image: string
-	trust_score: number
-	trust_score_rank: number
-	trade_volume_24h_btc: number
+	markets: number
+	name: string
+	sessions_per_month: number
 	trade_volume_24h_btc_normalized: number
+	trade_volume_24h_btc: number
+	trust_score_rank: number
+	trust_score: number
+	url: string
+	year_established: number
 }
 export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, params)
 

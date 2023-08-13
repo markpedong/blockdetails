@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components'
-import { Space, Typography } from 'antd'
+import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
 import { getCryptocurrency, Cryptocurrency } from '@/api'
 import { useAppSelector } from '@/redux/store'
@@ -55,12 +55,45 @@ const CryptocurrencyTable = () => {
 			render: (_, { quote }) => renderPercentage(quote[symbol]?.percent_change_7d)
 		},
 		{
-			title: 'Market Cap',
+			title: (
+				<span>
+					Market Cap{' '}
+					<Tooltip
+						color='white'
+						title={
+							<span style={{ color: 'black' }}>
+								The total market value of a cryptocurrency's circulating supply. It is analogous to the
+								free-float capitalization in the stock market. Market Cap = Current Price x Circulating
+								Supply.
+								<Typography.Link>Read More</Typography.Link>
+							</span>
+						}
+					>
+						<InfoCircleOutlined />
+					</Tooltip>
+				</span>
+			),
+
 			align: 'right',
 			render: (_, { quote }) => <div>{formatPrice(quote[symbol]?.market_cap)}</div>
 		},
 		{
-			title: 'Volume(24h)',
+			title: (
+				<span>
+					Volume(24h){' '}
+					<Tooltip
+						color='white'
+						title={
+							<span style={{ color: 'black' }}>
+								A measure of how much of a cryptocurrency was traded in the last 24 hours.
+								<Typography.Link>Read More</Typography.Link>
+							</span>
+						}
+					>
+						<InfoCircleOutlined />
+					</Tooltip>
+				</span>
+			),
 			align: 'right',
 			render: (_, { quote }) => (
 				<div>
@@ -69,7 +102,23 @@ const CryptocurrencyTable = () => {
 			)
 		},
 		{
-			title: 'Circulating Supply',
+			title: (
+				<span>
+					Circulating Supply{' '}
+					<Tooltip
+						color='white'
+						title={
+							<span style={{ color: 'black' }}>
+								The amount of coins that are circulating in the market and are in public hands. It is
+								analogous to the flowing shares in the stock market.
+								<Typography.Link>Read More</Typography.Link>
+							</span>
+						}
+					>
+						<InfoCircleOutlined />
+					</Tooltip>
+				</span>
+			),
 			align: 'right',
 			render: (_, { circulating_supply }) => numberWithCommas(circulating_supply)
 		}

@@ -9,27 +9,28 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@ant-design/cssinjs": "^1.16.1",
-		"@ant-design/icons": "^5.2.5",
-		"@ant-design/pro-components": "^2.6.11",
-		"@reduxjs/toolkit": "^1.9.5",
+		"@ant-design/charts": "1.4.2",
+		"@ant-design/cssinjs": "1.16.1",
+		"@ant-design/icons": "5.2.5",
+		"@ant-design/pro-components": "2.6.11",
+		"@reduxjs/toolkit": "1.9.5",
 		"@types/node": "20.4.8",
 		"@types/react": "18.2.19",
 		"@types/react-dom": "18.2.7",
-		"antd": "^5.8.2",
+		"antd": "5.8.2",
 		"eslint": "8.46.0",
 		"eslint-config-next": "13.4.13",
-		"lodash": "^4.17.21",
+		"lodash": "4.17.21",
 		"next": "13.4.13",
-		"numeral": "^2.0.6",
-		"qs": "^6.11.2",
+		"numeral": "2.0.6",
+		"qs": "6.11.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-redux": "^8.1.2",
+		"react-redux": "8.1.2",
 		"typescript": "5.1.6"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.196",
-		"@types/qs": "^6.9.7"
+		"@types/lodash": "4.14.196",
+		"@types/qs": "6.9.7"
 	}
 }
