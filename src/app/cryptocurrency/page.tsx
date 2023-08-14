@@ -9,6 +9,8 @@ import { useAppSelector } from '@/redux/store'
 import { numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
 import { PRO_TABLE_PROPS } from '@/constants'
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { Line } from '@ant-design/charts'
 
 const CryptocurrencyTable = () => {
 	const actionRef = useRef<ActionType>()
@@ -122,6 +124,16 @@ const CryptocurrencyTable = () => {
 			align: 'right',
 			render: (_, { circulating_supply }) => numberWithCommas(circulating_supply)
 		}
+		// {
+		// 	title: 'Last 7 Days',
+		// 	render: (_, record) => (
+		// 		<Line
+		// 			data={record.sparkline_in_7d?.price.map(i => ({ label: '', value: i }))}
+		// 			xField=''
+		// 			yField='value'
+		// 		/>
+		// 	)
+		// }
 	]
 
 	const getTableData = async (params: any) => {

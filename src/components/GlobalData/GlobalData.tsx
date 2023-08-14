@@ -44,7 +44,7 @@ const GlobalData = () => {
 
 	useEffect(() => {
 		// Dispatch actions and trigger reload
-		dispatch(setTotal(data.active))
+		dispatch(setTotal({ totalCrypto: data.active, totalExchange: data.exchanges }))
 
 		actionRef?.current?.reload()
 	}, [symbol, sign, data.active, data.exchanges, dispatch])

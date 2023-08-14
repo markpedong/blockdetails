@@ -20,10 +20,12 @@ export const globalData = createSlice({
 	name: 'global',
 	initialState,
 	reducers: {
-		setTotal: (state, action: PayloadAction<StateData>) => {
+		setTotal: (_, action: PayloadAction<StateData>) => {
 			const { totalCrypto, totalExchange } = action.payload
-			state.value.totalCrypto = totalCrypto
-			state.value.totalExchange = totalExchange
+
+			return {
+				value: { totalCrypto, totalExchange }
+			}
 		}
 	}
 })
