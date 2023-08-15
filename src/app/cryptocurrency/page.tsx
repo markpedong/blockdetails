@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
@@ -10,7 +10,6 @@ import { numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { Line } from '@ant-design/charts'
 
 const CryptocurrencyTable = () => {
 	const actionRef = useRef<ActionType>()

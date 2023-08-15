@@ -1,6 +1,7 @@
 import Cryptocurrency from '@/app/cryptocurrency/page'
 import Exchanges from '@/app/exchanges/page'
 import { AreaChartOutlined, ClusterOutlined, GlobalOutlined } from '@ant-design/icons'
+import React from 'react'
 
 export default [
 	{
