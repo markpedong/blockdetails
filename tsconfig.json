@@ -1,27 +1,35 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"isolatedModules": true,
-		"jsx": "preserve",
-		"lib": ["dom", "dom.iterable", "esnext"],
+		"target": "ES6",
 		"module": "esnext",
 		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"allowJs": true,
+		"esModuleInterop": true,
+		"sourceMap": false,
+		"removeComments": false,
+		// "rootDir": "./src",
+		// "baseUrl": "./src",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"jsx": "preserve",
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"importHelpers": true,
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"skipLibCheck": true,
+		"typeRoots": ["node", "node_modules/@types"],
+		"isolatedModules": true,
 		"noEmit": true,
 		"noImplicitAny": false,
 		"noUnusedParameters": false,
 		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"target": "ESNext",
 		"plugins": [
 			{
 				"name": "next"
 			}
 		],
-		"paths": {
-			"@/*": ["./src/*"]
-		},
 		"forceConsistentCasingInFileNames": true,
 		"incremental": true,
 		"strict": false
