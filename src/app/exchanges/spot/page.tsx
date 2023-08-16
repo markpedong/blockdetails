@@ -9,9 +9,9 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons'
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Typography } from 'antd'
 import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import React, { FC, useEffect, useRef } from 'react'
 
-export const Exchanges = () => {
+const Exchanges: FC = () => {
 	const actionRef = useRef<ActionType>()
 	const { symbol } = useAppSelector(state => state.setCurrency.value)
 	const { totalCrypto, totalExchange } = useAppSelector(state => state.setTotal.value)

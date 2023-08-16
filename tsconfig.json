@@ -13,7 +13,7 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"jsx": "preserve",
+		"jsx": "react",
 		"alwaysStrict": true,
 		"noUnusedLocals": true,
 		"importHelpers": true,

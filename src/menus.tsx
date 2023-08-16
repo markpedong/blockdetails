@@ -1,14 +1,20 @@
 import Cryptocurrency from '@/app/cryptocurrency/page'
 import Exchanges from '@/app/exchanges/page'
-import { AreaChartOutlined, ClusterOutlined, GlobalOutlined } from '@ant-design/icons'
+import { AreaChartOutlined, GlobalOutlined } from '@ant-design/icons'
 import React from 'react'
 
 export default [
 	{
 		path: '/cryptocurrency',
 		name: 'Cryptocurrency',
-		element: <Cryptocurrency />,
-		icon: <GlobalOutlined />
+		icon: <GlobalOutlined />,
+		children: [
+			{
+				path: '/cryptocurrency/coins',
+				name: 'Coins',
+				element: <Cryptocurrency />
+			}
+		]
 	},
 	{
 		path: '/exchanges',
@@ -18,8 +24,7 @@ export default [
 			{
 				path: '/exchanges/spot',
 				name: 'Spot',
-				element: <Exchanges />,
-				icon: <ClusterOutlined />
+				element: <Exchanges />
 			}
 		]
 	}
