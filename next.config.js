@@ -5,7 +5,12 @@ const nextConfig = {
 		return [
 			{
 				source: '/',
-				destination: '/cryptocurrency',
+				destination: '/cryptocurrency/coins',
+				permanent: true
+			},
+			{
+				source: '/cryptocurrency',
+				destination: '/cryptocurrency/coins',
 				permanent: true
 			}
 		]

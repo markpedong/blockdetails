@@ -8,12 +8,12 @@
 		"esModuleInterop": true,
 		"sourceMap": false,
 		"removeComments": false,
-		// "rootDir": "./src",
+		"rootDir": "./src",
 		// "baseUrl": "./src",
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"jsx": "react",
+		"jsx": "preserve",
 		"alwaysStrict": true,
 		"noUnusedLocals": true,
 		"importHelpers": true,

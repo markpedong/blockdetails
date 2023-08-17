@@ -11,7 +11,7 @@ import { renderPercentage } from '@/utils/antd'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { InfoCircleOutlined } from '@ant-design/icons'
 
-const Coins: FC = () => {
+const Tokens: FC = () => {
 	const actionRef = useRef<ActionType>()
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 	const formatPrice = price => `${sign} ${numberWithCommas(price)}`
@@ -130,7 +130,7 @@ const Coins: FC = () => {
 			aux: 'cmc_rank,circulating_supply',
 			limit: 5000,
 			convert: symbol,
-			cryptocurrency_type: 'coins'
+			cryptocurrency_type: 'tokens'
 		})
 
 		const result = data.data?.map(crypto => ({
@@ -160,4 +160,4 @@ const Coins: FC = () => {
 	)
 }
 
-export default Coins
+export default Tokens
