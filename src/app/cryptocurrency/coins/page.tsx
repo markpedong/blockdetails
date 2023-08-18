@@ -10,6 +10,7 @@ import { numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { InfoCircleOutlined } from '@ant-design/icons'
+import Link from 'next/link'
 
 const Coins: FC = () => {
 	const actionRef = useRef<ActionType>()
@@ -26,11 +27,14 @@ const Coins: FC = () => {
 			align: 'left',
 			render: (_, record) => {
 				const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
+				console.log(record)
 
 				return (
 					<Space align="center">
 						<Image loader={() => src} src={src} alt="logo" width={25} height={25} />
-						<Typography.Link>{record.name}</Typography.Link>
+						<Typography.Link>
+							<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
+						</Typography.Link>
 					</Space>
 				)
 			}

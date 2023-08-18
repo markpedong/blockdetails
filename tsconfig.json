@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "ES6",
+		"target": "ESNext",
 		"module": "esnext",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
@@ -8,7 +8,6 @@
 		"esModuleInterop": true,
 		"sourceMap": false,
 		"removeComments": false,
-		"rootDir": "./src",
 		// "baseUrl": "./src",
 		"paths": {
 			"@/*": ["./src/*"]
