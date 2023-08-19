@@ -1,25 +1,45 @@
-import { getCryptoDetail } from '@/api'
-import { Col, Row } from 'antd'
-import React, { FC, use } from 'react'
-// localization=true&market_data=true&community_data=false&developer_data=true&sparkline=true
+'use client'
 
-const detail = getCryptoDetail({
-	localization: true,
-	market_data: true,
-	community_data: false,
-	developer_data: true,
-	sparkline: true
-})
+import { CoinData, getCryptoDetail } from '@/api'
+import { Col, Row, Space, Spin, Typography } from 'antd'
+import Image from 'next/image'
+import { FC, useEffect, useState } from 'react'
 
 const Detail: FC = ({ params }: { params: any }) => {
-	const coin = use(detail)
-	console.log(coin)
+	const [coin, setCoin] = useState<CoinData>()
+
+	const initData = async () => {
+		const data = await getCryptoDetail(params.slug, {
+			localization: true,
+			market_data: true,
+			community_data: false,
+			developer_data: true,
+			sparkline: true
+		})
+
+		setCoin(data as unknown as CoinData)
+	}
+
+	useEffect(() => {
+		initData()
+	}, [params.slug])
+
 	return (
 		<div>
-			<Row>
-				<Col></Col>
-			</Row>
-			{params.slug}
+			{coin?.name ? (
+				<Row>
+					<Col span={6}>
+						<Space>
+							<Image src={coin?.image?.large} alt={`${coin?.name}`} width={30} height={30} />
+							<Typography.Title level={2}>{coin?.name}</Typography.Title>
+						</Space>
+					</Col>
+					<Col span={12}>1</Col>
+					<Col span={6}>1</Col>
+				</Row>
+			) : (
+				<Spin size="large" />
+			)}
 		</div>
 	)
 }

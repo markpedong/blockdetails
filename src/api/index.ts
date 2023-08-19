@@ -80,5 +80,9 @@ export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, pa
 export const getExchangesPaprika = params => get(`${HOST_PAP}/exchanges`, params, false)
 
 // v3/coins/bitcoin
-// fix this bug
-export const getCryptoDetail = params => get(`${HOST_CG}/coins/bitcoin`, params)
+export type CoinData = {
+	image: { large: string }
+	name: string
+}
+
+export const getCryptoDetail = (coin, params) => get<CoinData>(`${HOST_CG}/coins/${coin}`, params)

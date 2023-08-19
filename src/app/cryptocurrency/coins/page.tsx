@@ -27,11 +27,10 @@ const Coins: FC = () => {
 			align: 'left',
 			render: (_, record) => {
 				const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
-				console.log(record)
 
 				return (
 					<Space align="center">
-						<Image loader={() => src} src={src} alt="logo" width={25} height={25} />
+						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
 						<Typography.Link>
 							<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
 						</Typography.Link>
