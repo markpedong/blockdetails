@@ -40,12 +40,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				<ProLayout
 					location={{ pathname }}
 					actionRef={actionRef}
-					title='Block Details'
+					title="Block Details"
 					fixedHeader
 					collapsed={collapsed}
 					collapsedButtonRender={false}
 					route={{ routes: cloneDeep(menus) }}
-					layout='mix'
+					layout="mix"
 					headerContentRender={() => <GlobalData />}
 					menuProps={{
 						onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
@@ -59,7 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 								alignItems: 'center'
 							}}
 						>
-							<Image src={darkMode ? logoDark : logo} alt='logo' style={{ width: 30, height: 30 }} />
+							<Image src={darkMode ? logoDark : logo} alt="logo" style={{ width: 30, height: 30 }} />
 							<h1>Block Details</h1>
 						</div>
 					)}
