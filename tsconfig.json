@@ -18,7 +18,7 @@
 		"importHelpers": true,
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"skipLibCheck": true,
-		"typeRoots": ["node", "node_modules/@types"],
+		"typeRoots": ["node_modules/@types"],
 		"isolatedModules": true,
 		"noEmit": true,
 		"noImplicitAny": false,
