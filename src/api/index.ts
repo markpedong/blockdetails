@@ -77,7 +77,7 @@ export type Exchange = {
 }
 export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, params)
 
-export const getExchangesPaprika = params => get(`${HOST_PAP}/exchanges`, params, false)
+export const getExchangesPaprika = params => get(`${HOST_PAP}/v1/exchanges`, params, false)
 
 // v3/coins/bitcoin
 export type CoinData = {
