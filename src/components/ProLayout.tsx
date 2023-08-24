@@ -6,22 +6,21 @@ import GlobalData from '@/components/GlobalData/GlobalData'
 import Provider from '@/components/Provider'
 import menus from '@/menus'
 import { useAppSelector } from '@/redux/store'
-import { ActionType } from '@ant-design/pro-components'
 import { Typography, theme } from 'antd'
 import enUS from 'antd/locale/en_US'
 import { cloneDeep } from 'lodash'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import React, { useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { ProLayout } from '@ant-design/pro-components'
 
-const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout))
+// const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout))
 
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-	const router = useRouter()
-	const actionRef = useRef<ActionType>()
 	const pathname = usePathname()
 	const [collapsed, setCollapsed] = useState(true)
 	const darkMode = useAppSelector(state => state.themeReducer.value.isDark)
@@ -39,7 +38,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			<Provider darkMode={darkMode}>
 				<ProLayout
 					location={{ pathname }}
-					actionRef={actionRef}
 					title="Block Details"
 					fixedHeader
 					collapsed={collapsed}
@@ -65,12 +63,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 					)}
 					menuItemRender={(item, dom) => {
 						return (
-							<Typography.Link
-								style={{ paddingBlockStart: '0.5rem' }}
-								onClick={() => router.push(item.path as string)}
-							>
-								{dom}
-							</Typography.Link>
+							<Link href={item.path as string}>
+								<Typography.Link style={{ paddingBlockStart: '0.5rem' }}>{dom}</Typography.Link>
+							</Link>
 						)
 					}}
 				>

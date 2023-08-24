@@ -81,8 +81,14 @@ export const getExchangesPaprika = params => get(`${HOST_PAP}/v1/exchanges`, par
 
 // v3/coins/bitcoin
 export type CoinData = {
-	image: { large: string }
+	logo: string
 	name: string
 }
 
-export const getCryptoDetail = (coin, params) => get<CoinData>(`${HOST_CG}/coins/${coin}`, params)
+// export const getCryptoDetail = (coin, params) => get<CoinData>(`${HOST_CG}/coins/${coin}`, params)
+
+// /coins/list
+export const getCoinList = () => get(`${HOST_CG}/coins/list`)
+
+// /v2/cryptocurrency/info
+export const getDetail = params => get(`${HOST_CMC}/v2/cryptocurrency/info`, params)

@@ -1,6 +1,6 @@
 'use client'
 
-import { CoinData, getCryptoDetail } from '@/api'
+import { CoinData, getDetail } from '@/api'
 import { Col, Row, Space, Spin, Typography } from 'antd'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
@@ -9,19 +9,17 @@ const Detail: FC = ({ params }: { params: any }) => {
 	const [coin, setCoin] = useState<CoinData>()
 
 	const initData = async () => {
-		const data = await getCryptoDetail(params.slug, {
-			localization: true,
-			market_data: true,
-			community_data: false,
-			developer_data: true,
-			sparkline: true
+		const data = await getDetail({
+			id: params.id
 		})
 
-		setCoin(data as unknown as CoinData)
+		setCoin(data.data[params.id])
 	}
 
 	useEffect(() => {
 		initData()
+
+		console.log(coin)
 	}, [params.slug])
 
 	return (
@@ -30,7 +28,7 @@ const Detail: FC = ({ params }: { params: any }) => {
 				<Row>
 					<Col span={6}>
 						<Space>
-							<Image src={coin?.image?.large} alt={`${coin?.name}`} width={30} height={30} />
+							<Image src={coin?.logo} alt={`${coin?.name}`} width={30} height={30} />
 							<Typography.Title level={2}>{coin?.name}</Typography.Title>
 						</Space>
 					</Col>

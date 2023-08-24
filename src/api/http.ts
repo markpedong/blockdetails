@@ -15,21 +15,27 @@ type ApiResponse<T = null> = {
 }
 
 const get = async <T>(url: string, data = {}, key = true): Promise<ApiResponse<T>> => {
-	const res = await fetch(`${url}${stringify(data) ? '?' + stringify(data) : ''}`, {
-		method: 'GET',
-		headers: key
-			? ({
-					'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY_PROD
-			  } as {})
-			: {}
-	})
+	const queryParams = stringify(data)
+	const fullUrl = queryParams ? `${url}?${queryParams}` : url
 
-	if (!res.ok) {
-		// This will activate the closest `error.js` Error Boundary
-		throttleAlert(`Error: ${res.status}!`)
+	const headers = key ? { 'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY_PROD } : {}
+
+	try {
+		const res = await fetch(fullUrl, {
+			method: 'GET',
+			headers: headers
+		})
+
+		if (!res.ok) {
+			// This will activate the closest `error.js` Error Boundary
+			throttleAlert(`Error: ${res.status}!`)
+		}
+
+		return res.json()
+	} catch (error) {
+		console.error('Error:', error)
+		return error // You might want to handle or rethrow the error here
 	}
-
-	return res.json()
 }
 
 export { get }
