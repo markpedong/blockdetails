@@ -11,9 +11,8 @@ import enUS from 'antd/locale/en_US'
 import { cloneDeep } from 'lodash'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { ProLayout } from '@ant-design/pro-components'
 
 // const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout))
@@ -22,6 +21,7 @@ const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvid
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname()
+	const navigate = useRouter()
 	const [collapsed, setCollapsed] = useState(true)
 	const darkMode = useAppSelector(state => state.themeReducer.value.isDark)
 
@@ -63,9 +63,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 					)}
 					menuItemRender={(item, dom) => {
 						return (
-							<Link href={item.path as string}>
-								<Typography.Link style={{ paddingBlockStart: '0.5rem' }}>{dom}</Typography.Link>
-							</Link>
+							<Typography.Link
+								style={{ paddingBlockStart: '0.5rem' }}
+								onClick={() => navigate.replace(item.path as string)}
+							>
+								{dom}
+							</Typography.Link>
 						)
 					}}
 				>

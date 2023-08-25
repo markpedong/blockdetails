@@ -1,3 +1,4 @@
+import { numberWithCommas } from '@/utils'
 import { ModalFormProps, ProTableProps } from '@ant-design/pro-components'
 
 export const PRO_TABLE_PROPS: ProTableProps<any, any> = {
@@ -35,3 +36,5 @@ export const MODAL_FORM_PROPS: ModalFormProps = {
 	preserve: false,
 	size: 'large'
 }
+
+export const formatPrice = (sign, price) => `${sign} ${numberWithCommas(price)}`

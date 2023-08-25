@@ -8,14 +8,14 @@ import { getCryptocurrency, Cryptocurrency } from '@/api'
 import { useAppSelector } from '@/redux/store'
 import { numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
-import { PRO_TABLE_PROPS } from '@/constants'
+import { PRO_TABLE_PROPS, formatPrice } from '@/constants'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const Coins: FC = () => {
 	const actionRef = useRef<ActionType>()
+	const navigate = useRouter()
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
-	const formatPrice = price => `${sign} ${numberWithCommas(price)}`
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
@@ -31,8 +31,8 @@ const Coins: FC = () => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Typography.Link>
-							<Link href={`/cryptocurrency/${record.id}`}>{record.name}</Link>
+						<Typography.Link onClick={() => navigate.replace(`/cryptocurrency/${record.slug}`)}>
+							{record.name}
 						</Typography.Link>
 					</Space>
 				)
@@ -41,7 +41,7 @@ const Coins: FC = () => {
 		{
 			title: 'Price',
 			align: 'right',
-			render: (_, { quote }) => <div>{formatPrice(quote[symbol]?.price)}</div>
+			render: (_, { quote }) => <div>{formatPrice(sign, quote[symbol]?.price)}</div>
 		},
 		{
 			title: '1h %',
@@ -79,7 +79,7 @@ const Coins: FC = () => {
 			),
 
 			align: 'right',
-			render: (_, { quote }) => <div>{formatPrice(quote[symbol]?.market_cap)}</div>
+			render: (_, { quote }) => <div>{formatPrice(sign, quote[symbol]?.market_cap)}</div>
 		},
 		{
 			title: (
@@ -101,7 +101,7 @@ const Coins: FC = () => {
 			align: 'right',
 			render: (_, { quote }) => (
 				<div>
-					<div>{formatPrice(quote[symbol]?.volume_24h)}</div>
+					<div>{formatPrice(sign, quote[symbol]?.volume_24h)}</div>
 				</div>
 			)
 		},
