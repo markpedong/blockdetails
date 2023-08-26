@@ -1,7 +1,7 @@
 import { get } from '@/api/http'
 
 const HOST_CG = process.env.NEXT_PUBLIC_HOST_CG
-const HOST_CMC = process.env.NEXT_PUBLIC_HOST_CMC_PROD
+const HOST_CMC = process.env.NEXT_PUBLIC_HOST_CMC_TEST
 const HOST_PAP = process.env.NEXT_PUBLIC_HOST_PAP
 
 // /v1/global-metrics/quotes/latest
@@ -81,9 +81,12 @@ export const getExchangesPaprika = params => get(`${HOST_PAP}/v1/exchanges`, par
 
 // v3/coins/bitcoin
 export type CoinData = {
+	category: string
+	id: string
 	logo: string
 	name: string
 	slug: string
+	symbol: string
 }
 
 // export const getCryptoDetail = (coin, params) => get<CoinData>(`${HOST_CG}/coins/${coin}`, params)
@@ -96,6 +99,7 @@ export const getDetail = params => get(`${HOST_CMC}/v2/cryptocurrency/info`, par
 
 // v2/cryptocurrency/quotes/latest
 export type QuoteData = {
+	cmc_rank: string
 	quote: {
 		[currency: string]: {
 			price: number
