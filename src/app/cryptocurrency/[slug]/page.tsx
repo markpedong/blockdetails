@@ -30,24 +30,27 @@ const Detail: FC = ({ params }: { params: any }) => {
 		initData()
 	}, [params.slug])
 
+	console.log(coin)
+	console.log(quotes)
+
 	return (
 		<div>
-			{coin?.name ? (
+			{coin.name ? (
 				<Row>
 					<Col span={9}>
 						<Space direction="vertical">
 							<div style={{ paddingBlockEnd: '1.2rem', fontWeight: 600, fontSize: '0.8rem' }}>
-								Cryptocurrency &gt; {coin.category} &gt; {coin?.name}
+								Cryptocurrency &gt; {coin.category} &gt; {coin.name}
 							</div>
 							<Space direction="horizontal" align="center">
-								{/* <div><Image src={coin?.logo} alt={`${coin?.name}`} width={40} height={40} /></div> */}
+								{/* <div><Image src={coin.logo} alt={`${coin.name}`} width={40} height={40} /></div> */}
 								<div>
 									<Typography.Text style={{ fontSize: '2.3rem', fontWeight: 700 }}>
-										{coin?.name}
+										{coin.name}
 									</Typography.Text>
 								</div>
 								<Tag color="#a3b1c9" bordered={false}>
-									{coin?.symbol}
+									{coin.symbol}
 								</Tag>
 							</Space>
 							<Space size={0} direction="horizontal">
@@ -64,12 +67,14 @@ const Detail: FC = ({ params }: { params: any }) => {
 						</Space>
 					</Col>
 					<Col span={15}>
+						<div>
+							{coin.name} Price ({coin.symbol})
+						</div>
 						<Space style={{ paddingBlockStart: '2.5rem' }}>
 							<div>
 								<Typography.Text style={{ fontSize: '2.3rem', fontWeight: 700 }}>
 									{formatPrice(sign, quotes?.quote[symbol]?.price)}
 								</Typography.Text>
-								<Typography.Text></Typography.Text>
 							</div>
 							<div>{renderPercentage(quotes.quote[symbol].percent_change_24h)}</div>
 						</Space>
