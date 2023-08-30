@@ -42,3 +42,14 @@ export const renderPer = (per: number) => (
 		{per?.toFixed(2).replace('-', '')}%
 	</span>
 )
+
+export const extractDomain = (url: string) => {
+	// Remove protocol (http, https, etc.)
+	const withoutProtocol = url.replace(/^(https?:\/\/)?(www\.)?/, '')
+
+	// Remove path and query parameters
+	const parts = withoutProtocol.split('/')
+	const domain = parts[0].replace(/\.com$/, '')
+
+	return domain
+}
