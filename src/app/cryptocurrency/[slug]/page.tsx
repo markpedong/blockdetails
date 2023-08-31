@@ -5,8 +5,15 @@ import { formatPrice } from '@/constants'
 import { useAppSelector } from '@/redux/store'
 import { extractDomain, numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
-import { DownOutlined, ExclamationCircleOutlined, LinkOutlined, ShareAltOutlined } from '@ant-design/icons'
-import { Col, Divider, Dropdown, Row, Space, Spin, Tag, Typography } from 'antd'
+import {
+	AndroidOutlined,
+	AppleOutlined,
+	DownOutlined,
+	ExclamationCircleOutlined,
+	LinkOutlined,
+	ShareAltOutlined
+} from '@ant-design/icons'
+import { Col, Divider, Dropdown, Row, Space, Spin, Tabs, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
@@ -160,19 +167,25 @@ const Detail: FC = ({ params }: { params: any }) => {
 						</Space>
 						<Divider />
 						<Row gutter={16}>
-							<Col span={6}>
+							<Col span={5.5}>
 								<Typography.Text strong>Market Cap:</Typography.Text>
 								<div style={{ paddingBlockStart: '1rem' }}>
 									{formatPrice(sign, quotes.quote[symbol].market_cap)}
 								</div>
 							</Col>
-							<Col span={6}>
+							<Col span={0.5}>
+								<Divider type="vertical" style={{ blockSize: '100%' }} />
+							</Col>
+							<Col span={5.5}>
 								<Typography.Text strong>Fully Diluted Market Cap:</Typography.Text>
 								<div style={{ paddingBlockStart: '1rem' }}>
 									{formatPrice(sign, quotes.quote[symbol].fully_diluted_market_cap)}
 								</div>
 							</Col>
-							<Col span={6}>
+							<Col span={0.5}>
+								<Divider type="vertical" style={{ blockSize: '100%' }} />
+							</Col>
+							<Col span={5.5}>
 								<Typography.Text strong>Volume:</Typography.Text>
 
 								<div style={{ paddingBlock: '1rem' }}>
@@ -187,7 +200,10 @@ const Detail: FC = ({ params }: { params: any }) => {
 									%
 								</div>
 							</Col>
-							<Col span={6}>
+							<Col span={0.5}>
+								<Divider type="vertical" style={{ blockSize: '100%' }} />
+							</Col>
+							<Col span={5.5}>
 								<Typography.Text strong>Circulating Supply:</Typography.Text>
 								<div style={{ paddingBlock: '1rem' }}>
 									{numberWithCommas(quotes.circulating_supply)}
@@ -201,11 +217,36 @@ const Detail: FC = ({ params }: { params: any }) => {
 									{numberWithCommas(quotes.total_supply)}
 								</div>
 							</Col>
+							<Col span={0.5}>
+								<Divider type="vertical" style={{ blockSize: '100%' }} />
+							</Col>
 						</Row>
+					</Col>
+					<Divider />
+					<Col span={24}>
+						<Tabs
+							defaultActiveKey="2"
+							items={[AppleOutlined, AndroidOutlined].map((Icon, i) => {
+								const id = String(i + 1)
+
+								return {
+									label: (
+										<span>
+											<Icon />
+											Tab {id}
+										</span>
+									),
+									key: id,
+									children: `Tab ${id}`
+								}
+							})}
+						/>
 					</Col>
 				</Row>
 			) : (
-				<Spin size="large" />
+				<div style={{ display: 'grid', placeContent: 'center' }}>
+					<Spin size="large" />
+				</div>
 			)}
 		</div>
 	)
