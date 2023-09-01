@@ -5,15 +5,23 @@ import { formatPrice } from '@/constants'
 import { useAppSelector } from '@/redux/store'
 import { extractDomain, numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
+import { Line } from '@ant-design/plots'
 import {
-	AndroidOutlined,
-	AppleOutlined,
+	AreaChartOutlined,
+	DollarOutlined,
 	DownOutlined,
 	ExclamationCircleOutlined,
+	InfoCircleOutlined,
+	LineChartOutlined,
 	LinkOutlined,
-	ShareAltOutlined
+	PieChartOutlined,
+	RadarChartOutlined,
+	ShareAltOutlined,
+	SlidersOutlined,
+	SolutionOutlined,
+	WalletOutlined
 } from '@ant-design/icons'
-import { Col, Divider, Dropdown, Row, Space, Spin, Tabs, Tag, Typography } from 'antd'
+import { Col, Divider, Dropdown, Row, Segmented, Space, Spin, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
@@ -21,6 +29,7 @@ import { FC, useEffect, useState } from 'react'
 const Detail: FC = ({ params }: { params: any }) => {
 	const [coin, setCoin] = useState<CoinData>()
 	const [quotes, setQuotes] = useState<QuoteData>()
+	const [currentTab, setCurrentTab] = useState('overview')
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 
 	const initData = async () => {
@@ -43,6 +52,29 @@ const Detail: FC = ({ params }: { params: any }) => {
 
 	console.log(coin)
 	console.log(quotes)
+
+	const data = [
+		{ year: '1991', value: 3 },
+		{ year: '1992', value: 4 },
+		{ year: '1993', value: 3.5 },
+		{ year: '1994', value: 5 },
+		{ year: '1995', value: 4.9 },
+		{ year: '1996', value: 6 },
+		{ year: '1997', value: 7 },
+		{ year: '1998', value: 9 },
+		{ year: '1999', value: 13 }
+	]
+
+	const config = {
+		data,
+		height: 400,
+		xField: 'year',
+		yField: 'value',
+		point: {
+			size: 5,
+			shape: 'diamond'
+		}
+	}
 
 	return (
 		<div>
@@ -224,23 +256,85 @@ const Detail: FC = ({ params }: { params: any }) => {
 					</Col>
 					<Divider />
 					<Col span={24}>
-						<Tabs
-							defaultActiveKey="2"
-							items={[AppleOutlined, AndroidOutlined].map((Icon, i) => {
-								const id = String(i + 1)
-
-								return {
-									label: (
-										<span>
-											<Icon />
-											Tab {id}
-										</span>
-									),
-									key: id,
-									children: `Tab ${id}`
+						<Segmented
+							onChange={(val: string) => setCurrentTab(val)}
+							defaultValue="overview"
+							size="large"
+							options={[
+								{
+									label: 'Overview',
+									value: 'overview',
+									icon: <AreaChartOutlined />
+								},
+								{
+									label: 'Markets',
+									value: 'markets',
+									icon: <SlidersOutlined />
+								},
+								{
+									label: 'Wallet',
+									value: 'wallet',
+									icon: <WalletOutlined />
+								},
+								{
+									label: 'News',
+									value: 'news',
+									icon: <SolutionOutlined />
+								},
+								{
+									label: 'About',
+									value: 'about',
+									icon: <InfoCircleOutlined />
+								},
+								{
+									label: 'Analytics',
+									value: 'analytics',
+									icon: <LineChartOutlined />
 								}
-							})}
+							]}
 						/>
+					</Col>
+					<Divider />
+					<Col span={24}>
+						{currentTab === 'overview' && (
+							<div>
+								<Typography.Title level={4}>
+									{coin.name} to {symbol} chart
+								</Typography.Title>
+								<div style={{ marginBlockStart: '1rem' }}>
+									<Segmented
+										// value={currentTab}
+										// onChange={(val: string) => setCurrentTab(val)}
+										defaultValue="price"
+										size="middle"
+										options={[
+											{
+												label: 'Price',
+												value: 'price',
+												icon: <DollarOutlined />
+											},
+											{
+												label: 'Market Cap',
+												value: 'marketcap',
+												icon: <RadarChartOutlined />
+											},
+											{
+												label: 'Volume',
+												value: 'volume',
+												icon: <PieChartOutlined />
+											}
+										]}
+									/>
+								</div>
+								<Row style={{ marginBlockStart: '1rem' }}>
+									<Col span={15}>
+										<Line {...config} />;
+									</Col>
+									<Col span={9}>2</Col>
+								</Row>
+							</div>
+						)}
+						{currentTab === 'markets' && <div>markets</div>}
 					</Col>
 				</Row>
 			) : (

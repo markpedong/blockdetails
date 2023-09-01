@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import React from 'react'
 import StyledComponentsRegistry from '../lib/AntdRegistry'
 import { ReduxProvider } from '@/redux/provider'
+import '@ant-design/flowchart/dist/index.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,7 +13,7 @@ export const metadata = {
 }
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
-	<html lang='en'>
+	<html lang="en">
 		<body className={inter.className}>
 			<StyledComponentsRegistry>
 				<ReduxProvider>
