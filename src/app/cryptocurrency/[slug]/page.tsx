@@ -21,10 +21,11 @@ import {
 	SolutionOutlined,
 	WalletOutlined
 } from '@ant-design/icons'
-import { Col, Divider, Dropdown, Row, Segmented, Space, Spin, Tag, Typography } from 'antd'
+import { Col, Divider, Dropdown, Row, Segmented, Space, Spin, Statistic, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
+import { ProCard } from '@ant-design/pro-components'
 
 const Detail: FC = ({ params }: { params: any }) => {
 	const [coin, setCoin] = useState<CoinData>()
@@ -330,7 +331,28 @@ const Detail: FC = ({ params }: { params: any }) => {
 									<Col span={15}>
 										<Line {...config} />;
 									</Col>
-									<Col span={9}>2</Col>
+									<Col span={9}>
+										<ProCard
+											style={{ marginBlockStart: 8 }}
+											gutter={[16, 16]}
+											wrap
+											title={`${coin.symbol} Price Statistics`}
+										>
+											<ProCard layout="default">
+												<div>Bitcoin Price Today</div>
+											</ProCard>
+											<Divider />
+											<ProCard layout="center" bordered>
+												Col
+											</ProCard>
+											<ProCard layout="center" bordered>
+												Col
+											</ProCard>
+											<ProCard layout="center" bordered>
+												Col
+											</ProCard>
+										</ProCard>
+									</Col>
 								</Row>
 							</div>
 						)}
