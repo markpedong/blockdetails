@@ -21,7 +21,7 @@ import {
 	SolutionOutlined,
 	WalletOutlined
 } from '@ant-design/icons'
-import { Col, Divider, Dropdown, Row, Segmented, Space, Spin, Statistic, Tag, Typography } from 'antd'
+import { Col, Divider, Dropdown, Row, Segmented, Space, Spin, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
@@ -328,9 +328,10 @@ const Detail: FC = ({ params }: { params: any }) => {
 									/>
 								</div>
 								<Row style={{ marginBlockStart: '1rem' }}>
-									<Col span={15}>
-										<Line {...config} />;
+									<Col span={14}>
+										<Line {...config} />
 									</Col>
+									<Col offset={1} />
 									<Col span={9}>
 										<ProCard
 											style={{ marginBlockStart: 8 }}
