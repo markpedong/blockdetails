@@ -1,11 +1,10 @@
 'use client'
 
-import { CoinData, QuoteData, getDetail, getQuotesLatest } from '@/api'
+import { CoinData, QuoteData, getDetail, getMarketChart, getQuotesLatest } from '@/api'
 import { formatPrice } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { extractDomain, numberWithCommas } from '@/utils'
-import { renderPercentage } from '@/utils/antd'
-import { Line } from '@ant-design/plots'
+import { extractDomain, numberWithCommas, renderPer } from '@/utils'
+import { Line } from 'react-chartjs-2'
 import {
 	AreaChartOutlined,
 	DollarOutlined,
@@ -21,28 +20,63 @@ import {
 	SolutionOutlined,
 	WalletOutlined
 } from '@ant-design/icons'
-import { Col, Divider, Dropdown, Row, Segmented, Space, Spin, Tag, Typography } from 'antd'
+import { Card, Col, Divider, Dropdown, Row, Segmented, Space, Spin, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
-import { ProCard } from '@ant-design/pro-components'
+import { renderPercentage } from '@/utils/antd'
+import {
+	CategoryScale,
+	Chart as ChartJS,
+	Legend,
+	LinearScale,
+	LineElement,
+	PointElement,
+	Title,
+	Tooltip
+} from 'chart.js'
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const Detail: FC = ({ params }: { params: any }) => {
 	const [coin, setCoin] = useState<CoinData>()
 	const [quotes, setQuotes] = useState<QuoteData>()
 	const [currentTab, setCurrentTab] = useState('overview')
+	const [marketData, setMarketData] = useState([])
+	const [days, setDays] = useState(1)
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 
+	console.log(coin)
+	console.log(quotes)
+
+	// const data = [
+	// 	{ year: '09/04/2023', value: 20000 },
+	// 	{ year: '09/04/2023', value: 20000 },
+	// 	{ year: '09/04/2023', value: 20000 },
+	// 	{ year: '09/05/2023', value: 25000 },
+	// 	{ year: '09/05/2023', value: 25000 },
+	// 	{ year: '09/05/2023', value: 25000 },
+	// 	{ year: '09/05/2023', value: 25000 },
+	// 	{ year: '09/05/2023', value: 25000 }
+	// ]
+
 	const initData = async () => {
-		const [data, quoteData] = await Promise.all([
+		const [data, quoteData, marketData] = await Promise.all([
 			getDetail({
-				slug: params.slug
+				slug: params.slug,
+				aux: 'urls,logo,description,tags,platform,date_added,notice,status'
 			}),
 			getQuotesLatest({
-				slug: params.slug
+				slug: params.slug,
+				aux: 'num_market_pairs,cmc_rank,date_added,tags,platform,max_supply,circulating_supply,total_supply,market_cap_by_total_supply,volume_24h_reported,volume_7d,volume_7d_reported,volume_30d,volume_30d_reported,is_active,is_fiat'
+			}),
+			getMarketChart(params.slug, {
+				vs_currency: symbol.toLowerCase(),
+				days: 'max'
 			})
 		])
 
+		setMarketData(marketData.prices)
 		setCoin(Object.values(data.data)[0] as CoinData)
 		setQuotes(Object.values(quoteData.data)[0] as unknown as any)
 	}
@@ -50,32 +84,6 @@ const Detail: FC = ({ params }: { params: any }) => {
 	useEffect(() => {
 		initData()
 	}, [params.slug])
-
-	console.log(coin)
-	console.log(quotes)
-
-	const data = [
-		{ year: '1991', value: 3 },
-		{ year: '1992', value: 4 },
-		{ year: '1993', value: 3.5 },
-		{ year: '1994', value: 5 },
-		{ year: '1995', value: 4.9 },
-		{ year: '1996', value: 6 },
-		{ year: '1997', value: 7 },
-		{ year: '1998', value: 9 },
-		{ year: '1999', value: 13 }
-	]
-
-	const config = {
-		data,
-		height: 400,
-		xField: 'year',
-		yField: 'value',
-		point: {
-			size: 5,
-			shape: 'diamond'
-		}
-	}
 
 	return (
 		<div>
@@ -298,11 +306,13 @@ const Detail: FC = ({ params }: { params: any }) => {
 					<Divider />
 					<Col span={24}>
 						{currentTab === 'overview' && (
-							<div>
-								<Typography.Title level={4}>
-									{coin.name} to {symbol} chart
-								</Typography.Title>
-								<div style={{ marginBlockStart: '1rem' }}>
+							<Row gutter={24}>
+								<Col span={24}>
+									<Typography.Title level={4}>
+										{coin.name} to {symbol} chart
+									</Typography.Title>
+								</Col>
+								<Col span={14}>
 									<Segmented
 										// value={currentTab}
 										// onChange={(val: string) => setCurrentTab(val)}
@@ -325,37 +335,179 @@ const Detail: FC = ({ params }: { params: any }) => {
 												icon: <PieChartOutlined />
 											}
 										]}
+										style={{ marginBlockEnd: '50px' }}
 									/>
-								</div>
-								<Row style={{ marginBlockStart: '1rem' }}>
-									<Col span={14}>
-										<Line {...config} />
-									</Col>
-									<Col offset={1} />
-									<Col span={9}>
-										<ProCard
-											style={{ marginBlockStart: 8 }}
-											gutter={[16, 16]}
-											wrap
-											title={`${coin.symbol} Price Statistics`}
-										>
-											<ProCard layout="default">
-												<div>Bitcoin Price Today</div>
-											</ProCard>
-											<Divider />
-											<ProCard layout="center" bordered>
-												Col
-											</ProCard>
-											<ProCard layout="center" bordered>
-												Col
-											</ProCard>
-											<ProCard layout="center" bordered>
-												Col
-											</ProCard>
-										</ProCard>
-									</Col>
-								</Row>
-							</div>
+									<Line
+										options={{
+											elements: {
+												point: {
+													radius: 1
+												}
+											},
+											plugins: {
+												legend: {
+													display: false
+												}
+											},
+											scales: {
+												x: {
+													grid: {
+														display: false
+													}
+												},
+												y: {
+													grid: {
+														display: false
+													}
+												}
+											}
+										}}
+										data={{
+											labels: marketData?.map(coin => {
+												let date = new Date(coin[0])
+												let time =
+													date.getHours() > 12
+														? `${date.getHours() - 12}: ${date.getMinutes()} PM`
+														: `${date.getHours()}: ${date.getMinutes()} AM`
+
+												return days === 1 ? time : date.toLocaleDateString()
+											}),
+
+											datasets: [
+												{
+													data: marketData?.map(coin => coin[1]),
+													borderColor: 'red'
+												}
+											]
+										}}
+									/>
+									<div>
+										<Typography.Title level={4}>{coin.symbol} Price Live Data</Typography.Title>
+										<Typography.Text>
+											The live Bitcoin price today is{' '}
+											{formatPrice(sign, quotes.quote[symbol]?.price)} {symbol} with a 24-hour
+											trading volume of {formatPrice(sign, quotes.quote[symbol]?.volume_24h)}
+											{symbol}. We update our {coin.symbol} to {symbol} price in real-time.
+											{coin.name} is{' '}
+											{quotes.quote[symbol]?.percent_change_24h > 1 ? 'up' : 'down'}
+											{renderPer(quotes.quote[symbol]?.percent_change_24h)} in the last 24 hours.
+											The current ranking is #{quotes.cmc_rank}, with a live market cap of{' '}
+											{formatPrice(sign, quotes.quote[symbol]?.market_cap)} {symbol}. It has a
+											circulating supply of {numberWithCommas(quotes.circulating_supply)}{' '}
+											{coin.symbol} coins and a max. supply of{' '}
+											{numberWithCommas(quotes.max_supply)} {coin.symbol} coins. If you would like
+											to know where to buy {coin.name} at the current rate, the top cryptocurrency
+											exchanges for trading in Bitcoinstock are currently WhiteBIT, Binance,
+											DigiFinex, BitMart and Bitrue. You can find others listed on our crypto
+											exchanges page.
+										</Typography.Text>
+										<Typography.Title level={4}>
+											{coin.symbol} What is ({coin.symbol})?
+										</Typography.Title>
+										<Typography.Text>{coin.description}</Typography.Text>
+									</div>
+								</Col>
+								<Col span={1} />
+								<Col span={9}>
+									<Card title={`${coin.symbol} Price Statistics`} bordered>
+										<Divider orientation="left">{coin.name} Price Today</Divider>
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">{coin.name} Price</Typography.Text>
+											<Typography.Text strong>
+												{formatPrice(sign, quotes.quote[symbol]?.price)}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Price Change (24h)</Typography.Text>
+											<Typography.Text strong>
+												{renderPer(quotes.quote[symbol]?.percent_change_24h)}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Trading Volume (24h)</Typography.Text>
+											<Typography.Text strong>
+												{formatPrice(sign, quotes.quote[symbol]?.volume_24h)}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Market Rank</Typography.Text>
+											<Typography.Text strong># {quotes.cmc_rank}</Typography.Text>
+										</div>
+										<Divider orientation="left" style={{ paddingTop: '20px' }}>
+											{coin.name} Market Cap
+										</Divider>
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Market Cap</Typography.Text>
+											<Typography.Text strong>
+												{formatPrice(sign, quotes.quote[symbol]?.price)}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Fully Diluted Market Cap</Typography.Text>
+											<Typography.Text strong>
+												{formatPrice(sign, quotes.quote[symbol]?.fully_diluted_market_cap)}
+											</Typography.Text>
+										</div>
+										<Divider orientation="left" style={{ paddingTop: '20px' }}>
+											{coin.name} Price History
+										</Divider>
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">
+												7d Price Percentage Change
+											</Typography.Text>
+											<Typography.Text strong>
+												{renderPer(quotes.quote[symbol]?.percent_change_7d)}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">
+												30d Price Percentage Change
+											</Typography.Text>
+											<Typography.Text strong>
+												{renderPer(quotes.quote[symbol]?.percent_change_30d)}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">
+												60d Price Percentage Change
+											</Typography.Text>
+											<Typography.Text strong>
+												{renderPer(quotes.quote[symbol]?.percent_change_60d)}
+											</Typography.Text>
+										</div>
+										<Divider orientation="left" style={{ paddingTop: '20px' }}>
+											{coin.name} Supply
+										</Divider>
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Circulating Supply</Typography.Text>
+											<Typography.Text strong>
+												{numberWithCommas(quotes?.circulating_supply)} {coin.symbol}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Total Supply</Typography.Text>
+											<Typography.Text strong>
+												{numberWithCommas(quotes?.total_supply)} {coin.symbol}
+											</Typography.Text>
+										</div>
+										<Divider />
+										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+											<Typography.Text type="secondary">Max Supply</Typography.Text>
+											<Typography.Text strong>
+												{numberWithCommas(quotes?.max_supply)} {coin.symbol}
+											</Typography.Text>
+										</div>
+										<Divider />
+									</Card>
+								</Col>
+							</Row>
 						)}
 						{currentTab === 'markets' && <div>markets</div>}
 					</Col>

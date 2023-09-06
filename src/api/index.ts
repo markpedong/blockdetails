@@ -82,6 +82,7 @@ export const getExchangesPaprika = params => get(`${HOST_PAP}/v1/exchanges`, par
 // v3/coins/bitcoin
 export type CoinData = {
 	category: string
+	description: string
 	id: string
 	logo: string
 	name: string
@@ -118,8 +119,14 @@ export type QuoteData = {
 			percent_change_1h: number
 			percent_change_24h: number
 			percent_change_7d: number
+			percent_change_30d: number
+			percent_change_60d: number
 			market_cap: number
 		}
 	}
 }
+
 export const getQuotesLatest = params => get<QuoteData>(`${HOST_CMC}/v2/cryptocurrency/quotes/latest`, params)
+
+// /v3/coins/bitcoin/market_chart
+export const getMarketChart = (slug, params) => get(`${HOST_CG}/coins/${slug}/market_chart`, params)
