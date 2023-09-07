@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import React from 'react'
 import StyledComponentsRegistry from '../lib/AntdRegistry'
 import { ReduxProvider } from '@/redux/provider'
-import '@ant-design/flowchart/dist/index.css'
 
 const inter = Inter({ subsets: ['latin'] })
 

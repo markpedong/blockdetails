@@ -1,10 +1,9 @@
 'use client'
 
-import { CoinData, QuoteData, getDetail, getMarketChart, getQuotesLatest } from '@/api'
+import { CoinData, CoinDataCG, QuoteData, getCoinDetail, getDetail, getMarketChart, getQuotesLatest } from '@/api'
 import { formatPrice } from '@/constants'
 import { useAppSelector } from '@/redux/store'
 import { extractDomain, numberWithCommas, renderPer } from '@/utils'
-import { Line } from 'react-chartjs-2'
 import {
 	AreaChartOutlined,
 	DollarOutlined,
@@ -25,25 +24,19 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
 import { renderPercentage } from '@/utils/antd'
-import {
-	CategoryScale,
-	Chart as ChartJS,
-	Legend,
-	LinearScale,
-	LineElement,
-	PointElement,
-	Title,
-	Tooltip
-} from 'chart.js'
+import dayjs from 'dayjs'
+import dynamic from 'next/dynamic'
+import StatisticsData from './components/statistics'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+const Line = dynamic(() => import('@ant-design/charts').then(i => i.Line))
 
 const Detail: FC = ({ params }: { params: any }) => {
 	const [coin, setCoin] = useState<CoinData>()
 	const [quotes, setQuotes] = useState<QuoteData>()
+	const [coinCG, setCoinCG] = useState<CoinDataCG>()
+
 	const [currentTab, setCurrentTab] = useState('overview')
 	const [marketData, setMarketData] = useState([])
-	const [days, setDays] = useState(1)
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 
 	console.log(coin)
@@ -61,7 +54,7 @@ const Detail: FC = ({ params }: { params: any }) => {
 	// ]
 
 	const initData = async () => {
-		const [data, quoteData, marketData] = await Promise.all([
+		const [data, quoteData, marketData, coin] = await Promise.all([
 			getDetail({
 				slug: params.slug,
 				aux: 'urls,logo,description,tags,platform,date_added,notice,status'
@@ -72,14 +65,28 @@ const Detail: FC = ({ params }: { params: any }) => {
 			}),
 			getMarketChart(params.slug, {
 				vs_currency: symbol.toLowerCase(),
-				days: 'max'
-			})
+				days: '30'
+			}),
+			getCoinDetail(params.slug)
 		])
 
-		setMarketData(marketData.prices)
+		setMarketData(
+			marketData.prices.map(i => ({
+				date: i[0],
+				value: i[1]
+			}))
+		)
 		setCoin(Object.values(data.data)[0] as CoinData)
 		setQuotes(Object.values(quoteData.data)[0] as unknown as any)
+		setCoinCG(coin as unknown as CoinDataCG)
 	}
+
+	const lowestValue = marketData.reduce(
+		(acc, curr) => (curr.value < acc.value ? curr : acc),
+		marketData[0] || undefined
+	)
+
+	console.log(lowestValue, 'lowestValue')
 
 	useEffect(() => {
 		initData()
@@ -338,48 +345,38 @@ const Detail: FC = ({ params }: { params: any }) => {
 										style={{ marginBlockEnd: '50px' }}
 									/>
 									<Line
-										options={{
-											elements: {
-												point: {
-													radius: 1
+										data={marketData}
+										yAxis={{ min: lowestValue.value }}
+										xField="date"
+										yField="value"
+										annotations={[
+											// 低于中位数颜色变化
+											// MUST FIX THIS, THE LINE MUST BE IN THE MIDDLE
+											{
+												type: 'regionFilter',
+												start: ['min', 'median'],
+												end: ['max', '0'],
+												color: '#F4664A'
+											},
+											{
+												type: 'text',
+												position: ['min', 'median'],
+												content: '中位数',
+												offsetY: -4,
+												style: {
+													textBaseline: 'bottom'
 												}
 											},
-											plugins: {
-												legend: {
-													display: false
-												}
-											},
-											scales: {
-												x: {
-													grid: {
-														display: false
-													}
-												},
-												y: {
-													grid: {
-														display: false
-													}
+											{
+												type: 'line',
+												start: ['min', 'median'],
+												end: ['max', 'median'],
+												style: {
+													stroke: '#F4664A',
+													lineDash: [2, 2]
 												}
 											}
-										}}
-										data={{
-											labels: marketData?.map(coin => {
-												let date = new Date(coin[0])
-												let time =
-													date.getHours() > 12
-														? `${date.getHours() - 12}: ${date.getMinutes()} PM`
-														: `${date.getHours()}: ${date.getMinutes()} AM`
-
-												return days === 1 ? time : date.toLocaleDateString()
-											}),
-
-											datasets: [
-												{
-													data: marketData?.map(coin => coin[1]),
-													borderColor: 'red'
-												}
-											]
-										}}
+										]}
 									/>
 									<div>
 										<Typography.Title level={4}>{coin.symbol} Price Live Data</Typography.Title>
@@ -418,13 +415,20 @@ const Detail: FC = ({ params }: { params: any }) => {
 											</Typography.Text>
 										</div>
 										<Divider />
-										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+										{/* <div style={{ justifyContent: 'space-between', display: 'flex' }}>
 											<Typography.Text type="secondary">Price Change (24h)</Typography.Text>
 											<Typography.Text strong>
 												{renderPer(quotes.quote[symbol]?.percent_change_24h)}
 											</Typography.Text>
 										</div>
-										<Divider />
+										<Divider /> */}
+										<StatisticsData
+											title="Price Change (24h)"
+											data={coinCG.market_data.price_change_24h_in_currency[
+												symbol.toLowerCase()
+											].toFixed(2)}
+											per={quotes.quote[symbol]?.percent_change_24h}
+										/>
 										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
 											<Typography.Text type="secondary">Trading Volume (24h)</Typography.Text>
 											<Typography.Text strong>
@@ -455,32 +459,47 @@ const Detail: FC = ({ params }: { params: any }) => {
 										<Divider orientation="left" style={{ paddingTop: '20px' }}>
 											{coin.name} Price History
 										</Divider>
-										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
-											<Typography.Text type="secondary">
-												7d Price Percentage Change
-											</Typography.Text>
-											<Typography.Text strong>
-												{renderPer(quotes.quote[symbol]?.percent_change_7d)}
-											</Typography.Text>
-										</div>
-										<Divider />
-										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
-											<Typography.Text type="secondary">
-												30d Price Percentage Change
-											</Typography.Text>
-											<Typography.Text strong>
-												{renderPer(quotes.quote[symbol]?.percent_change_30d)}
-											</Typography.Text>
-										</div>
-										<Divider />
-										<div style={{ justifyContent: 'space-between', display: 'flex' }}>
-											<Typography.Text type="secondary">
-												60d Price Percentage Change
-											</Typography.Text>
-											<Typography.Text strong>
-												{renderPer(quotes.quote[symbol]?.percent_change_60d)}
-											</Typography.Text>
-										</div>
+										<StatisticsData
+											title="7d Price Percentage Change"
+											data={coinCG.market_data.price_change_percentage_7d_in_currency[
+												symbol.toLowerCase()
+											].toFixed(2)}
+											per={coinCG.market_data.price_change_percentage_7d}
+										/>
+										<StatisticsData
+											title="30d Price Percentage Change"
+											data={coinCG.market_data.price_change_percentage_30d_in_currency[
+												symbol.toLowerCase()
+											].toFixed(2)}
+											per={coinCG.market_data.price_change_percentage_30d}
+										/>
+										<StatisticsData
+											title="60d Price Percentage Change"
+											data={coinCG.market_data.price_change_percentage_60d_in_currency[
+												symbol.toLowerCase()
+											].toFixed(2)}
+											per={coinCG.market_data.price_change_percentage_60d}
+										/>
+										<StatisticsData
+											title="52w Price Percentage Change"
+											data={coinCG.market_data.price_change_percentage_1y_in_currency[
+												symbol.toLowerCase()
+											].toFixed(2)}
+											per={coinCG.market_data.price_change_percentage_1y}
+										/>
+										<StatisticsData
+											title="All Time High"
+											data={coinCG.market_data.ath[symbol.toLowerCase()]}
+											date={coinCG.market_data.ath_date[symbol.toLowerCase()]}
+											per={coinCG.market_data.ath_change_percentage[symbol.toLowerCase()]}
+										/>
+										<StatisticsData
+											title="All Time Low"
+											data={coinCG.market_data.atl[symbol.toLowerCase()]}
+											date={coinCG.market_data.atl_date[symbol.toLowerCase()]}
+											per={coinCG.market_data.atl_change_percentage[symbol.toLowerCase()]}
+											divider={false}
+										/>
 										<Divider orientation="left" style={{ paddingTop: '20px' }}>
 											{coin.name} Supply
 										</Divider>

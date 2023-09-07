@@ -130,3 +130,50 @@ export const getQuotesLatest = params => get<QuoteData>(`${HOST_CMC}/v2/cryptocu
 
 // /v3/coins/bitcoin/market_chart
 export const getMarketChart = (slug, params) => get(`${HOST_CG}/coins/${slug}/market_chart`, params)
+
+// /api/v3/coins/
+export type CoinDataCG = {
+	market_data: {
+		current_price: {
+			[currency: string]: number
+		}
+		ath: {
+			[currency: string]: number
+		}
+		ath_change_percentage: {
+			[currency: string]: number
+		}
+		ath_date: {
+			[currency: string]: string
+		}
+		atl: {
+			[currency: string]: number
+		}
+		atl_change_percentage: {
+			[currency: string]: number
+		}
+		atl_date: {
+			[currency: string]: string
+		}
+		price_change_24h_in_currency: {
+			[currency: string]: number
+		}
+		price_change_percentage_7d_in_currency: {
+			[currency: string]: number
+		}
+		price_change_percentage_7d: number
+		price_change_percentage_30d_in_currency: {
+			[currency: string]: number
+		}
+		price_change_percentage_30d: number
+		price_change_percentage_60d_in_currency: {
+			[currency: string]: number
+		}
+		price_change_percentage_60d: number
+		price_change_percentage_1y_in_currency: {
+			[currency: string]: number
+		}
+		price_change_percentage_1y: number
+	}
+}
+export const getCoinDetail = slug => get<CoinDataCG>(`${HOST_CG}/coins/${slug}?market_data=true`)
