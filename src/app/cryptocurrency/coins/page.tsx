@@ -6,8 +6,7 @@ import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
 import { getCryptocurrency, Cryptocurrency } from '@/api'
 import { useAppSelector } from '@/redux/store'
-import { numberWithCommas } from '@/utils'
-import { renderPercentage } from '@/utils/antd'
+import { numberWithCommas, renderPer } from '@/utils'
 import { PRO_TABLE_PROPS, formatPrice } from '@/constants'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/navigation'
@@ -46,17 +45,17 @@ const Coins: FC = () => {
 		{
 			title: '1h %',
 			align: 'center',
-			render: (_, { quote }) => renderPercentage(quote[symbol]?.percent_change_1h)
+			render: (_, { quote }) => renderPer(quote[symbol]?.percent_change_1h)
 		},
 		{
 			title: '24 %',
 			align: 'center',
-			render: (_, { quote }) => renderPercentage(quote[symbol]?.percent_change_24h)
+			render: (_, { quote }) => renderPer(quote[symbol]?.percent_change_24h)
 		},
 		{
 			title: '7d %',
 			align: 'center',
-			render: (_, { quote }) => renderPercentage(quote[symbol]?.percent_change_7d)
+			render: (_, { quote }) => renderPer(quote[symbol]?.percent_change_7d)
 		},
 		{
 			title: (
