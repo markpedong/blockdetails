@@ -97,8 +97,6 @@ export type CoinData = {
 	}
 }
 
-// export const getCryptoDetail = (coin, params) => get<CoinData>(`${HOST_CG}/coins/${coin}`, params)
-
 // /coins/list
 export const getCoinList = () => get(`${HOST_CG}/coins/list`)
 
@@ -133,6 +131,7 @@ export const getMarketChart = (slug, params) => get(`${HOST_CG}/coins/${slug}/ma
 
 // /api/v3/coins/
 export type CoinDataCG = {
+	id: string
 	market_data: {
 		current_price: {
 			[currency: string]: number
@@ -174,6 +173,71 @@ export type CoinDataCG = {
 			[currency: string]: number
 		}
 		price_change_percentage_1y: number
+		max_supply: number
+	}
+	description: {
+		en: string
 	}
 }
 export const getCoinDetail = slug => get<CoinDataCG>(`${HOST_CG}/coins/${slug}?market_data=true`)
+
+// /coins/list?include_platform=false
+export const getAllCoinIds = () => get(`${HOST_CG}/coins/list?include_platform=false`)
+
+// /search/trending
+export type GetTrendingResponse = {
+	coins: {
+		item: {
+			id: string
+			coin_id: number
+			name: string
+			symbol: string
+			market_cap_rank: string
+			thumb: string
+			small: string
+			large: string
+			slug: string
+			price_btc: number
+			score: number
+		}
+	}[]
+	exchanges: {
+		item: {
+			id: string
+			coin_id: number
+			name: string
+			symbol: string
+			market_cap_rank: string
+			thumb: string
+			small: string
+			large: string
+			slug: string
+			price_btc: number
+			score: number
+		}
+	}[]
+}
+
+export const getTrending = () => get<GetTrendingResponse>(`${HOST_CG}/search/trending`)
+
+// /coins/{}/tickers?order=volume_desc&depth=true
+export type CoinMarketResponse = {
+	tickers: {
+		cost_to_move_up_usd: number
+		cost_to_move_down_usd: number
+		last: number
+		bid_ask_spread_percentage: number
+		converted_volume: {
+			usd: number
+		}
+		base: string
+		target: string
+		market: {
+			logo: string
+			name: string
+			identifier: string
+		}
+		trust_score: string
+	}[]
+}
+export const getCoinMarkets = (params, id) => get<CoinMarketResponse>(`${HOST_CG}/coins/${id}/tickers`, params)

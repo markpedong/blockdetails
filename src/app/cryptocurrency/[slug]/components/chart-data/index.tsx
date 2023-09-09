@@ -4,12 +4,13 @@ import { Col, Segmented } from 'antd'
 import React, { FC } from 'react'
 import Description from './description'
 import dynamic from 'next/dynamic'
+import Trending from './trending'
 
 const Line = dynamic(() => import('@ant-design/charts').then(i => i.Line))
 
 const ChartData: FC = () => {
 	const data = useAppSelector(state => state.setCharts.value)
-	const lowestValue = data.reduce((acc, curr) => (curr.value < acc.value ? curr : acc), data[0] || undefined)
+	const lowestValue = data?.reduce((acc, curr) => (curr.value < acc.value ? curr : acc), data[0] || undefined)
 
 	return (
 		<Col span={14}>
@@ -72,6 +73,7 @@ const ChartData: FC = () => {
 				]}
 			/>
 			<Description />
+			<Trending />
 		</Col>
 	)
 }

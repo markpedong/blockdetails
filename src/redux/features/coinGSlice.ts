@@ -7,6 +7,8 @@ type InitialState = {
 
 const initialState: InitialState = {
 	value: {
+		id: '',
+		description: { en: '' },
 		market_data: {
 			current_price: {},
 			ath: {},
@@ -23,7 +25,8 @@ const initialState: InitialState = {
 			price_change_percentage_60d_in_currency: {},
 			price_change_percentage_60d: undefined,
 			price_change_percentage_1y_in_currency: {},
-			price_change_percentage_1y: undefined
+			price_change_percentage_1y: undefined,
+			max_supply: undefined
 		}
 	}
 }

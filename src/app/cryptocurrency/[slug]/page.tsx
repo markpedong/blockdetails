@@ -1,6 +1,6 @@
 'use client'
 
-import { CoinData, CoinDataCG, getCoinDetail, getDetail, getMarketChart, getQuotesLatest } from '@/api'
+import { CoinData, CoinDataCG, getAllCoinIds, getCoinDetail, getDetail, getMarketChart, getQuotesLatest } from '@/api'
 import { formatPrice } from '@/constants'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import {
@@ -24,16 +24,24 @@ import LinksDropdown from './components/links-dropdown'
 import { setChart } from '@/redux/features/chartSlice'
 import ChartData from './components/chart-data'
 import MarketData from './components/market-data'
+import Markets from './components/markets'
 
 const Detail: FC = ({ params }: { params: any }) => {
 	const [currentTab, setCurrentTab] = useState('overview')
+	const [coinID, setCoinID] = useState<string>()
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 	const coin = useAppSelector(state => state.setCoin.value)
 	const quotes = useAppSelector(state => state.setQuotes.value)
 	const dispatch = useDispatch<AppDispatch>()
 
+	const findId = async () => {
+		const data = await getAllCoinIds()
+		const { id } = data?.find(i => i.name.toLowerCase() === params.slug)
+
+		setCoinID(id)
+	}
 	const initData = async () => {
-		const [data, quoteData, marketData, coin] = await Promise.all([
+		const [data, quoteData] = await Promise.all([
 			getDetail({
 				slug: params.slug,
 				aux: 'urls,logo,description,tags,platform,date_added,notice,status'
@@ -42,19 +50,25 @@ const Detail: FC = ({ params }: { params: any }) => {
 				slug: params.slug,
 				aux: 'num_market_pairs,cmc_rank,date_added,tags,platform,max_supply,circulating_supply,total_supply,market_cap_by_total_supply,volume_24h_reported,volume_7d,volume_7d_reported,volume_30d,volume_30d_reported,is_active,is_fiat'
 			}),
-			getMarketChart(params.slug, {
-				vs_currency: symbol.toLowerCase(),
-				days: '30'
-			}),
-			getCoinDetail(params.slug)
+
+			getAllCoinIds()
 		])
 
 		dispatch(setCoin(Object.values(data.data)[0] as CoinData))
 		dispatch(setQuotes(Object.values(quoteData.data)[0] as unknown as any))
+
+		const [coin, marketData] = await Promise.all([
+			getCoinDetail(coinID),
+			getMarketChart(coinID, {
+				vs_currency: symbol.toLowerCase(),
+				days: '30'
+			})
+		])
+
 		dispatch(setCoinCG(coin as unknown as CoinDataCG))
 		dispatch(
 			setChart(
-				marketData.prices.map(i => ({
+				marketData.prices?.map(i => ({
 					date: i[0],
 					value: i[1]
 				}))
@@ -63,6 +77,7 @@ const Detail: FC = ({ params }: { params: any }) => {
 	}
 
 	useEffect(() => {
+		findId()
 		initData()
 	}, [params.slug])
 
@@ -185,6 +200,9 @@ const Detail: FC = ({ params }: { params: any }) => {
 								<Col span={1} />
 								{/* STATISTICS DATA */}
 								<Statistics />
+								<Col span={24}>
+									<Markets id={coinID} />
+								</Col>
 							</Row>
 						)}
 						{currentTab === 'markets' && <div>markets</div>}

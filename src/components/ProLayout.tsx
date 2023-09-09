@@ -13,9 +13,8 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { ProLayout } from '@ant-design/pro-components'
 
-// const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout))
+const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout), { ssr: false })
 
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
 

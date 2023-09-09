@@ -30,7 +30,13 @@ const Coins: FC = () => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Typography.Link onClick={() => navigate.replace(`/cryptocurrency/${record.slug}`)}>
+						<Typography.Link
+							onClick={() => {
+								navigate.replace(`/cryptocurrency/${record.slug}`)
+
+								localStorage.setItem('slug', record.slug)
+							}}
+						>
 							{record.name}
 						</Typography.Link>
 					</Space>
@@ -143,28 +149,6 @@ const Coins: FC = () => {
 			data: result
 		}
 	}
-
-	// const getTableData = async () => {
-	// 	const [data, coins] = await Promise.all([
-	// 		getCryptocurrency({
-	// 			aux: 'cmc_rank,circulating_supply',
-	// 			limit: 5000,
-	// 			convert: symbol,
-	// 			cryptocurrency_type: 'coins'
-	// 		}),
-	// 		getCoinList()
-	// 	])
-
-	// 	const coinsMap = new Map(coins.map(obj => [obj.symbol.toLowerCase(), obj.id]))
-	// 	const result = data.data?.map(crypto => ({
-	// 		...crypto,
-	// 		slug: coinsMap.get(crypto.symbol.toLowerCase())
-	// 	}))
-
-	// 	return {
-	// 		data: result
-	// 	}
-	// }
 
 	useEffect(() => {
 		if (actionRef.current) {
