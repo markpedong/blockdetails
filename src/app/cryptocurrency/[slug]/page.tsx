@@ -201,7 +201,7 @@ const Detail: FC = ({ params }: { params: any }) => {
 								{/* STATISTICS DATA */}
 								<Statistics />
 								<Col span={24}>
-									<Markets id={coinID} />
+									<Markets  />
 								</Col>
 							</Row>
 						)}

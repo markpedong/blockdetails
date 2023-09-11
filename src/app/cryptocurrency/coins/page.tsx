@@ -9,11 +9,10 @@ import { useAppSelector } from '@/redux/store'
 import { numberWithCommas, renderPer } from '@/utils'
 import { PRO_TABLE_PROPS, formatPrice } from '@/constants'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const Coins: FC = () => {
 	const actionRef = useRef<ActionType>()
-	const navigate = useRouter()
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
@@ -30,15 +29,7 @@ const Coins: FC = () => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Typography.Link
-							onClick={() => {
-								navigate.replace(`/cryptocurrency/${record.slug}`)
-
-								localStorage.setItem('slug', record.slug)
-							}}
-						>
-							{record.name}
-						</Typography.Link>
+						<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
 					</Space>
 				)
 			}

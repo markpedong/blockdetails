@@ -8,10 +8,10 @@ import menus from '@/menus'
 import { useAppSelector } from '@/redux/store'
 import { Typography, theme } from 'antd'
 import enUS from 'antd/locale/en_US'
-import { cloneDeep } from 'lodash'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout), { ssr: false })
@@ -20,7 +20,6 @@ const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvid
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname()
-	const navigate = useRouter()
 	const [collapsed, setCollapsed] = useState(true)
 	const darkMode = useAppSelector(state => state.themeReducer.value.isDark)
 
@@ -38,10 +37,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				<ProLayout
 					location={{ pathname }}
 					title="Block Details"
-					fixedHeader
 					collapsed={collapsed}
 					collapsedButtonRender={false}
-					route={{ routes: cloneDeep(menus) }}
 					layout="mix"
 					headerContentRender={() => <GlobalData />}
 					menuProps={{
@@ -60,13 +57,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 							<h1>Block Details</h1>
 						</div>
 					)}
+					menuDataRender={() => menus}
 					menuItemRender={(item, dom) => {
 						return (
-							<Typography.Link
-								style={{ paddingBlockStart: '0.5rem' }}
-								onClick={() => navigate.replace(item.path as string)}
-							>
-								{dom}
+							<Typography.Link style={{ paddingBlockStart: '0.5rem' }}>
+								<Link href={item.path}>{dom}</Link>
 							</Typography.Link>
 						)
 					}}
