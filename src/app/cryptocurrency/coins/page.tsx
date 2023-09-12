@@ -37,7 +37,7 @@ const Coins: FC = () => {
 		{
 			title: 'Price',
 			align: 'right',
-			render: (_, { quote }) => <div>{formatPrice(sign, quote[symbol]?.price)}</div>
+			render: (_, { quote }) => formatPrice(sign, quote[symbol]?.price)
 		},
 		{
 			title: '1h %',

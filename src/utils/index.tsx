@@ -7,13 +7,13 @@ export const throttleAlert = msg => throttle(message.error(msg), 1500, { trailin
 
 export const numberWithCommas = (number: number) => {
 	if (number >= 1) {
-		return number?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+		return numeral(number).format('0,0.00')
 	} else if (number >= 0.1) {
-		return number?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+		return numeral(number).format('0,0.00')
 	} else if (number >= 0.001) {
-		return number?.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })
+		return numeral(number).format('0,0.0000')
 	} else {
-		return number?.toLocaleString(undefined, { minimumFractionDigits: 8, maximumFractionDigits: 8 })
+		return numeral(number).format('0,0.00000000')
 	}
 }
 
