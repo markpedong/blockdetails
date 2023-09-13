@@ -2,7 +2,7 @@
 
 import logoDark from '@/assets/logo-darkmode.svg'
 import logo from '@/assets/logo.svg'
-import GlobalData from '@/components/GlobalData/GlobalData'
+import GlobalData from '@/components/globalData/GlobalData'
 import Provider from '@/components/Provider'
 import menus from '@/menus'
 import { useAppSelector } from '@/redux/store'
@@ -15,7 +15,6 @@ import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-layout').then(com => com.ProLayout), { ssr: false })
-
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
 
 export default function Layout({ children }: { children: React.ReactNode }) {
