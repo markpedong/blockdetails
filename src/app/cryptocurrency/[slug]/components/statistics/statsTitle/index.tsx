@@ -1,6 +1,5 @@
-import { formatPrice } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { numberWithCommas } from '@/utils'
+import { formatPrice, numberWithCommas } from '@/utils'
 import { Typography, Divider } from 'antd'
 import React, { FC } from 'react'
 
@@ -20,7 +19,7 @@ const StatsTitle: FC<Props> = ({ dataSign, data, title, dataSym, divider = true 
 		<>
 			<div style={{ justifyContent: 'space-between', display: 'flex' }}>
 				<Typography.Text type="secondary">{title}</Typography.Text>
-				{dataSign && <Typography.Text strong>{formatPrice(sign, dataSign)}</Typography.Text>}
+				{dataSign && <Typography.Text strong>{formatPrice(dataSign, sign)}</Typography.Text>}
 				{dataSym && (
 					<Typography.Text strong>
 						{numberWithCommas(dataSym)} {coin.symbol}

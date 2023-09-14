@@ -1,6 +1,6 @@
-import { formatPrice } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { renderPer } from '@/utils'
+import { formatPrice } from '@/utils'
+import { renderPer } from '@/utils/antd'
 import { Divider, Typography } from 'antd'
 import dayjs from 'dayjs'
 import React, { FC } from 'react'
@@ -33,7 +33,7 @@ const StatsPer: FC<Props> = ({ data, title, date, per, divider = true }) => {
 					{title}
 				</Typography.Text>
 				<Typography.Text strong style={{ textAlign: 'right', fontSize: '12px' }}>
-					{formatPrice(sign, data)}
+					{formatPrice(data, sign)}
 				</Typography.Text>
 				{date && (
 					<Typography.Text style={{ textAlign: 'left', fontSize: '12px' }} type="secondary">
@@ -50,6 +50,3 @@ const StatsPer: FC<Props> = ({ data, title, date, per, divider = true }) => {
 }
 
 export default StatsPer
-{
-	/*  */
-}

@@ -1,4 +1,4 @@
-import { get } from '@/api/http'
+import { get } from './http'
 
 const HOST_CG = process.env.NEXT_PUBLIC_HOST_CG
 const HOST_CMC = process.env.NEXT_PUBLIC_HOST_CMC_PROD
@@ -101,7 +101,7 @@ export type CoinData = {
 export const getCoinList = () => get(`${HOST_CG}/coins/list`)
 
 // /v2/cryptocurrency/info
-export const getDetail = params => get(`${HOST_CMC}/v2/cryptocurrency/info`, params)
+export const getDetail = params => get<CoinData>(`${HOST_CMC}/v2/cryptocurrency/info`, params)
 
 // v2/cryptocurrency/quotes/latest
 export type QuoteData = {
