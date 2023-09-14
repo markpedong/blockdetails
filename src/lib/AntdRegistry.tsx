@@ -1,22 +1,15 @@
-"use client";
+'use client'
 
-import React from "react";
-import { StyleProvider, createCache, extractStyle } from "@ant-design/cssinjs";
-import { useServerInsertedHTML } from "next/navigation";
+import React from 'react'
+import { useServerInsertedHTML } from 'next/navigation'
+import { StyleProvider, createCache, extractStyle } from '@ant-design/cssinjs'
 
-const StyledComponentsRegistry = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const cache = createCache();
-  useServerInsertedHTML(() => (
-    <style
-      id="antd"
-      dangerouslySetInnerHTML={{ __html: extractStyle(cache, true) }}
-    />
-  ));
-  return <StyleProvider cache={cache}>{children}</StyleProvider>;
-};
+export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
+	const [cache] = React.useState(() => createCache())
 
-export default StyledComponentsRegistry;
+	useServerInsertedHTML(() => (
+		<style id="antd" dangerouslySetInnerHTML={{ __html: extractStyle(cache, true) }}></style>
+	))
+
+	return <StyleProvider cache={cache}>{children}</StyleProvider>
+}
