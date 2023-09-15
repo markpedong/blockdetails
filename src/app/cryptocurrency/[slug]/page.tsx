@@ -1,4 +1,13 @@
-import { CoinData, QuoteData, getAllCoinIds, getDetail, getQuotesLatest } from '@/api'
+import {
+	CoinData,
+	CoinDataCG,
+	QuoteData,
+	getAllCoinIds,
+	getCoinDetail,
+	getDetail,
+	getMarketChart,
+	getQuotesLatest
+} from '@/api'
 import Details from './components/details/page'
 
 const Detail = async ({ params }: { params: { slug: string } }) => {
@@ -16,28 +25,25 @@ const Detail = async ({ params }: { params: { slug: string } }) => {
 
 		getAllCoinIds()
 	])
-	// const [coin, marketData] = await Promise.all([
-	// 	getCoinDetail(coinID),
-	// 	getMarketChart(coinID, {
-	// 		vs_currency: symbol.toLowerCase(),
-	// 		days: '30'
-	// 	})
-	// ])
-
-	// dispatch(setCoinCG(coin as unknown as CoinDataCG))
-	// dispatch(
-	// 	setChart(
-	// 		marketData.prices?.map(i => ({
-	// 			date: i[0],
-	// 			value: i[1]
-	// 		}))
-	// 	)
-	// )
+	const [cg, chart] = await Promise.all([
+		getCoinDetail(id),
+		getMarketChart(id, {
+			vs_currency: 'usd',
+			days: '1'
+		})
+	])
 
 	return (
 		<Details
 			coin={Object.values(data.data)[0] as CoinData}
 			quotes={Object.values(quoteData.data)[0] as QuoteData}
+			cg={cg as unknown as CoinDataCG}
+			chart={chart.prices?.map(i => {
+				return {
+					date: i[0],
+					value: i[1]
+				}
+			})}
 		/>
 	)
 }

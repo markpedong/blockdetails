@@ -127,7 +127,10 @@ export type QuoteData = {
 export const getQuotesLatest = params => get<QuoteData>(`${HOST_CMC}/v2/cryptocurrency/quotes/latest`, params)
 
 // /v3/coins/bitcoin/market_chart
-export const getMarketChart = (slug, params) => get(`${HOST_CG}/coins/${slug}/market_chart`, params)
+export type MarketChartRes = {
+	prices: number[][]
+}
+export const getMarketChart = (slug, params) => get<MarketChartRes>(`${HOST_CG}/coins/${slug}/market_chart`, params)
 
 // /api/v3/coins/
 export type CoinDataCG = {

@@ -1,6 +1,6 @@
 'use client'
 
-import { CoinData, QuoteData } from '@/api'
+import { CoinData, CoinDataCG, QuoteData } from '@/api'
 import { Col, Divider, Row, Segmented, Space, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
@@ -20,13 +20,19 @@ import { setQuotes } from '@/redux/features/quoteSlice'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
 import { setCoin } from '@/redux/features/coinSlice'
+import ChartData from '../chart-data'
+import Statistics from '../statistics'
+import { setCoinCG } from '@/redux/features/coinGSlice'
+import { setChart } from '@/redux/features/chartSlice'
 
 type Props = {
 	coin: CoinData
 	quotes: QuoteData
+	cg: CoinDataCG
+	chart: { date: string; value: number }[]
 }
 
-const Details: FC<Props> = ({ coin, quotes }: Props) => {
+const Details: FC<Props> = ({ coin, quotes, cg, chart }: Props) => {
 	const [currentTab, setCurrentTab] = useState('overview')
 	const dispatch = useDispatch<AppDispatch>()
 	console.log(coin)
@@ -35,6 +41,8 @@ const Details: FC<Props> = ({ coin, quotes }: Props) => {
 	useEffect(() => {
 		dispatch(setCoin(coin))
 		dispatch(setQuotes(quotes))
+		dispatch(setCoinCG(cg))
+		dispatch(setChart(chart))
 	}, [])
 
 	return (
@@ -148,10 +156,10 @@ const Details: FC<Props> = ({ coin, quotes }: Props) => {
 							<Typography.Title level={4}>{coin.name} to USD chart</Typography.Title>
 						</Col>
 						{/* CHART DATA AND DESCRIPTION */}
-						{/* <ChartData /> */}
+						<ChartData />
 						<Col span={1} />
 						{/* STATISTICS DATA */}
-						{/* <Statistics /> */}
+						<Statistics />
 						<Col span={24}>{/* <Markets /> */}</Col>
 					</Row>
 				)}

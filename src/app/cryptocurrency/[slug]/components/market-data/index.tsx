@@ -34,7 +34,7 @@ const MarketData: FC<Props> = ({ data, title, volMcap = false, divider = true, s
 						<div style={{ paddingBlock: '1rem' }}>{numberWithCommas(quotes.circulating_supply)}</div>
 						<div style={{ paddingBlockStart: '1rem' }}>
 							<Typography.Text strong>Max Supply: </Typography.Text>
-							{!quotes.max_supply ? '-' : numberWithCommas(quotes.max_supply)}
+							{!quotes.max_supply ? '∞' : numberWithCommas(quotes.max_supply)}
 						</div>
 						<div style={{}}>
 							<Typography.Text strong>Total Supply: </Typography.Text>
