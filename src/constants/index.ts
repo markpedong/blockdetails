@@ -1,5 +1,4 @@
 import { ModalFormProps, ProTableProps } from '@ant-design/pro-components'
-import * as accounting from 'accounting-js'
 
 export const PRO_TABLE_PROPS: ProTableProps<any, any> = {
 	options: false,
@@ -35,12 +34,4 @@ export const MODAL_FORM_PROPS: ModalFormProps = {
 	autoFocusFirstInput: true,
 	preserve: false,
 	size: 'large'
-}
-
-export const formatPrice = (sym = '$', num, precision = 2) => {
-	if (sym) {
-		return accounting.formatMoney(num, precision, sym)
-	} else {
-		accounting.formatMoney(num, precision, '')
-	}
 }

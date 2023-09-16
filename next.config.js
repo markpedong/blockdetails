@@ -18,7 +18,8 @@ const nextConfig = {
 				permanent: true
 			}
 		]
-	}
+	},
+	reactStrictMode: false
 }
 
 module.exports = nextConfig

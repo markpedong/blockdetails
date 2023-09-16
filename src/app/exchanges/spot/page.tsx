@@ -92,8 +92,6 @@ const Exchanges: FC = () => {
 			...(data2.find(item2 => item2.id === item1.id) || {})
 		}))
 
-		console.log(mergedArray)
-
 		return {
 			data: mergedArray
 		}

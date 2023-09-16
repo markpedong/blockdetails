@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import enUS from 'antd/locale/en_US'
 import menus from './menus'
+import Header from '../header/page'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
@@ -36,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 					onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
 					onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)
 				}}
-				headerContentRender={() => <>omega</>}
+				headerContentRender={() => <Header />}
 				headerTitleRender={() => (
 					<div
 						style={{

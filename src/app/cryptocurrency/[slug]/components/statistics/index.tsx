@@ -10,8 +10,6 @@ const Statistics: FC = () => {
 	const quotes = useAppSelector(state => state.setQuotes.value)
 	const coinCG = useAppSelector(state => state.setCoinCG.value)
 
-	console.log(coinCG)
-
 	return (
 		<Col span={9}>
 			<Card title={`${coin.symbol} Price Statistics`} bordered>

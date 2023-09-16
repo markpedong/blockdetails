@@ -226,6 +226,7 @@ export const getTrending = () => get<GetTrendingResponse>(`${HOST_CG}/search/tre
 // /coins/{}/tickers?order=volume_desc&depth=true
 export type CoinMarketResponse = {
 	tickers: {
+		coin_id: string
 		cost_to_move_up_usd: number
 		cost_to_move_down_usd: number
 		last: number
@@ -241,6 +242,8 @@ export type CoinMarketResponse = {
 			identifier: string
 		}
 		trust_score: string
+		volume: number
 	}[]
 }
+
 export const getCoinMarkets = (params, id) => get<CoinMarketResponse>(`${HOST_CG}/coins/${id}/tickers`, params)

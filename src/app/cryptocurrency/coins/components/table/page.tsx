@@ -124,8 +124,6 @@ const Table: FC<Props> = ({ data }) => {
 		}
 	]
 
-	console.log(data.length, 'length')
-
 	return (
 		<ProTable<Cryptocurrency> {...PRO_TABLE_PROPS} rowKey="id" dataSource={data} columns={columns} search={false} />
 	)
