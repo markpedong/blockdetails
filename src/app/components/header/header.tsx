@@ -1,33 +1,34 @@
-'use client'
-
 import { darkMode } from '@/redux/features/themeSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
-import { formatPrice } from '@/utils'
+import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { Row, Select, Space, Switch, Typography } from 'antd'
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { useDispatch } from 'react-redux'
+
+type Props = {}
 
 const { Link } = Typography
 
-const Header: FC = () => {
+const Header: FC<Props> = () => {
+	// const global = useAppSelector(state => state.setGlobal.value)
+	// const { sign, symbol } = useAppSelector(state => state.setCurrency.value)
 	const dispatch = useDispatch<AppDispatch>()
 	const darkTheme = useAppSelector(state => state.themeReducer.value.isDark)
-	const { sign, symbol } = useAppSelector(state => state.setCurrency.value)
 
 	const data = {
 		active: global?.active_cryptocurrencies,
 		exchanges: global?.active_exchanges,
-		mcap: formatPrice(global?.quote?.[symbol]?.total_market_cap),
-		mcap_per: global?.quote?.[symbol]?.total_market_cap_yesterday_percentage_change,
-		volume: formatPrice(global?.quote?.[symbol]?.total_volume_24h),
-		volume_per: global?.quote?.[symbol]?.total_volume_24h_yesterday_percentage_change,
+		mcap: numberWithSuffix(global?.quote?.['USD']?.total_market_cap),
+		mcap_per: global?.quote?.['USD']?.total_market_cap_yesterday_percentage_change,
+		volume: numberWithSuffix(global?.quote?.['USD']?.total_volume_24h),
+		volume_per: global?.quote?.['USD']?.total_volume_24h_yesterday_percentage_change,
 		btc: global?.btc_dominance?.toFixed(2).replace('-', ''),
 		btc_per: global?.btc_dominance_24h_percentage_change,
 		eth: global?.eth_dominance?.toFixed(2).replace('-', ''),
 		eth_per: global?.eth_dominance_24h_percentage_change
 	}
-	// DISPATCH ON THE COIN COMPONENT
+
 	return (
 		<Row style={{ display: 'flex', justifyContent: 'space-between' }}>
 			<Space style={{ fontSize: '0.7rem' }}>
@@ -35,17 +36,15 @@ const Header: FC = () => {
 				Exchanges:<Link style={{ fontSize: '0.7rem' }}>{data.exchanges}</Link>
 				Market Cap:
 				<Link style={{ fontSize: '0.7rem' }}>
-					{sign}
 					{data.mcap} {renderPer(data.mcap_per)}
 				</Link>
 				24h Vol:
 				<Link style={{ fontSize: '0.7rem' }}>
-					{sign}``
 					{data.volume} {renderPer(data.volume_per)}
 				</Link>
 				Dominance:
 				<Link style={{ fontSize: '0.7rem' }}>
-					BTC:{data.btc}% {renderPer(data.btc_per)} ETH:{data.eth}% {renderPer(data.eth_per)}
+					BTC: {data.btc}%{renderPer(data.btc_per)} ETH: {data.eth}%{renderPer(data.eth_per)}
 				</Link>
 			</Space>
 			<Space>

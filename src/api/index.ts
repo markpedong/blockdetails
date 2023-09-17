@@ -12,7 +12,7 @@ export type GlobalData = {
 	btc_dominance_24h_percentage_change: number
 	eth_dominance: number
 	eth_dominance_24h_percentage_change: number
-	quotes: {
+	quote: {
 		[currency: string]: {
 			total_market_cap: number
 			total_market_cap_yesterday_percentage_change: number
@@ -21,7 +21,8 @@ export type GlobalData = {
 		}
 	}
 }
-export const getGlobalCrypto = params => get<GlobalData>(`${HOST_CMC}/v1/global-metrics/quotes/latest`, params)
+
+export const getGlobalCrypto = () => get<GlobalData>(`${HOST_CMC}/v1/global-metrics/quotes/latest`)
 
 // /v1/cryptocurrency/listings/latest
 export type Cryptocurrency = {

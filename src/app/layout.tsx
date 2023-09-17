@@ -14,11 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<StyledComponentsRegistry>
-					<ReduxProvider>
+				<ReduxProvider>
+					<StyledComponentsRegistry>
 						<Layout>{children}</Layout>
-					</ReduxProvider>
-				</StyledComponentsRegistry>
+					</StyledComponentsRegistry>
+				</ReduxProvider>
 			</body>
 		</html>
 	)
