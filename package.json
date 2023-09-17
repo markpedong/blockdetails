@@ -1,6 +1,6 @@
 {
-	"name": "with-nextjs-app-router",
-	"version": "0.1.0",
+	"name": "blockdetails",
+	"version": "1.4.7",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
