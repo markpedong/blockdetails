@@ -1,28 +1,24 @@
-"use client";
+'use client'
 
-import React from "react";
-import { ConfigProvider } from "antd";
+import React from 'react'
+import { ConfigProvider, theme } from 'antd'
+import { useAppSelector } from '@/redux/store'
+import enUS from 'antd/es/locale/en_US'
 
-const withTheme = (node: JSX.Element) => (
-    <>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: '#52c41a',
-          },
-        }}
-      >
-        <ConfigProvider
-          theme={{
-            token: {
-              borderRadius: 16,
-            },
-          }}
-        >
-          {node}
-        </ConfigProvider>
-      </ConfigProvider>
-    </>
-  )
+const withTheme = (node: React.ReactNode) => {
+	const darkTheme = useAppSelector(state => state.themeReducer.value.isDark)
 
-export default withTheme;
+	return (
+		<ConfigProvider
+			theme={{
+				algorithm: darkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm,
+				token: { colorPrimary: 'orange' }
+			}}
+			locale={enUS}
+		>
+			{node}
+		</ConfigProvider>
+	)
+}
+
+export default withTheme

@@ -87,10 +87,10 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 				</div>
 			</Col>
 			<Col span={15}>
-				<div>
+				<Typography.Paragraph>
 					{coin.name} Price ({coin.symbol})
-				</div>
-				<Space style={{ paddingBlockStart: '2.5rem' }}>
+				</Typography.Paragraph>
+				<Space>
 					<div>
 						<Typography.Text style={{ fontSize: '2.3rem', fontWeight: 700 }}>
 							{formatPrice(quotes?.quote?.['USD']?.price)}

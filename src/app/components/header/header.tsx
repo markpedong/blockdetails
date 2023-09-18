@@ -1,7 +1,9 @@
+import { GlobalData } from '@/api'
 import { darkMode } from '@/redux/features/themeSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
+import { getLocalStorage } from '@/utils/xLocalStorage'
 import { Row, Select, Space, Switch, Typography } from 'antd'
 import { FC } from 'react'
 import { useDispatch } from 'react-redux'
@@ -11,10 +13,10 @@ type Props = {}
 const { Link } = Typography
 
 const Header: FC<Props> = () => {
-	// const global = useAppSelector(state => state.setGlobal.value)
 	// const { sign, symbol } = useAppSelector(state => state.setCurrency.value)
 	const dispatch = useDispatch<AppDispatch>()
 	const darkTheme = useAppSelector(state => state.themeReducer.value.isDark)
+	const global = getLocalStorage('global') as unknown as GlobalData
 
 	const data = {
 		active: global?.active_cryptocurrencies,

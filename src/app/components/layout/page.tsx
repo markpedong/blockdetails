@@ -4,12 +4,11 @@ import logo from '@/assets/logo.svg'
 import { Typography } from 'antd'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import enUS from 'antd/locale/en_US'
 import menus from './menus'
-import Header from '../header/page'
+import Header from '../header/header'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
@@ -17,6 +16,7 @@ const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvid
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname()
 	const [collapsed, setCollapsed] = useState(true)
+	const router = useRouter()
 
 	return (
 		<ConfigProvider
@@ -38,6 +38,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 					onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)
 				}}
 				headerContentRender={() => <Header />}
+				menuDataRender={() => menus}
+				menuItemRender={(item, dom) => (
+					<Typography.Link onClick={() => router.replace(item.path as string)}>{dom}</Typography.Link>
+				)}
 				headerTitleRender={() => (
 					<div
 						style={{
@@ -50,14 +54,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 						<h1>Block Details</h1>
 					</div>
 				)}
-				menuDataRender={() => menus}
-				menuItemRender={(item, dom) => {
-					return (
-						<Typography.Link style={{ paddingBlockStart: '0.5rem' }}>
-							<Link href={item.path as string}>{dom}</Link>
-						</Typography.Link>
-					)
-				}}
 			>
 				{children}
 			</ProLayout>

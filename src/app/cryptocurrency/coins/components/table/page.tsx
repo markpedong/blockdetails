@@ -1,22 +1,24 @@
 'use client'
 
-import { Cryptocurrency } from '@/api'
+import { Cryptocurrency, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
+import { setLocalStorage } from '@/utils/xLocalStorage'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { FC } from 'react'
+import { FC, useEffect } from 'react'
 
 type Props = {
 	data: []
+	global: GlobalData
 }
 
-const Table: FC<Props> = ({ data }) => {
+const Table: FC<Props> = ({ data, global }) => {
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
@@ -123,6 +125,10 @@ const Table: FC<Props> = ({ data }) => {
 			render: (_, { circulating_supply }) => numberWithCommas(circulating_supply)
 		}
 	]
+
+	useEffect(() => {
+		setLocalStorage('global', global)
+	}, [])
 
 	return (
 		<ProTable<Cryptocurrency> {...PRO_TABLE_PROPS} rowKey="id" dataSource={data} columns={columns} search={false} />

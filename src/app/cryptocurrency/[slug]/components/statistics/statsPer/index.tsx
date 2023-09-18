@@ -37,7 +37,7 @@ const StatsPer: FC<Props> = ({ data, title, date, per, divider = true }) => {
 				</Typography.Text>
 				{date && (
 					<Typography.Text style={{ textAlign: 'left', fontSize: '12px' }} type="secondary">
-						{dayjs(date).format('MMMM D, YYYY')} ({subtractedDate} years ago)
+						{dayjs(date).format('MMMM, D, YYYY')} ({subtractedDate} years ago)
 					</Typography.Text>
 				)}
 				<Typography.Text strong style={{ textAlign: 'right', fontSize: '12px' }}>

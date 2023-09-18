@@ -77,7 +77,6 @@ const Table: FC<Props> = ({ data }) => {
 					</Tooltip>
 				</span>
 			),
-
 			align: 'right',
 			render: (_, { quote }) => formatPrice(quote[symbol]?.market_cap, sign)
 		},

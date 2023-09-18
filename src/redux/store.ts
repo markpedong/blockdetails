@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import themeReducer from './features/themeSlice'
 import setCurrency from './features/currencySlice'
-import setTotal from './features/globalSlice'
+import setGlobal from './features/globalSlice'
 import setCoin from './features/coinSlice'
 import setQuotes from './features/quoteSlice'
 import setCoinCG from './features/coinGSlice'
@@ -12,7 +12,7 @@ export const storeTheme = configureStore({
 	reducer: {
 		themeReducer,
 		setCurrency,
-		setTotal,
+		setGlobal,
 		setCoin,
 		setQuotes,
 		setCoinCG,
