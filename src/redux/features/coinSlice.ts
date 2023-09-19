@@ -3,9 +3,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
 	value: CoinData
+	coins: CoinData[]
 }
 
 const initialState: InitialState = {
+	coins: [],
 	value: {
 		category: '',
 		description: '',
@@ -28,11 +30,14 @@ export const Coin = createSlice({
 	name: 'Coin',
 	initialState,
 	reducers: {
+		setCoinArray: (state, action: PayloadAction<CoinData[]>) => {
+			state.coins = action.payload
+		},
 		setCoin: (state, action: PayloadAction<CoinData>) => {
 			state.value = action.payload
 		}
 	}
 })
 
-export const { setCoin } = Coin.actions
+export const { setCoin, setCoinArray } = Coin.actions
 export default Coin.reducer

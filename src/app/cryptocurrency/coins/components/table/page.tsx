@@ -2,7 +2,8 @@
 
 import { Cryptocurrency, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
-import { useAppSelector } from '@/redux/store'
+import { setCoinArray } from '@/redux/features/coinSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { setLocalStorage } from '@/utils/xLocalStorage'
@@ -12,6 +13,7 @@ import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 type Props = {
 	data: []
@@ -20,6 +22,7 @@ type Props = {
 
 const Table: FC<Props> = ({ data, global }) => {
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
+	const dispatch = useDispatch<AppDispatch>()
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
@@ -128,6 +131,7 @@ const Table: FC<Props> = ({ data, global }) => {
 
 	useEffect(() => {
 		setLocalStorage('global', global)
+		dispatch(setCoinArray(data.slice(0, 9)))
 	}, [])
 
 	return (

@@ -1,22 +1,23 @@
 'use client'
 
-import React from 'react'
+import React, { FC } from 'react'
 import { ConfigProvider, theme } from 'antd'
-import { useAppSelector } from '@/redux/store'
 import enUS from 'antd/es/locale/en_US'
 
-const withTheme = (node: React.ReactNode) => {
-	const darkTheme = useAppSelector(state => state.themeReducer.value.isDark)
+type Props = {
+	darkMode: boolean
+	children: React.ReactNode
+}
 
+const withTheme: FC<Props> = ({ children, darkMode }) => {
 	return (
 		<ConfigProvider
 			theme={{
-				algorithm: darkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm,
-				token: { colorPrimary: 'orange' }
+				algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm
 			}}
 			locale={enUS}
 		>
-			{node}
+			{children}
 		</ConfigProvider>
 	)
 }
