@@ -6,7 +6,8 @@ import { renderPer } from '@/utils/antd'
 import { getLocalStorage } from '@/utils/xLocalStorage'
 import { SearchOutlined } from '@ant-design/icons'
 import { ModalForm, ProFormText } from '@ant-design/pro-components'
-import { Col, Input, Row, Space, Switch, Typography } from 'antd'
+import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
+import Image from 'next/image'
 import { FC } from 'react'
 
 type Props = {
@@ -14,7 +15,7 @@ type Props = {
 	setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const { Link } = Typography
+const { Link, Text } = Typography
 
 const Header: FC<Props> = ({ darkMode, setDarkMode }) => {
 	// const { sign, symbol } = useAppSelector(state => state.setCurrency.value)
@@ -52,13 +53,23 @@ const Header: FC<Props> = ({ darkMode, setDarkMode }) => {
 			>
 				<ProFormText placeholder="eg. Ethereum, Avalanche, Binance Smart Chain" />
 				<Row justify="space-between">
-					<Col>
+					<Col span={12}>
 						<Typography.Title level={5}>Coins:</Typography.Title>
-						{coins.map(o => (
-							<div>{o.name}</div>
-						))}
+						{coins.map(record => {
+							const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
+
+							return (
+								<div style={{ display: 'flex', marginBlock: '10px', gap: '10px' }}>
+									<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
+									<Space align="center">
+										<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
+										<Text type="secondary">{record.symbol}</Text>
+									</Space>
+								</div>
+							)
+						})}
 					</Col>
-					<Col>
+					<Col span={12}>
 						<Typography.Title level={5}>Exchanges:</Typography.Title>
 					</Col>
 				</Row>
@@ -86,6 +97,22 @@ const Header: FC<Props> = ({ darkMode, setDarkMode }) => {
 			</Space>
 			<Space align="center">
 				{renderSearch()}
+				<Select
+					showSearch
+					placeholder="USD, PHP, CNY"
+					// options={fiats?.map(item => ({ label: `${item.sign} ${item.name}`, value: item.id }))}
+					filterOption={(input, option) =>
+						String(option?.label ?? '')
+							.toLowerCase()
+							.includes(input.toLowerCase())
+					}
+					onChange={val => {
+						// const selected = fiats.find(fiat => fiat.id === val)
+						// dispatch(setCurrency(selected))
+					}}
+					style={{ width: 150 }}
+				/>
+
 				<Switch
 					onChange={() => {
 						setDarkMode(!darkMode)

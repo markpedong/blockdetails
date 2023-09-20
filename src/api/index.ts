@@ -57,7 +57,7 @@ export type Fiat = {
 	symbol: string
 }
 
-export const getFiats = params => get<Fiat[]>(`${HOST_CMC}/v1/fiat/map`, params)
+export const getFiats = () => get<Fiat[]>(`${HOST_CMC}/v1/fiat/map`)
 
 // /v3/exchanges
 export type Exchange = {
@@ -76,6 +76,7 @@ export type Exchange = {
 	url: string
 	year_established: number
 }
+
 export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, params)
 
 export const getExchangesPaprika = params => get(`${HOST_PAP}/v1/exchanges`, params, false)

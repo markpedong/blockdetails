@@ -30,6 +30,7 @@
 		"react-dom": "18.2.0",
 		"react-redux": "^8.1.2",
 		"react-use": "^17.4.0",
+		"redux-persist": "^6.0.0",
 		"typescript": "5.2.2",
 		"utility-types": "^3.10.0"
 	},

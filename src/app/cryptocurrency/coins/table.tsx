@@ -1,12 +1,12 @@
 'use client'
 
-import { Cryptocurrency, GlobalData } from '@/api'
+import { Cryptocurrency, Fiat, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { setCoinArray } from '@/redux/features/coinSlice'
+import { setGlobalData } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
-import { setLocalStorage } from '@/utils/xLocalStorage'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
@@ -18,9 +18,10 @@ import { useDispatch } from 'react-redux'
 type Props = {
 	data: []
 	global: GlobalData
+	fiats: Fiat[]
 }
 
-const Table: FC<Props> = ({ data, global }) => {
+const Table: FC<Props> = ({ data, global, fiats }) => {
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
 	const dispatch = useDispatch<AppDispatch>()
 	const columns: ProColumns<Cryptocurrency>[] = [
@@ -130,7 +131,7 @@ const Table: FC<Props> = ({ data, global }) => {
 	]
 
 	useEffect(() => {
-		setLocalStorage('global', global)
+		dispatch(setGlobalData(global))
 		dispatch(setCoinArray(data.slice(0, 9)))
 	}, [])
 

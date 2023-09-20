@@ -1,5 +1,5 @@
-import { getCryptocurrency, getGlobalCrypto } from '@/api'
-import Table from './components/table/page'
+import { getCryptocurrency, getFiats, getGlobalCrypto } from '@/api'
+import Table from './table'
 
 const Coins = async () => {
 	// LOCALSTORAGE???
@@ -10,8 +10,9 @@ const Coins = async () => {
 		cryptocurrency_type: 'coins'
 	})
 	const global = await getGlobalCrypto()
+	const fiats = await getFiats()
 
-	return <Table data={coins.data} global={global.data} />
+	return <Table data={coins.data} global={global.data} fiats={fiats.data} />
 }
 
 export default Coins
