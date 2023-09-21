@@ -1,17 +1,18 @@
 'use client'
 
-import { Cryptocurrency, Fiat, GlobalData } from '@/api'
+import { Cryptocurrency, DefiData, Fiat, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { setCoinArray } from '@/redux/features/coinSlice'
 import { setGlobalData } from '@/redux/features/globalSlice'
-import { AppDispatch, useAppSelector } from '@/redux/store'
-import { formatPrice, numberWithCommas } from '@/utils'
+import { useAppSelector } from '@/redux/store'
+import { AppDispatch } from '@/redux/store'
+import { formatPrice, numberWithCommas, numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
-import { Space, Tooltip, Typography } from 'antd'
+import { Col, Row, Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -19,10 +20,14 @@ type Props = {
 	data: []
 	global: GlobalData
 	fiats: Fiat[]
+	defi: DefiData
 }
 
-const Table: FC<Props> = ({ data, global, fiats }) => {
+const Table: FC<Props> = ({ data, global: g, defi }) => {
+	const coins = useAppSelector(state => state.setCoin.coins)
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
+	const { quote } = coins[0] as unknown as Cryptocurrency
+	const router = useRouter()
 	const dispatch = useDispatch<AppDispatch>()
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
@@ -39,7 +44,9 @@ const Table: FC<Props> = ({ data, global, fiats }) => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
+						<Typography.Link onClick={() => router.push(`/cryptocurrency/${record.slug}`)}>
+							{record.name}
+						</Typography.Link>
 					</Space>
 				)
 			}
@@ -130,13 +137,63 @@ const Table: FC<Props> = ({ data, global, fiats }) => {
 		}
 	]
 
+	const global = {
+		defi_vol: numberWithSuffix(g?.defi_volume_24h_reported),
+		defi_per: g?.defi_24h_percentage_change,
+		defi_dom: +defi.data.defi_dominance,
+		mcap: numberWithSuffix(g?.quote?.['USD']?.total_market_cap),
+		mcap_per: g?.quote?.['USD']?.total_market_cap_yesterday_percentage_change,
+		volume: numberWithSuffix(g?.quote?.['USD']?.total_volume_24h),
+		top_defi: defi.data.top_coin_name,
+		top_defi_dom: defi.data.top_coin_defi_dominance
+	}
+
+	const style: React.CSSProperties = { padding: '8px 0' }
+
 	useEffect(() => {
-		dispatch(setGlobalData(global))
+		dispatch(setGlobalData(g))
 		dispatch(setCoinArray(data.slice(0, 9)))
 	}, [])
 
 	return (
-		<ProTable<Cryptocurrency> {...PRO_TABLE_PROPS} rowKey="id" dataSource={data} columns={columns} search={false} />
+		<>
+			<Space direction="vertical" size={20} style={{ paddingBlockEnd: 50 }}>
+				<Typography.Title level={3}>Today's Cryptocurrency Market</Typography.Title>
+				<div>
+					The Global Crypto Market cap is{' '}
+					{
+						<Typography.Link>
+							{sign} {global.mcap}
+						</Typography.Link>
+					}{' '}
+					{renderPer(global.mcap_per)} {global.mcap_per > 0.01 ? 'increase' : 'decrease'} over the last day.
+				</div>
+				<div>
+					The total crypto market volume over the last 24 hours is{' '}
+					<Typography.Link>
+						{sign} {global.volume}
+					</Typography.Link>{' '}
+					. The total volume in DeFi is currently{' '}
+					<Typography.Link>
+						{sign} {global.defi_vol}
+					</Typography.Link>{' '}
+					, which is {renderPer(global.defi_per)} of the total crypto market 24-hour volume. DeFi Dominance is{' '}
+					{renderPer(global.defi_dom)}, and the Top Coin in DeFi is Currently {global.top_defi} with{' '}
+					{renderPer(global.top_defi_dom)} of dominance.
+				</div>
+				<Space direction="vertical" size={0}>
+					<div>Bitcoin's price is currently {formatPrice(quote[symbol]?.price)} </div>
+					<div>Bitcoin’s dominance is currently {renderPer(g?.btc_dominance)}</div>
+				</Space>
+			</Space>
+			<ProTable<Cryptocurrency>
+				{...PRO_TABLE_PROPS}
+				rowKey="id"
+				dataSource={data}
+				columns={columns}
+				search={false}
+			/>
+		</>
 	)
 }
 

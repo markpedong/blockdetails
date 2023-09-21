@@ -7,12 +7,12 @@ type InitialState = {
 
 const initialState: InitialState = {
 	value: {
-		active_cryptocurrencies: 0,
-		active_exchanges: 0,
-		btc_dominance: 0,
-		btc_dominance_24h_percentage_change: 0,
-		eth_dominance: 0,
-		eth_dominance_24h_percentage_change: 0,
+		active_cryptocurrencies: null,
+		active_exchanges: null,
+		btc_dominance: null,
+		btc_dominance_24h_percentage_change: null,
+		eth_dominance: null,
+		eth_dominance_24h_percentage_change: null,
 		quote: {}
 	}
 }

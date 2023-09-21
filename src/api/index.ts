@@ -10,6 +10,8 @@ export type GlobalData = {
 	active_exchanges: number
 	btc_dominance: number
 	btc_dominance_24h_percentage_change: number
+	defi_volume_24h_reported: number
+	defi_24h_percentage_change: number
 	eth_dominance: number
 	eth_dominance_24h_percentage_change: number
 	quote: {
@@ -51,6 +53,20 @@ export type Cryptocurrency = {
 export const getCryptocurrency = (params: any = {}) =>
 	get<Cryptocurrency[]>(`${HOST_CMC}/v1/cryptocurrency/listings/latest`, params)
 
+// /v3/global/decentralized_finance_defi
+export type DefiData = {
+	data: {
+		defi_market_cap: string
+		eth_market_cap: string
+		defi_to_eth_ratio: string
+		trading_volume_24h: string
+		defi_dominance: string
+		top_coin_name: string
+		top_coin_defi_dominance: number
+	}
+}
+export const getDefi = () => get(`${HOST_CG}/global/decentralized_finance_defi`)
+
 // /v1/fiat/map
 export type Fiat = {
 	sign: string
@@ -63,10 +79,8 @@ export const getFiats = () => get<Fiat[]>(`${HOST_CMC}/v1/fiat/map`)
 export type Exchange = {
 	country: string
 	description: string
-	fiats: { name: string; symbol: string }[]
 	id: string
 	image: string
-	markets: number
 	name: string
 	sessions_per_month: number
 	trade_volume_24h_btc_normalized: number

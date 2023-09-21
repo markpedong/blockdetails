@@ -1,4 +1,4 @@
-import { getCryptocurrency, getFiats, getGlobalCrypto } from '@/api'
+import { getCryptocurrency, getDefi, getFiats, getGlobalCrypto } from '@/api'
 import Table from './table'
 
 const Coins = async () => {
@@ -11,8 +11,9 @@ const Coins = async () => {
 	})
 	const global = await getGlobalCrypto()
 	const fiats = await getFiats()
+	const defi = await getDefi()
 
-	return <Table data={coins.data} global={global.data} fiats={fiats.data} />
+	return <Table data={coins.data} global={global.data} fiats={fiats.data} defi={defi} />
 }
 
 export default Coins

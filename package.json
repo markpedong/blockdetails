@@ -1,6 +1,6 @@
 {
 	"name": "blockdetails",
-	"version": "1.4.7",
+	"version": "1.4.8",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -12,18 +12,18 @@
 		"@ant-design/charts": "1.2.14",
 		"@ant-design/cssinjs": "^1.17.0",
 		"@ant-design/icons": "^5.2.6",
-		"@ant-design/pro-components": "^2.6.18",
+		"@ant-design/pro-components": "^2.6.22",
 		"@ant-design/static-style-extract": "^1.0.2",
 		"@reduxjs/toolkit": "^1.9.5",
-		"@types/react": "18.2.21",
+		"@types/react": "18.2.22",
 		"@types/react-dom": "18.2.7",
 		"accounting-js": "^1.1.1",
-		"antd": "^5.9.0",
+		"antd": "^5.9.2",
 		"eslint": "8.49.0",
-		"eslint-config-next": "13.4.19",
+		"eslint-config-next": "13.5.1",
 		"lodash": "^4.17.21",
 		"lz-string": "^1.5.0",
-		"next": "13.4.19",
+		"next": "13.5.1",
 		"numeral": "^2.0.6",
 		"qs": "^6.11.2",
 		"react": "18.2.0",
@@ -35,7 +35,7 @@
 		"utility-types": "^3.10.0"
 	},
 	"devDependencies": {
-		"@types/node": "^20.6.0",
+		"@types/node": "^20.6.3",
 		"@types/qs": "^6.9.8"
 	}
 }

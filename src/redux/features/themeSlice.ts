@@ -16,7 +16,7 @@ export const theme = createSlice({
 	name: 'theme',
 	initialState,
 	reducers: {
-		darkMode: (_, action: PayloadAction<boolean>) => {
+		setTheme: (_, action: PayloadAction<boolean>) => {
 			return {
 				value: {
 					isDark: action.payload
@@ -26,5 +26,5 @@ export const theme = createSlice({
 	}
 })
 
-export const { darkMode } = theme.actions
+export const { setTheme } = theme.actions
 export default theme.reducer

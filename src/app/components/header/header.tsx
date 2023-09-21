@@ -1,26 +1,20 @@
-import { GlobalData } from '@/api'
 import { MODAL_FORM_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
-import { getLocalStorage } from '@/utils/xLocalStorage'
 import { SearchOutlined } from '@ant-design/icons'
 import { ModalForm, ProFormText } from '@ant-design/pro-components'
 import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
 import { FC } from 'react'
 
-type Props = {
-	darkMode: boolean
-	setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
-}
-
 const { Link, Text } = Typography
 
-const Header: FC<Props> = ({ darkMode, setDarkMode }) => {
+const Header: FC = () => {
 	// const { sign, symbol } = useAppSelector(state => state.setCurrency.value)
 	const coins = useAppSelector(state => state.setCoin.coins)
-	const global = getLocalStorage('global') as unknown as GlobalData
+	const global = useAppSelector(state => state.setGlobal.value)
+	// const darkMode = useAppSelector(state => state.)
 
 	const data = {
 		active: global?.active_cryptocurrencies,
@@ -115,7 +109,7 @@ const Header: FC<Props> = ({ darkMode, setDarkMode }) => {
 
 				<Switch
 					onChange={() => {
-						setDarkMode(!darkMode)
+						// setTheme(!darkMode)
 					}}
 					checkedChildren="Dark"
 					unCheckedChildren="Light"
