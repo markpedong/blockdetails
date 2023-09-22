@@ -10,11 +10,13 @@ import { formatPrice, numberWithCommas, numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
-import { Col, Row, Space, Tooltip, Typography } from 'antd'
+import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+
+const { Link, Text, Title } = Typography
 
 type Props = {
 	data: []
@@ -26,7 +28,7 @@ type Props = {
 const Table: FC<Props> = ({ data, global: g, defi }) => {
 	const coins = useAppSelector(state => state.setCoin.coins)
 	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
-	const { quote } = coins[0] as unknown as Cryptocurrency
+	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
 	const router = useRouter()
 	const dispatch = useDispatch<AppDispatch>()
 	const columns: ProColumns<Cryptocurrency>[] = [
@@ -44,9 +46,7 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Typography.Link onClick={() => router.push(`/cryptocurrency/${record.slug}`)}>
-							{record.name}
-						</Typography.Link>
+						<Link onClick={() => router.push(`/cryptocurrency/${record.slug}`)}>{record.name}</Link>
 					</Space>
 				)
 			}
@@ -82,7 +82,7 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 								The total market value of a cryptocurrency&apos;s circulating supply. It is analogous to
 								the free-float capitalization in the stock market. Market Cap = Current Price x
 								Circulating Supply.
-								<Typography.Link>Read More</Typography.Link>
+								<Link>Read More</Link>
 							</span>
 						}
 					>
@@ -103,7 +103,7 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 						title={
 							<span style={{ color: 'black' }}>
 								A measure of how much of a cryptocurrency was traded in the last 24 hours.
-								<Typography.Link>Read More</Typography.Link>
+								<Link>Read More</Link>
 							</span>
 						}
 					>
@@ -124,7 +124,7 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 							<span style={{ color: 'black' }}>
 								The amount of coins that are circulating in the market and are in public hands. It is
 								analogous to the flowing shares in the stock market.
-								<Typography.Link>Read More</Typography.Link>
+								<Link>Read More</Link>
 							</span>
 						}
 					>
@@ -148,8 +148,6 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 		top_defi_dom: defi.data.top_coin_defi_dominance
 	}
 
-	const style: React.CSSProperties = { padding: '8px 0' }
-
 	useEffect(() => {
 		dispatch(setGlobalData(g))
 		dispatch(setCoinArray(data.slice(0, 9)))
@@ -158,32 +156,38 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 	return (
 		<>
 			<Space direction="vertical" size={20} style={{ paddingBlockEnd: 50 }}>
-				<Typography.Title level={3}>Today's Cryptocurrency Market</Typography.Title>
+				<Title level={3}>Today's Cryptocurrency Market</Title>
 				<div>
-					The Global Crypto Market cap is{' '}
-					{
-						<Typography.Link>
-							{sign} {global.mcap}
-						</Typography.Link>
-					}{' '}
-					{renderPer(global.mcap_per)} {global.mcap_per > 0.01 ? 'increase' : 'decrease'} over the last day.
+					<Text>The Global Crypto Market cap is </Text>
+					<Link>
+						{sign}
+						{global.mcap}{' '}
+					</Link>
+					<Text>
+						{renderPer(global.mcap_per)} {global.mcap_per > 0.01 ? 'increase' : 'decrease'} over the last
+						day.
+					</Text>
 				</div>
 				<div>
-					The total crypto market volume over the last 24 hours is{' '}
-					<Typography.Link>
-						{sign} {global.volume}
-					</Typography.Link>{' '}
-					. The total volume in DeFi is currently{' '}
-					<Typography.Link>
-						{sign} {global.defi_vol}
-					</Typography.Link>{' '}
-					, which is {renderPer(global.defi_per)} of the total crypto market 24-hour volume. DeFi Dominance is{' '}
-					{renderPer(global.defi_dom)}, and the Top Coin in DeFi is Currently {global.top_defi} with{' '}
-					{renderPer(global.top_defi_dom)} of dominance.
+					<Text>The total crypto market volume over the last 24 hours is </Text>
+					<Link>
+						{sign}
+						{global.volume}
+					</Link>{' '}
+					<Text>. The total volume in DeFi is currently </Text>
+					<Link>
+						{sign}
+						{global.defi_vol}
+					</Link>
+					<Text>
+						, which is {renderPer(global.defi_per)} of the total crypto market 24-hour volume. DeFi
+						Dominance is {renderPer(global.defi_dom)} , and the Top Coin in DeFi is currently{' '}
+						{global.top_defi} with {renderPer(global.top_defi_dom)} of dominance.
+					</Text>
 				</div>
 				<Space direction="vertical" size={0}>
-					<div>Bitcoin's price is currently {formatPrice(quote[symbol]?.price)} </div>
-					<div>Bitcoin’s dominance is currently {renderPer(g?.btc_dominance)}</div>
+					<Text>Bitcoin's price is currently {formatPrice(quote?.[symbol]?.price)} </Text>
+					<Text>Bitcoin’s dominance is currently {renderPer(g?.btc_dominance)}</Text>
 				</Space>
 			</Space>
 			<ProTable<Cryptocurrency>

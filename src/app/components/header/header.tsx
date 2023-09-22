@@ -1,5 +1,6 @@
 import { MODAL_FORM_PROPS } from '@/constants'
-import { useAppSelector } from '@/redux/store'
+import { setTheme } from '@/redux/features/themeSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { SearchOutlined } from '@ant-design/icons'
@@ -7,6 +8,7 @@ import { ModalForm, ProFormText } from '@ant-design/pro-components'
 import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
 import { FC } from 'react'
+import { useDispatch } from 'react-redux'
 
 const { Link, Text } = Typography
 
@@ -14,7 +16,8 @@ const Header: FC = () => {
 	// const { sign, symbol } = useAppSelector(state => state.setCurrency.value)
 	const coins = useAppSelector(state => state.setCoin.coins)
 	const global = useAppSelector(state => state.setGlobal.value)
-	// const darkMode = useAppSelector(state => state.)
+	const darkMode = useAppSelector(state => state.setTheme.isDark)
+	const dispatch = useDispatch<AppDispatch>()
 
 	const data = {
 		active: global?.active_cryptocurrencies,
@@ -109,8 +112,9 @@ const Header: FC = () => {
 
 				<Switch
 					onChange={() => {
-						// setTheme(!darkMode)
+						dispatch(setTheme(!darkMode))
 					}}
+					checked={darkMode}
 					checkedChildren="Dark"
 					unCheckedChildren="Light"
 				/>

@@ -12,9 +12,10 @@ type TableListItem = ValuesType<CoinMarketResponse['tickers']>
 type Props = {
 	data: TableListItem[]
 	id: string
+	tab?: string
 }
 
-const Markets: FC<Props> = ({ data: markets }) => {
+const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 	const actionRef = useRef<ActionType>()
 	const coin = useAppSelector(state => state.setCoin.value)
 	const { symbol } = useAppSelector(state => state.setCurrency.value)
@@ -106,7 +107,7 @@ const Markets: FC<Props> = ({ data: markets }) => {
 				actionRef={actionRef}
 				rowKey="trade_url"
 				columns={columns}
-				pagination={{ pageSize: 6, showSizeChanger: false }}
+				pagination={{ pageSize: tab === 'markets' ? reducedMarkets.length : 6, showSizeChanger: false }}
 				search={false}
 			/>
 		</div>

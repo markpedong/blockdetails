@@ -25,6 +25,7 @@ import Statistics from '../statistics'
 import { setCoinCG } from '@/redux/features/coinGSlice'
 import { setChart } from '@/redux/features/chartSlice'
 import Markets from '../markets'
+import Wallets from '../wallets'
 
 type Props = {
 	coin: CoinData
@@ -127,8 +128,8 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 							icon: <SlidersOutlined />
 						},
 						{
-							label: 'Wallet',
-							value: 'wallet',
+							label: 'Wallets',
+							value: 'wallets',
 							icon: <WalletOutlined />
 						},
 						{
@@ -166,7 +167,8 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 						</Col>
 					</Row>
 				)}
-				{currentTab === 'markets' && <></>}
+				{currentTab === 'markets' && <Markets data={markets.tickers} id={id} tab="markets" />}
+				{currentTab === 'wallets' && <Wallets />}
 			</Col>
 		</Row>
 	)

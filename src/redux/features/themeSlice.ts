@@ -1,15 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
-	value: {
-		isDark: boolean
-	}
+	isDark: boolean
 }
 
 const initialState: InitialState = {
-	value: {
-		isDark: false
-	}
+	isDark: false
 }
 
 export const theme = createSlice({
@@ -18,9 +14,7 @@ export const theme = createSlice({
 	reducers: {
 		setTheme: (_, action: PayloadAction<boolean>) => {
 			return {
-				value: {
-					isDark: action.payload
-				}
+				isDark: action.payload
 			}
 		}
 	}

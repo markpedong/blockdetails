@@ -10,13 +10,14 @@ import enUS from 'antd/locale/en_US'
 import menus from './menus'
 import Header from '../header/header'
 import withTheme from '@/theme'
+import { useAppSelector } from '@/redux/store'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+	const darkMode = useAppSelector(state => state.setTheme.isDark)
 	const [collapsed, setCollapsed] = useState(true)
-	const [darkMode, setDarkMode] = useState(false)
 	const pathname = usePathname()
 	const router = useRouter()
 
@@ -42,7 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 						onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
 						onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)
 					}}
-					headerContentRender={() => <Header darkMode={darkMode} setDarkMode={setDarkMode} />}
+					headerContentRender={() => <Header />}
 					menuDataRender={() => menus}
 					menuItemRender={(item, dom) => (
 						<Typography.Link onClick={() => router.replace(item.path as string)}>{dom}</Typography.Link>
