@@ -9,7 +9,7 @@ import Trending from './trending'
 const Line = dynamic(() => import('@ant-design/charts').then(i => i.Line))
 
 const ChartData: FC = () => {
-	const data = useAppSelector(state => state.setCharts.value)
+	const data = useAppSelector(state => state.coinCG.chart)
 	const lowestValue = data?.reduce((acc, curr) => (curr.value < acc.value ? curr : acc), data[0] || undefined)
 
 	return (

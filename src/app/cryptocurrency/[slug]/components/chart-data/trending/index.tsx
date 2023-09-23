@@ -10,7 +10,7 @@ import { ValuesType } from 'utility-types'
 type TTrending = ValuesType<GetTrendingResponse['coins'][]>
 
 const Trending: FC = () => {
-	const coinCG = useAppSelector(state => state.setCoinCG.value)
+	const coinCG = useAppSelector(state => state.coinCG.coin)
 	const [coins, setCoins] = useState<TTrending>()
 
 	const initInfo = async () => {

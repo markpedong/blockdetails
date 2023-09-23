@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC } from 'react'
-import { Col, Row, Space, Typography } from 'antd'
+import { Col, Row, Typography } from 'antd'
 import Image from 'next/image'
 import { Cryptocurrency, ExchangeDetail, ExchangePap } from '@/api'
 import { useAppSelector } from '@/redux/store'
@@ -14,8 +14,8 @@ type Props = {
 }
 
 const Detail: FC<Props> = ({ exchange, id, pap }) => {
-	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
-	const coins = useAppSelector(state => state.setCoin.coins)
+	const { symbol } = useAppSelector(state => state.global.currency) ?? {}
+	const coins = useAppSelector(state => state.coin.coins)
 	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
 	// quote?.[symbol]?.price
 	console.log(exchange)

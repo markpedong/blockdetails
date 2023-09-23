@@ -17,7 +17,7 @@ type Props = {
 }
 
 const Table: FC<Props> = ({ data }) => {
-	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
+	const { symbol, sign } = useAppSelector(state => state.global.currency)
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',

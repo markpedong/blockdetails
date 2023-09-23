@@ -16,7 +16,7 @@ const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com =>
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-	const darkMode = useAppSelector(state => state.setTheme.isDark)
+	const darkMode = useAppSelector(state => state.global.isDark)
 	const [collapsed, setCollapsed] = useState(true)
 	const pathname = usePathname()
 	const router = useRouter()

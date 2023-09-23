@@ -5,10 +5,10 @@ import { Typography } from 'antd'
 import React, { FC } from 'react'
 
 const Description: FC = () => {
-	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
-	const coin = useAppSelector(state => state.setCoin.value)
-	const coinCG = useAppSelector(state => state.setCoinCG.value)
-	const quotes = useAppSelector(state => state.setQuotes.value)
+	const { symbol, sign } = useAppSelector(state => state.global.currency) ?? {}
+	const coin = useAppSelector(state => state.coin.coin)
+	const coinCG = useAppSelector(state => state.coinCG.coin)
+	const quotes = useAppSelector(state => state.coin.quote)
 
 	return (
 		<div>

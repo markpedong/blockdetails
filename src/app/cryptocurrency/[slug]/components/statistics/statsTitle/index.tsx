@@ -12,8 +12,8 @@ type Props = {
 }
 
 const StatsTitle: FC<Props> = ({ dataSign, data, title, dataSym, divider = true }) => {
-	const { sign } = useAppSelector(state => state.setCurrency.value)
-	const coin = useAppSelector(state => state.setCoin.value)
+	const { sign } = useAppSelector(state => state.global.currency) ?? {}
+	const coin = useAppSelector(state => state.coin.coin)
 
 	return (
 		<>

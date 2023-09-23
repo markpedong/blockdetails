@@ -1,24 +1,16 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import setTheme from './features/themeSlice'
-import setCurrency from './features/currencySlice'
-import setGlobal from './features/globalSlice'
-import setCoin from './features/coinSlice'
-import setQuotes from './features/quoteSlice'
-import setCoinCG from './features/coinGSlice'
-import setCharts from './features/chartSlice'
+import global from './features/globalSlice'
+import coin from './features/coinSlice'
+import coinCG from './features/coinGSlice'
 import { TypedUseSelectorHook, useSelector } from 'react-redux'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, createTransform } from 'redux-persist'
 import { compress, decompress } from 'lz-string'
 
 type RootType = {
-	setTheme: ReturnType<typeof setTheme>
-	setCurrency: ReturnType<typeof setCurrency>
-	setGlobal: ReturnType<typeof setGlobal>
-	setCoin: ReturnType<typeof setCoin>
-	setQuotes: ReturnType<typeof setQuotes>
-	setCoinCG: ReturnType<typeof setCoinCG>
-	setCharts: ReturnType<typeof setCharts>
+	global: ReturnType<typeof global>
+	coin: ReturnType<typeof coin>
+	coinCG: ReturnType<typeof coinCG>
 }
 
 const persistConfig = {
@@ -34,13 +26,9 @@ const persistConfig = {
 }
 
 const reducer = combineReducers({
-	setTheme,
-	setCurrency,
-	setGlobal,
-	setCoin,
-	setQuotes,
-	setCoinCG,
-	setCharts
+	global,
+	coin,
+	coinCG
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

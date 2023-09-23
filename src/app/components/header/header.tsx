@@ -1,5 +1,5 @@
 import { MODAL_FORM_PROPS } from '@/constants'
-import { setTheme } from '@/redux/features/themeSlice'
+import { toggleDarkMode } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -13,10 +13,10 @@ import { useDispatch } from 'react-redux'
 const { Link, Text } = Typography
 
 const Header: FC = () => {
-	// const { sign, symbol } = useAppSelector(state => state.setCurrency.value)
-	const coins = useAppSelector(state => state.setCoin.coins)
-	const global = useAppSelector(state => state.setGlobal.value)
-	const darkMode = useAppSelector(state => state.setTheme.isDark)
+	// const { sign, symbol } = useAppSelector(state => state.global.currency)
+	const coins = useAppSelector(state => state.coin.coins)
+	const global = useAppSelector(state => state.global.value)
+	const darkMode = useAppSelector(state => state.global.isDark)
 	const dispatch = useDispatch<AppDispatch>()
 
 	const data = {
@@ -56,7 +56,7 @@ const Header: FC = () => {
 							const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
 
 							return (
-								<div style={{ display: 'flex', marginBlock: '10px', gap: '10px' }}>
+								<div style={{ display: 'flex', marginBlock: '10px', gap: '10px' }} key={record.id}>
 									<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
 									<Space align="center">
 										<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
@@ -112,7 +112,7 @@ const Header: FC = () => {
 
 				<Switch
 					onChange={() => {
-						dispatch(setTheme(!darkMode))
+						dispatch(toggleDarkMode())
 					}}
 					checked={darkMode}
 					checkedChildren="Dark"

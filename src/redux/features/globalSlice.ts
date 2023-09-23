@@ -3,6 +3,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
 	value: GlobalData
+	isDark: boolean
+	currency: {
+		sign: string
+		symbol: string
+	}
 }
 
 const initialState: InitialState = {
@@ -13,7 +18,14 @@ const initialState: InitialState = {
 		btc_dominance_24h_percentage_change: null,
 		eth_dominance: null,
 		eth_dominance_24h_percentage_change: null,
-		quote: {}
+		quote: {},
+		defi_volume_24h_reported: null,
+		defi_24h_percentage_change: null
+	},
+	isDark: false,
+	currency: {
+		sign: '$',
+		symbol: 'USD'
 	}
 }
 
@@ -21,13 +33,17 @@ export const globalData = createSlice({
 	name: 'global',
 	initialState,
 	reducers: {
-		setGlobalData: (_, action: PayloadAction<GlobalData>) => {
-			return {
-				value: action.payload
-			}
+		setGlobalData: (state, action: PayloadAction<GlobalData>) => {
+			state.value = action.payload
+		},
+		toggleDarkMode: state => {
+			state.isDark = !state.isDark
+		},
+		setCurrency: (state, action: PayloadAction<{ sign: string; symbol: string }>) => {
+			state.currency = action.payload
 		}
 	}
 })
 
-export const { setGlobalData } = globalData.actions
+export const { setGlobalData, toggleDarkMode, setCurrency } = globalData.actions
 export default globalData.reducer

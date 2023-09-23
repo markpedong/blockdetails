@@ -16,14 +16,12 @@ import {
 	SolutionOutlined,
 	WalletOutlined
 } from '@ant-design/icons'
-import { setQuotes } from '@/redux/features/quoteSlice'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
-import { setCoin } from '@/redux/features/coinSlice'
+import { setCoin, setQuotes } from '@/redux/features/coinSlice'
 import ChartData from '../chart-data'
 import Statistics from '../statistics'
-import { setCoinCG } from '@/redux/features/coinGSlice'
-import { setChart } from '@/redux/features/chartSlice'
+import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
 import Markets from '../markets'
 import Wallets from '../wallets'
 

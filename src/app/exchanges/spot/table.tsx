@@ -15,9 +15,9 @@ type Props = {
 }
 
 const Table: FC<Props> = ({ data }) => {
-	const coins = useAppSelector(state => state.setCoin.coins)
+	const coins = useAppSelector(state => state.coin.coins)
 	const router = useRouter()
-	const { symbol } = useAppSelector(state => state.setCurrency.value)
+	const { symbol } = useAppSelector(state => state.global.currency) ?? {}
 	const { quote } = coins[0] as unknown as Cryptocurrency
 
 	const columns: ProColumns<Exchange>[] = [
@@ -30,7 +30,6 @@ const Table: FC<Props> = ({ data }) => {
 			title: 'Name',
 			align: 'left',
 			render: (_, record) => {
-				console.log(record)
 				return (
 					<Space align="center">
 						<Image src={record.image} alt={`logo${record.id}`} width={25} height={25} />

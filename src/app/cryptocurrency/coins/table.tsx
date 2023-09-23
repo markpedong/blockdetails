@@ -26,8 +26,8 @@ type Props = {
 }
 
 const Table: FC<Props> = ({ data, global: g, defi }) => {
-	const coins = useAppSelector(state => state.setCoin.coins)
-	const { symbol, sign } = useAppSelector(state => state.setCurrency.value)
+	const coins = useAppSelector(state => state.coin.coins)
+	const { symbol, sign } = useAppSelector(state => state.global.currency) ?? {}
 	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
 	const router = useRouter()
 	const dispatch = useDispatch<AppDispatch>()

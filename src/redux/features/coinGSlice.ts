@@ -2,11 +2,12 @@ import { CoinDataCG } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
-	value: CoinDataCG
+	coin: CoinDataCG
+	chart: { date: string; value: number }[]
 }
 
 const initialState: InitialState = {
-	value: {
+	coin: {
 		id: '',
 		description: { en: '' },
 		market_data: {
@@ -28,7 +29,8 @@ const initialState: InitialState = {
 			price_change_percentage_1y: undefined,
 			max_supply: undefined
 		}
-	}
+	},
+	chart: []
 }
 
 export const CoinCG = createSlice({
@@ -36,10 +38,13 @@ export const CoinCG = createSlice({
 	initialState,
 	reducers: {
 		setCoinCG: (state, action: PayloadAction<CoinDataCG>) => {
-			state.value = action.payload
+			state.coin = action.payload
+		},
+		setChart: (state, action: PayloadAction<{ date: string; value: number }[]>) => {
+			state.chart = action.payload
 		}
 	}
 })
 
-export const { setCoinCG } = CoinCG.actions
+export const { setCoinCG, setChart } = CoinCG.actions
 export default CoinCG.reducer

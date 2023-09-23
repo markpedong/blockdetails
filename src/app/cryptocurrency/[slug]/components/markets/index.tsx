@@ -17,8 +17,8 @@ type Props = {
 
 const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 	const actionRef = useRef<ActionType>()
-	const coin = useAppSelector(state => state.setCoin.value)
-	const { symbol } = useAppSelector(state => state.setCurrency.value)
+	const coin = useAppSelector(state => state.coin.coin)
+	const { symbol } = useAppSelector(state => state.global.currency) ?? {}
 	const columns: ProColumns<TableListItem>[] = [
 		{
 			title: '#',
