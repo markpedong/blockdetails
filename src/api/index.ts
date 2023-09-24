@@ -24,7 +24,7 @@ export type GlobalData = {
 	}
 }
 
-export const getGlobalCrypto = () => get<GlobalData>(`${HOST_CMC}/v1/global-metrics/quotes/latest`)
+export const getGlobalCrypto = params => get<GlobalData>(`${HOST_CMC}/v1/global-metrics/quotes/latest`, params)
 
 // /v1/cryptocurrency/listings/latest
 export type Cryptocurrency = {
@@ -69,6 +69,8 @@ export const getDefi = () => get(`${HOST_CG}/global/decentralized_finance_defi`)
 
 // /v1/fiat/map
 export type Fiat = {
+	id: number
+	name: string
 	sign: string
 	symbol: string
 }

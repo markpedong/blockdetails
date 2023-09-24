@@ -3,16 +3,15 @@
 import { Cryptocurrency, DefiData, Fiat, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { setCoinArray } from '@/redux/features/coinSlice'
-import { setGlobalData } from '@/redux/features/globalSlice'
-import { useAppSelector } from '@/redux/store'
-import { AppDispatch } from '@/redux/store'
+import { getFiatsArray, setGlobalData } from '@/redux/features/globalSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas, numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -25,12 +24,13 @@ type Props = {
 	defi: DefiData
 }
 
-const Table: FC<Props> = ({ data, global: g, defi }) => {
-	const coins = useAppSelector(state => state.coin.coins)
-	const { symbol, sign } = useAppSelector(state => state.global.currency) ?? {}
-	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
-	const router = useRouter()
+const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 	const dispatch = useDispatch<AppDispatch>()
+	const navigate = useRouter()
+	const coins = useAppSelector(state => state.coin.coins)
+	const { symbol, sign } = useAppSelector(state => state.global.currency)
+	const { quote } = coins?.[0] as unknown as Cryptocurrency
+	const query = useSearchParams().get('currency')
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
@@ -46,7 +46,9 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Link onClick={() => router.push(`/cryptocurrency/${record.slug}`)}>{record.name}</Link>
+						<Link onClick={() => navigate.push(`/cryptocurrency/${record.slug}?currency=${symbol}`)}>
+							{record.name}
+						</Link>
 					</Space>
 				)
 			}
@@ -141,17 +143,23 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 		defi_vol: numberWithSuffix(g?.defi_volume_24h_reported),
 		defi_per: g?.defi_24h_percentage_change,
 		defi_dom: +defi.data.defi_dominance,
-		mcap: numberWithSuffix(g?.quote?.['USD']?.total_market_cap),
-		mcap_per: g?.quote?.['USD']?.total_market_cap_yesterday_percentage_change,
-		volume: numberWithSuffix(g?.quote?.['USD']?.total_volume_24h),
+		mcap: numberWithSuffix(g?.quote?.[query || symbol]?.total_market_cap),
+		mcap_per: g?.quote?.[query || symbol]?.total_market_cap_yesterday_percentage_change,
+		volume: numberWithSuffix(g?.quote?.[query || symbol]?.total_volume_24h),
 		top_defi: defi.data.top_coin_name,
 		top_defi_dom: defi.data.top_coin_defi_dominance
 	}
 
+	console.log(g?.quote)
+
 	useEffect(() => {
 		dispatch(setGlobalData(g))
 		dispatch(setCoinArray(data.slice(0, 9)))
-	}, [])
+		dispatch(getFiatsArray(fiats))
+
+		// MUST BE SET THE INITIAL TO USD
+		// navigate.push(`${pathname}?currency=USD`)
+	}, [sign, symbol])
 
 	return (
 		<>
@@ -186,7 +194,7 @@ const Table: FC<Props> = ({ data, global: g, defi }) => {
 					</Text>
 				</div>
 				<Space direction="vertical" size={0}>
-					<Text>Bitcoin's price is currently {formatPrice(quote?.[symbol]?.price)} </Text>
+					<Text>Bitcoin's price is currently {formatPrice(quote?.[symbol]?.price, sign)} </Text>
 					<Text>Bitcoin’s dominance is currently {renderPer(g?.btc_dominance)}</Text>
 				</Space>
 			</Space>

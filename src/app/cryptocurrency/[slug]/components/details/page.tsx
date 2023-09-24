@@ -17,7 +17,7 @@ import {
 	WalletOutlined
 } from '@ant-design/icons'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@/redux/store'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { setCoin, setQuotes } from '@/redux/features/coinSlice'
 import ChartData from '../chart-data'
 import Statistics from '../statistics'
@@ -35,6 +35,7 @@ type Props = {
 }
 
 const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => {
+	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const [currentTab, setCurrentTab] = useState('overview')
 	const dispatch = useDispatch<AppDispatch>()
 
@@ -43,7 +44,7 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 		dispatch(setQuotes(quotes))
 		dispatch(setCoinCG(cg))
 		dispatch(setChart(chart))
-	}, [])
+	}, [sign, symbol])
 
 	return (
 		<Row>
@@ -92,19 +93,19 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 				<Space>
 					<div>
 						<Typography.Text style={{ fontSize: '2.3rem', fontWeight: 700 }}>
-							{formatPrice(quotes?.quote?.['USD']?.price)}
+							{formatPrice(quotes?.quote?.[symbol]?.price, sign)}
 						</Typography.Text>
 					</div>
-					<div>{renderPercentage(quotes?.quote?.['USD'].percent_change_24h)}</div>
+					<div>{renderPercentage(quotes?.quote?.[symbol]?.percent_change_24h)}</div>
 				</Space>
 				<Divider />
 				<Row gutter={16}>
-					<MarketData title="Market Cap" data={quotes.quote?.['USD'].market_cap} />
+					<MarketData title="Market Cap" data={quotes.quote?.[symbol]?.market_cap} />
 					<MarketData
 						title="Fully Diluted Market Cap"
-						data={quotes.quote?.['USD'].fully_diluted_market_cap}
+						data={quotes.quote?.[symbol]?.fully_diluted_market_cap}
 					/>
-					<MarketData title="Volume" data={quotes.quote?.['USD']?.volume_24h} volMcap />
+					<MarketData title="Volume" data={quotes.quote?.[symbol]?.volume_24h} volMcap />
 					<MarketData title="Circulating Supply" supply />
 				</Row>
 			</Col>

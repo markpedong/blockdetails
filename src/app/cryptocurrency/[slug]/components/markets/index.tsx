@@ -18,7 +18,7 @@ type Props = {
 const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 	const actionRef = useRef<ActionType>()
 	const coin = useAppSelector(state => state.coin.coin)
-	const { symbol } = useAppSelector(state => state.global.currency) ?? {}
+	const { sign } = useAppSelector(state => state.global.currency) ?? {}
 	const columns: ProColumns<TableListItem>[] = [
 		{
 			title: '#',
@@ -47,22 +47,22 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 		{
 			title: '+2% Depth',
 			align: 'center',
-			render: (_, record) => formatPrice(record.cost_to_move_up_usd, symbol)
+			render: (_, record) => formatPrice(record.cost_to_move_up_usd, sign)
 		},
 		{
 			title: '-2% Depth',
 			align: 'center',
-			render: (_, record) => formatPrice(record.cost_to_move_down_usd, symbol)
+			render: (_, record) => formatPrice(record.cost_to_move_down_usd, sign)
 		},
 		{
 			title: 'Price',
 			align: 'center',
-			render: (_, record) => formatPrice(record.last, symbol)
+			render: (_, record) => formatPrice(record.last, sign)
 		},
 		{
 			title: '24h Volume',
 			align: 'center',
-			render: (_, record) => formatPrice(record.converted_volume.usd, symbol)
+			render: (_, record) => formatPrice(record.converted_volume.usd, sign)
 		},
 		{
 			title: 'Spread',

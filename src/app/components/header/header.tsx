@@ -1,5 +1,5 @@
 import { MODAL_FORM_PROPS } from '@/constants'
-import { toggleDarkMode } from '@/redux/features/globalSlice'
+import { setCurrency, toggleDarkMode } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -7,25 +7,30 @@ import { SearchOutlined } from '@ant-design/icons'
 import { ModalForm, ProFormText } from '@ant-design/pro-components'
 import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FC } from 'react'
 import { useDispatch } from 'react-redux'
 
 const { Link, Text } = Typography
 
 const Header: FC = () => {
-	// const { sign, symbol } = useAppSelector(state => state.global.currency)
+	const dispatch = useDispatch<AppDispatch>()
+	const navigate = useRouter()
+	const pathname = usePathname()
+	const symbol = useSearchParams().get('currency')
 	const coins = useAppSelector(state => state.coin.coins)
 	const global = useAppSelector(state => state.global.value)
 	const darkMode = useAppSelector(state => state.global.isDark)
-	const dispatch = useDispatch<AppDispatch>()
+	const fiats = useAppSelector(state => state.global.fiats)
+	const { symbol: sym } = useAppSelector(state => state.global.currency)
 
 	const data = {
 		active: global?.active_cryptocurrencies,
 		exchanges: global?.active_exchanges,
-		mcap: numberWithSuffix(global?.quote?.['USD']?.total_market_cap),
-		mcap_per: global?.quote?.['USD']?.total_market_cap_yesterday_percentage_change,
-		volume: numberWithSuffix(global?.quote?.['USD']?.total_volume_24h),
-		volume_per: global?.quote?.['USD']?.total_volume_24h_yesterday_percentage_change,
+		mcap: numberWithSuffix(global?.quote?.[symbol || sym]?.total_market_cap),
+		mcap_per: global?.quote?.[symbol || sym]?.total_market_cap_yesterday_percentage_change,
+		volume: numberWithSuffix(global?.quote?.[symbol || sym]?.total_volume_24h),
+		volume_per: global?.quote?.[symbol || sym]?.total_volume_24h_yesterday_percentage_change,
 		btc: global?.btc_dominance?.toFixed(2).replace('-', ''),
 		btc_per: global?.btc_dominance_24h_percentage_change,
 		eth: global?.eth_dominance?.toFixed(2).replace('-', ''),
@@ -97,17 +102,20 @@ const Header: FC = () => {
 				<Select
 					showSearch
 					placeholder="USD, PHP, CNY"
-					// options={fiats?.map(item => ({ label: `${item.sign} ${item.name}`, value: item.id }))}
+					options={fiats?.map(item => ({ label: `${item.sign} ${item.name}`, value: item.symbol }))}
 					filterOption={(input, option) =>
 						String(option?.label ?? '')
 							.toLowerCase()
 							.includes(input.toLowerCase())
 					}
 					onChange={val => {
-						// const selected = fiats.find(fiat => fiat.id === val)
-						// dispatch(setCurrency(selected))
+						const { sign, symbol } = fiats.find(fiat => fiat.symbol === val)
+						navigate.push(`${pathname}?currency=${symbol}`)
+
+						dispatch(setCurrency({ sign, symbol }))
 					}}
 					style={{ width: 150 }}
+					value={symbol || sym}
 				/>
 
 				<Switch

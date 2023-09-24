@@ -1,4 +1,4 @@
-import { GlobalData } from '@/api'
+import { Fiat, GlobalData } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
@@ -8,6 +8,7 @@ type InitialState = {
 		sign: string
 		symbol: string
 	}
+	fiats: Fiat[]
 }
 
 const initialState: InitialState = {
@@ -26,7 +27,8 @@ const initialState: InitialState = {
 	currency: {
 		sign: '$',
 		symbol: 'USD'
-	}
+	},
+	fiats: []
 }
 
 export const globalData = createSlice({
@@ -41,9 +43,12 @@ export const globalData = createSlice({
 		},
 		setCurrency: (state, action: PayloadAction<{ sign: string; symbol: string }>) => {
 			state.currency = action.payload
+		},
+		getFiatsArray: (state, action: PayloadAction<Fiat[]>) => {
+			state.fiats = action.payload
 		}
 	}
 })
 
-export const { setGlobalData, toggleDarkMode, setCurrency } = globalData.actions
+export const { setGlobalData, toggleDarkMode, setCurrency, getFiatsArray } = globalData.actions
 export default globalData.reducer
