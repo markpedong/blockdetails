@@ -1,25 +1,37 @@
 'use client'
 
 import logo from '@/assets/logo.svg'
+import { AppDispatch, useAppSelector } from '@/redux/store'
+import withTheme from '@/theme'
 import { Typography, theme } from 'antd'
+import enUS from 'antd/locale/en_US'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import React, { useState } from 'react'
-import enUS from 'antd/locale/en_US'
-import menus from './menus'
+import Link from 'next/link'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import Header from '../header/header'
-import withTheme from '@/theme'
-import { useAppSelector } from '@/redux/store'
+import menus from './menus'
+import { useDispatch } from 'react-redux'
+import { setCurrency } from '@/redux/features/globalSlice'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+const Layout = ({ children }: { children: React.ReactNode }) => {
+	const dispatch = useDispatch<AppDispatch>()
 	const darkMode = useAppSelector(state => state.global.isDark)
 	const [collapsed, setCollapsed] = useState(true)
 	const pathname = usePathname()
-	const router = useRouter()
+	const params = useSearchParams()
+	const navigate = useRouter()
+	const fiats = useAppSelector(state => state.global.fiats)
+	const { sign, symbol } = useAppSelector(state => state.global.currency)
+	const getHeader = () => <Header />
+
+	useEffect(() => {
+		getHeader()
+	}, [sign, symbol])
 
 	return withTheme({
 		darkMode,
@@ -43,11 +55,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 						onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
 						onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)
 					}}
-					headerContentRender={() => <Header />}
+					headerContentRender={getHeader}
 					menuDataRender={() => menus}
-					menuItemRender={(item, dom) => (
-						<Typography.Link onClick={() => router.replace(item.path as string)}>{dom}</Typography.Link>
-					)}
+					menuItemRender={(item, dom) => {
+						return (
+							<Link
+								onClick={() => {
+									const { sign, symbol } = fiats.find(fiat => fiat.symbol === params.get('currency'))
+									dispatch(setCurrency({ sign, symbol }))
+
+									navigate.refresh()
+								}}
+								href={item.path + `?${params.toString()}`}
+							>
+								{dom}
+							</Link>
+						)
+					}}
 					headerTitleRender={() => (
 						<div
 							style={{
@@ -67,3 +91,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 		)
 	})
 }
+
+export default Layout

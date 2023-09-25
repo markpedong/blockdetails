@@ -1,23 +1,27 @@
 'use client'
 
-import { Cryptocurrency, Exchange } from '@/api'
+import { Cryptocurrency, Exchange, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
-import { useAppSelector } from '@/redux/store'
+import { setGlobalData } from '@/redux/features/globalSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Progress, Space, Typography } from 'antd'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 type Props = {
 	data: Exchange[]
+	global: GlobalData
 }
 
-const Table: FC<Props> = ({ data }) => {
+const Table: FC<Props> = ({ data, global }) => {
+	const dispatch = useDispatch<AppDispatch>()
 	const coins = useAppSelector(state => state.coin.coins)
 	const router = useRouter()
-	const { symbol } = useAppSelector(state => state.global.currency) ?? {}
+	const { symbol, sign } = useAppSelector(state => state.global.currency)
 	const { quote } = coins[0] as unknown as Cryptocurrency
 
 	const columns: ProColumns<Exchange>[] = [
@@ -61,6 +65,11 @@ const Table: FC<Props> = ({ data }) => {
 			)
 		}
 	]
+
+	useEffect(() => {
+		dispatch(setGlobalData(global))
+	}, [symbol, sign])
+
 	return <ProTable<Exchange> {...PRO_TABLE_PROPS} rowKey="id" columns={columns} search={false} dataSource={data} />
 }
 

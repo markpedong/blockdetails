@@ -8,7 +8,7 @@ import { ModalForm, ProFormText } from '@ant-design/pro-components'
 import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
 const { Link, Text } = Typography
@@ -27,10 +27,10 @@ const Header: FC = () => {
 	const data = {
 		active: global?.active_cryptocurrencies,
 		exchanges: global?.active_exchanges,
-		mcap: numberWithSuffix(global?.quote?.[symbol || sym]?.total_market_cap),
-		mcap_per: global?.quote?.[symbol || sym]?.total_market_cap_yesterday_percentage_change,
-		volume: numberWithSuffix(global?.quote?.[symbol || sym]?.total_volume_24h),
-		volume_per: global?.quote?.[symbol || sym]?.total_volume_24h_yesterday_percentage_change,
+		mcap: numberWithSuffix(global?.quote?.[symbol]?.total_market_cap),
+		mcap_per: global?.quote?.[symbol]?.total_market_cap_yesterday_percentage_change,
+		volume: numberWithSuffix(global?.quote?.[symbol]?.total_volume_24h),
+		volume_per: global?.quote?.[symbol]?.total_volume_24h_yesterday_percentage_change,
 		btc: global?.btc_dominance?.toFixed(2).replace('-', ''),
 		btc_per: global?.btc_dominance_24h_percentage_change,
 		eth: global?.eth_dominance?.toFixed(2).replace('-', ''),
@@ -79,6 +79,8 @@ const Header: FC = () => {
 		)
 	}
 
+	console.log(global)
+	useEffect(() => {}, [symbol, sym])
 	return (
 		<Row style={{ display: 'flex', justifyContent: 'space-between' }}>
 			<Space style={{ fontSize: '0.7rem' }}>
@@ -110,9 +112,10 @@ const Header: FC = () => {
 					}
 					onChange={val => {
 						const { sign, symbol } = fiats.find(fiat => fiat.symbol === val)
-						navigate.push(`${pathname}?currency=${symbol}`)
-
 						dispatch(setCurrency({ sign, symbol }))
+
+						navigate.push(`${pathname}?currency=${symbol}`)
+						navigate.refresh()
 					}}
 					style={{ width: 150 }}
 					value={symbol || sym}

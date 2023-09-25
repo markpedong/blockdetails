@@ -14,7 +14,7 @@ type Props = {
 }
 
 const StatsPer: FC<Props> = ({ data, title, date, per, divider = true }) => {
-	const { sign } = useAppSelector(state => state.global.currency) ?? {}
+	const { sign } = useAppSelector(state => state.global.currency)
 
 	const subtractedDate = new Date().getFullYear() - new Date(date).getFullYear()
 

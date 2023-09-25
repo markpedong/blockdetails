@@ -98,8 +98,13 @@ export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, pa
 // /v1/exchanges
 export type ExchangePap = {
 	description: string
+	quotes: {
+		[currency: string]: {
+			adjusted_volume_24h: number
+		}
+	}
 }
-export const getExchangesPaprika = () => get<ExchangePap>(`${HOST_PAP}/v1/exchanges`)
+export const getExchangesPaprika = params => get<ExchangePap>(`${HOST_PAP}/v1/exchanges`, params)
 
 // v3/coins/bitcoin
 export type CoinData = {
@@ -272,6 +277,7 @@ export const getCoinMarkets = (params, id) => get<CoinMarketResponse>(`${HOST_CG
 
 // /v3/exchanges
 export type ExchangeDetail = {
+	reddit_url: string
 	image: string
 	name: string
 	trade_volume_24h_btc_normalized: number

@@ -14,6 +14,7 @@ import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+import { default as NextLink } from 'next/link'
 
 const { Link, Text, Title } = Typography
 
@@ -26,11 +27,11 @@ type Props = {
 
 const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 	const dispatch = useDispatch<AppDispatch>()
-	const navigate = useRouter()
+	const params = useSearchParams()
+	const router = useRouter()
 	const coins = useAppSelector(state => state.coin.coins)
 	const { symbol, sign } = useAppSelector(state => state.global.currency)
 	const { quote } = coins?.[0] as unknown as Cryptocurrency
-	const query = useSearchParams().get('currency')
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
@@ -42,13 +43,10 @@ const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 			align: 'left',
 			render: (_, record) => {
 				const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
-
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Link onClick={() => navigate.push(`/cryptocurrency/${record.slug}?currency=${symbol}`)}>
-							{record.name}
-						</Link>
+						<NextLink href={`/cryptocurrency/${record.slug}?${params.toString()}`}>{record.name}</NextLink>
 					</Space>
 				)
 			}
@@ -143,14 +141,12 @@ const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 		defi_vol: numberWithSuffix(g?.defi_volume_24h_reported),
 		defi_per: g?.defi_24h_percentage_change,
 		defi_dom: +defi.data.defi_dominance,
-		mcap: numberWithSuffix(g?.quote?.[query || symbol]?.total_market_cap),
-		mcap_per: g?.quote?.[query || symbol]?.total_market_cap_yesterday_percentage_change,
-		volume: numberWithSuffix(g?.quote?.[query || symbol]?.total_volume_24h),
+		mcap: numberWithSuffix(g?.quote?.[symbol]?.total_market_cap),
+		mcap_per: g?.quote?.[symbol]?.total_market_cap_yesterday_percentage_change,
+		volume: numberWithSuffix(g?.quote?.[symbol]?.total_volume_24h),
 		top_defi: defi.data.top_coin_name,
 		top_defi_dom: defi.data.top_coin_defi_dominance
 	}
-
-	console.log(g?.quote)
 
 	useEffect(() => {
 		dispatch(setGlobalData(g))
@@ -158,7 +154,10 @@ const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 		dispatch(getFiatsArray(fiats))
 
 		// MUST BE SET THE INITIAL TO USD
-		// navigate.push(`${pathname}?currency=USD`)
+		// router.push(`?currency=USD`)
+		if (!params.get('currency')) {
+			router.push('?currency=USD')
+		}
 	}, [sign, symbol])
 
 	return (

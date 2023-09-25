@@ -7,6 +7,8 @@ import { Button, Space, Typography } from 'antd'
 import Image from 'next/image'
 import React, { FC, useRef } from 'react'
 import { ValuesType } from 'utility-types'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 type TableListItem = ValuesType<CoinMarketResponse['tickers']>
 type Props = {
@@ -18,7 +20,8 @@ type Props = {
 const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 	const actionRef = useRef<ActionType>()
 	const coin = useAppSelector(state => state.coin.coin)
-	const { sign } = useAppSelector(state => state.global.currency) ?? {}
+	const { sign } = useAppSelector(state => state.global.currency)
+	const params = useSearchParams()
 	const columns: ProColumns<TableListItem>[] = [
 		{
 			title: '#',
@@ -31,7 +34,7 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 			render: (_, record) => (
 				<Space align="center">
 					<Image src={record.market.logo} alt={`logo${record.market.name}`} width={25} height={25} />
-					<Typography.Link>{record.market.name}</Typography.Link>
+					<Link href={`/exchanges/${record.market.identifier}` + `?${params}`}>{record.market.name}</Link>
 				</Space>
 			)
 		},

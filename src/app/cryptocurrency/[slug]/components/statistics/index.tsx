@@ -5,7 +5,7 @@ import StatsPer from './statsPer'
 import { useAppSelector } from '@/redux/store'
 
 const Statistics: FC = () => {
-	const { symbol } = useAppSelector(state => state.global.currency) ?? {}
+	const { symbol } = useAppSelector(state => state.global.currency)
 	const coin = useAppSelector(state => state.coin.coin)
 	const quotes = useAppSelector(state => state.coin.quote)
 	const coinCG = useAppSelector(state => state.coinCG.coin)

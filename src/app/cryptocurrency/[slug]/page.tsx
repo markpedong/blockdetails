@@ -7,21 +7,16 @@ import {
 	getCoinDetail,
 	getCoinMarkets,
 	getDetail,
+	getGlobalCrypto,
 	getMarketChart,
 	getQuotesLatest
 } from '@/api'
 import Details from './components/details/page'
 
-const Detail = async ({
-	params,
-	searchParams: { currency }
-}: {
-	params: { slug: string }
-	searchParams: { currency: string }
-}) => {
+const Detail = async ({ params, searchParams: { currency } }) => {
 	const coinIds = await getAllCoinIds()
 	const { id } = coinIds?.find(i => i.name.toLowerCase() === params.slug)
-	const [data, quoteData] = await Promise.all([
+	const [data, quoteData, global] = await Promise.all([
 		getDetail({
 			slug: params.slug,
 			aux: 'urls,logo,description,tags,platform,date_added,notice,status'
@@ -30,6 +25,9 @@ const Detail = async ({
 			slug: params.slug,
 			convert: currency,
 			aux: 'num_market_pairs,cmc_rank,date_added,tags,platform,max_supply,circulating_supply,total_supply,market_cap_by_total_supply,volume_24h_reported,volume_7d,volume_7d_reported,volume_30d,volume_30d_reported,is_active,is_fiat'
+		}),
+		getGlobalCrypto({
+			convert: currency
 		})
 	])
 	const [cg, chart, markets] = await Promise.all([
@@ -50,6 +48,7 @@ const Detail = async ({
 
 	return (
 		<Details
+			global={global.data}
 			coin={Object.values(data.data)[0] as CoinData}
 			markets={markets as unknown as CoinMarketResponse}
 			quotes={Object.values(quoteData.data)[0] as QuoteData}

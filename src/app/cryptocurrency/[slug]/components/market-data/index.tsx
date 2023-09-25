@@ -14,7 +14,7 @@ type Props = {
 }
 
 const MarketData: FC<Props> = ({ data, title, volMcap = false, divider = true, supply = false }) => {
-	const { sign, symbol } = useAppSelector(state => state.global.currency) ?? {}
+	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const quotes = useAppSelector(state => state.coin.quote)
 
 	return (

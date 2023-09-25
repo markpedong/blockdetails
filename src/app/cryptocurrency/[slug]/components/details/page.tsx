@@ -1,6 +1,6 @@
 'use client'
 
-import { CoinData, CoinDataCG, CoinMarketResponse, QuoteData } from '@/api'
+import { CoinData, CoinDataCG, CoinMarketResponse, GlobalData, QuoteData } from '@/api'
 import { Col, Divider, Row, Segmented, Space, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
@@ -24,6 +24,7 @@ import Statistics from '../statistics'
 import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
 import Markets from '../markets'
 import Wallets from '../wallets'
+import { setGlobalData } from '@/redux/features/globalSlice'
 
 type Props = {
 	coin: CoinData
@@ -32,15 +33,17 @@ type Props = {
 	id: string
 	markets: CoinMarketResponse
 	chart: { date: string; value: number }[]
+	global: GlobalData
 }
 
-const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => {
+const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id, global }: Props) => {
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const [currentTab, setCurrentTab] = useState('overview')
 	const dispatch = useDispatch<AppDispatch>()
 
 	useEffect(() => {
 		dispatch(setCoin(coin))
+		dispatch(setGlobalData(global))
 		dispatch(setQuotes(quotes))
 		dispatch(setCoinCG(cg))
 		dispatch(setChart(chart))

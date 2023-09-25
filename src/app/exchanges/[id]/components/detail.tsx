@@ -1,25 +1,32 @@
 'use client'
 
-import React, { FC } from 'react'
-import { Col, Row, Typography } from 'antd'
+import React, { FC, useEffect } from 'react'
+import { Col, Row, Space, Typography } from 'antd'
 import Image from 'next/image'
-import { Cryptocurrency, ExchangeDetail, ExchangePap } from '@/api'
-import { useAppSelector } from '@/redux/store'
+import { ExchangeDetail, ExchangePap, GlobalData } from '@/api'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
+import { useDispatch } from 'react-redux'
+import { setGlobalData } from '@/redux/features/globalSlice'
+import { RedditOutlined } from '@ant-design/icons'
 
 type Props = {
 	exchange: ExchangeDetail
 	id: string
 	pap: ExchangePap
+	global: GlobalData
 }
 
-const Detail: FC<Props> = ({ exchange, id, pap }) => {
-	const { symbol } = useAppSelector(state => state.global.currency) ?? {}
-	const coins = useAppSelector(state => state.coin.coins)
-	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
-	// quote?.[symbol]?.price
+const Detail: FC<Props> = ({ exchange, id, pap, global }) => {
+	const dispatch = useDispatch<AppDispatch>()
+	const { symbol, sign } = useAppSelector(state => state.global.currency)
 	console.log(exchange)
-	console.log(pap)
+	console.log('pap', pap)
+
+	useEffect(() => {
+		dispatch(setGlobalData(global))
+	}, [symbol, sign])
+
 	return (
 		<Row>
 			<Col span={8}>
@@ -27,18 +34,23 @@ const Detail: FC<Props> = ({ exchange, id, pap }) => {
 					<Image src={exchange.image} alt={`${id}`} width={30} height={30} />
 					<Typography.Text style={{ fontSize: '2rem', fontWeight: 700 }}>{exchange.name}</Typography.Text>
 				</div>
+				<Space>
+					<div>
+						<RedditOutlined />
+						{exchange.reddit_url}
+					</div>
+				</Space>
 			</Col>
 			<Col span={16}>
 				<div>
-					<Typography.Text style={{ fontSize: '2rem', fontWeight: 700 }}>Volume(24h)</Typography.Text>
+					<Typography.Text style={{ fontSize: '1.5rem', fontWeight: 700 }}>Volume(24h)</Typography.Text>
 				</div>
 				<div>
 					<Typography.Title level={2}>
-						{formatPrice(quote[symbol]?.price * exchange.trade_volume_24h_btc_normalized)}
+						{formatPrice(pap.quotes['USD']?.adjusted_volume_24h, '$')}
 					</Typography.Title>
-					<Typography.Text>{exchange.trade_volume_24h_btc_normalized?.toFixed(2)} BTC</Typography.Text>
 				</div>
-				<div>{pap.description}</div>
+				<div>{pap?.description}</div>
 			</Col>
 		</Row>
 	)
