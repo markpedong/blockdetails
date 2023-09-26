@@ -1,17 +1,7 @@
 import { Fiat, GlobalData } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-type InitialState = {
-	value: GlobalData
-	isDark: boolean
-	currency: {
-		sign: string
-		symbol: string
-	}
-	fiats: Fiat[]
-}
-
-const initialState: InitialState = {
+const initialState = {
 	value: {
 		active_cryptocurrencies: null,
 		active_exchanges: null,

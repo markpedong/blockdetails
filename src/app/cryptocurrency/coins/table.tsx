@@ -1,9 +1,9 @@
 'use client'
 
-import { Cryptocurrency, DefiData, Fiat, GlobalData } from '@/api'
+import { Cryptocurrency, DefiData, Fiat, TGlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { setCoinArray } from '@/redux/features/coinSlice'
-import { getFiatsArray, setGlobalData } from '@/redux/features/globalSlice'
+import { getFiatsArray } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas, numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -11,27 +11,27 @@ import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { FC, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { default as NextLink } from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { FC, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 const { Link, Text, Title } = Typography
 
 type Props = {
 	data: []
-	global: GlobalData
 	fiats: Fiat[]
 	defi: DefiData
 }
 
-const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
+const Table: FC<Props> = ({ data, defi, fiats }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
-	const router = useRouter()
 	const coins = useAppSelector(state => state.coin.coins)
+	const g = useAppSelector(state => state.global.value)
+	const [global, setGlobal] = useState<TGlobalData>()
 	const { symbol, sign } = useAppSelector(state => state.global.currency)
-	const { quote } = coins?.[0] as unknown as Cryptocurrency
+	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
@@ -137,27 +137,23 @@ const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 		}
 	]
 
-	const global = {
-		defi_vol: numberWithSuffix(g?.defi_volume_24h_reported),
-		defi_per: g?.defi_24h_percentage_change,
-		defi_dom: +defi.data.defi_dominance,
-		mcap: numberWithSuffix(g?.quote?.[symbol]?.total_market_cap),
-		mcap_per: g?.quote?.[symbol]?.total_market_cap_yesterday_percentage_change,
-		volume: numberWithSuffix(g?.quote?.[symbol]?.total_volume_24h),
-		top_defi: defi.data.top_coin_name,
-		top_defi_dom: defi.data.top_coin_defi_dominance
-	}
-
 	useEffect(() => {
-		dispatch(setGlobalData(g))
 		dispatch(setCoinArray(data.slice(0, 9)))
 		dispatch(getFiatsArray(fiats))
 
 		// MUST BE SET THE INITIAL TO USD
-		// router.push(`?currency=USD`)
-		if (!params.get('currency')) {
-			router.push('?currency=USD')
+		const globalData = {
+			defi_vol: numberWithSuffix(g.defi_volume_24h_reported),
+			defi_per: g.defi_24h_percentage_change,
+			defi_dom: +defi.data.defi_dominance,
+			mcap: numberWithSuffix(g.quote?.[symbol]?.total_market_cap),
+			mcap_per: g.quote?.[symbol]?.total_market_cap_yesterday_percentage_change,
+			volume: numberWithSuffix(g.quote?.[symbol]?.total_volume_24h),
+			top_defi: defi.data.top_coin_name,
+			top_defi_dom: defi.data.top_coin_defi_dominance
 		}
+
+		setGlobal(globalData)
 	}, [sign, symbol])
 
 	return (
@@ -168,10 +164,10 @@ const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 					<Text>The Global Crypto Market cap is </Text>
 					<Link>
 						{sign}
-						{global.mcap}{' '}
+						{global?.mcap}{' '}
 					</Link>
 					<Text>
-						{renderPer(global.mcap_per)} {global.mcap_per > 0.01 ? 'increase' : 'decrease'} over the last
+						{renderPer(global?.mcap_per)} {global?.mcap_per > 0.01 ? 'increase' : 'decrease'} over the last
 						day.
 					</Text>
 				</div>
@@ -179,17 +175,17 @@ const Table: FC<Props> = ({ data, global: g, defi, fiats }) => {
 					<Text>The total crypto market volume over the last 24 hours is </Text>
 					<Link>
 						{sign}
-						{global.volume}
+						{global?.volume}
 					</Link>{' '}
 					<Text>. The total volume in DeFi is currently </Text>
 					<Link>
 						{sign}
-						{global.defi_vol}
+						{global?.defi_vol}
 					</Link>
 					<Text>
-						, which is {renderPer(global.defi_per)} of the total crypto market 24-hour volume. DeFi
-						Dominance is {renderPer(global.defi_dom)} , and the Top Coin in DeFi is currently{' '}
-						{global.top_defi} with {renderPer(global.top_defi_dom)} of dominance.
+						, which is {renderPer(global?.defi_per)} of the total crypto market 24-hour volume. DeFi
+						Dominance is {renderPer(global?.defi_dom)} , and the Top Coin in DeFi is currently{' '}
+						{global?.top_defi} with {renderPer(global?.top_defi_dom)} of dominance.
 					</Text>
 				</div>
 				<Space direction="vertical" size={0}>

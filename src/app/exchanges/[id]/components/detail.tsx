@@ -1,31 +1,21 @@
 'use client'
 
-import React, { FC, useEffect } from 'react'
+import { ExchangeDetail, ExchangePap } from '@/api'
+import { formatPrice } from '@/utils'
+import { RedditOutlined } from '@ant-design/icons'
 import { Col, Row, Space, Typography } from 'antd'
 import Image from 'next/image'
-import { ExchangeDetail, ExchangePap, GlobalData } from '@/api'
-import { AppDispatch, useAppSelector } from '@/redux/store'
-import { formatPrice } from '@/utils'
-import { useDispatch } from 'react-redux'
-import { setGlobalData } from '@/redux/features/globalSlice'
-import { RedditOutlined } from '@ant-design/icons'
+import { FC } from 'react'
 
 type Props = {
 	exchange: ExchangeDetail
 	id: string
 	pap: ExchangePap
-	global: GlobalData
 }
 
-const Detail: FC<Props> = ({ exchange, id, pap, global }) => {
-	const dispatch = useDispatch<AppDispatch>()
-	const { symbol, sign } = useAppSelector(state => state.global.currency)
+const Detail: FC<Props> = ({ exchange, id, pap }) => {
 	console.log(exchange)
 	console.log('pap', pap)
-
-	useEffect(() => {
-		dispatch(setGlobalData(global))
-	}, [symbol, sign])
 
 	return (
 		<Row>

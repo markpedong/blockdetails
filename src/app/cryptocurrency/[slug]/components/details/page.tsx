@@ -24,7 +24,6 @@ import Statistics from '../statistics'
 import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
 import Markets from '../markets'
 import Wallets from '../wallets'
-import { setGlobalData } from '@/redux/features/globalSlice'
 
 type Props = {
 	coin: CoinData
@@ -43,7 +42,6 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id, global }: Pr
 
 	useEffect(() => {
 		dispatch(setCoin(coin))
-		dispatch(setGlobalData(global))
 		dispatch(setQuotes(quotes))
 		dispatch(setCoinCG(cg))
 		dispatch(setChart(chart))

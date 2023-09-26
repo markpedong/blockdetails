@@ -24,6 +24,24 @@ export type GlobalData = {
 	}
 }
 
+export type TGlobalData = {
+	active?: number
+	exchanges?: number
+	mcap?: string
+	mcap_per?: number
+	volume?: string
+	volume_per?: number
+	btc?: string
+	btc_per?: number
+	eth?: string
+	eth_per?: number
+	defi_vol?: string
+	defi_per?: number
+	defi_dom?: number
+	top_defi?: string
+	top_defi_dom?: number
+}
+
 export const getGlobalCrypto = params => get<GlobalData>(`${HOST_CMC}/v1/global-metrics/quotes/latest`, params)
 
 // /v1/cryptocurrency/listings/latest
@@ -65,7 +83,7 @@ export type DefiData = {
 		top_coin_defi_dominance: number
 	}
 }
-export const getDefi = () => get(`${HOST_CG}/global/decentralized_finance_defi`)
+export const getDefi = () => get(`${HOST_CG}/global/decentralized_finance_defi`, {}, false)
 
 // /v1/fiat/map
 export type Fiat = {
@@ -93,7 +111,7 @@ export type Exchange = {
 	year_established: number
 }
 
-export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, params)
+export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, params, false)
 
 // /v1/exchanges
 export type ExchangePap = {
@@ -125,7 +143,7 @@ export type CoinData = {
 }
 
 // /coins/list
-export const getCoinList = () => get(`${HOST_CG}/coins/list`)
+export const getCoinList = () => get(`${HOST_CG}/coins/list`, {}, false)
 
 // /v2/cryptocurrency/info
 export const getDetail = params => get<CoinData>(`${HOST_CMC}/v2/cryptocurrency/info`, params)
@@ -157,7 +175,8 @@ export const getQuotesLatest = params => get<QuoteData>(`${HOST_CMC}/v2/cryptocu
 export type MarketChartRes = {
 	prices: number[][]
 }
-export const getMarketChart = (slug, params) => get<MarketChartRes>(`${HOST_CG}/coins/${slug}/market_chart`, params)
+export const getMarketChart = (slug, params) =>
+	get<MarketChartRes>(`${HOST_CG}/coins/${slug}/market_chart`, params, false)
 
 // /api/v3/coins/
 export type CoinDataCG = {
@@ -209,10 +228,10 @@ export type CoinDataCG = {
 		en: string
 	}
 }
-export const getCoinDetail = slug => get<CoinDataCG>(`${HOST_CG}/coins/${slug}?market_data=true`)
+export const getCoinDetail = slug => get<CoinDataCG>(`${HOST_CG}/coins/${slug}?market_data=true`, {}, false)
 
 // /coins/list?include_platform=false
-export const getAllCoinIds = () => get(`${HOST_CG}/coins/list?include_platform=false`)
+export const getAllCoinIds = () => get(`${HOST_CG}/coins/list?include_platform=false`, {}, false)
 
 // /search/trending
 export type GetTrendingResponse = {
@@ -248,7 +267,7 @@ export type GetTrendingResponse = {
 	}[]
 }
 
-export const getTrending = () => get<GetTrendingResponse>(`${HOST_CG}/search/trending`)
+export const getTrending = () => get<GetTrendingResponse>(`${HOST_CG}/search/trending`, {}, false)
 
 // /coins/{}/tickers?order=volume_desc&depth=true
 export type CoinMarketResponse = {
@@ -273,7 +292,7 @@ export type CoinMarketResponse = {
 	}[]
 }
 
-export const getCoinMarkets = (params, id) => get<CoinMarketResponse>(`${HOST_CG}/coins/${id}/tickers`, params)
+export const getCoinMarkets = (params, id) => get<CoinMarketResponse>(`${HOST_CG}/coins/${id}/tickers`, params, false)
 
 // /v3/exchanges
 export type ExchangeDetail = {
@@ -282,4 +301,5 @@ export type ExchangeDetail = {
 	name: string
 	trade_volume_24h_btc_normalized: number
 }
-export const getExchangesDetail = id => get<ExchangeDetail>(`${HOST_CG}/exchanges/${id}`)
+
+export const getExchangesDetail = id => get<ExchangeDetail>(`${HOST_CG}/exchanges/${id}`, {}, false)

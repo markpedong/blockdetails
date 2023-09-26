@@ -1,19 +1,19 @@
 'use client'
 
 import logo from '@/assets/logo.svg'
+import { setCurrency } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import withTheme from '@/theme'
-import { Typography, theme } from 'antd'
+import { theme } from 'antd'
 import enUS from 'antd/locale/en_US'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import Header from '../header/header'
 import menus from './menus'
-import { useDispatch } from 'react-redux'
-import { setCurrency } from '@/redux/features/globalSlice'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
@@ -26,12 +26,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 	const params = useSearchParams()
 	const navigate = useRouter()
 	const fiats = useAppSelector(state => state.global.fiats)
-	const { sign, symbol } = useAppSelector(state => state.global.currency)
-	const getHeader = () => <Header />
-
-	useEffect(() => {
-		getHeader()
-	}, [sign, symbol])
 
 	return withTheme({
 		darkMode,
@@ -55,7 +49,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 						onMouseEnter: () => setTimeout(() => setCollapsed(false), 200),
 						onMouseLeave: () => setTimeout(() => setCollapsed(true), 200)
 					}}
-					headerContentRender={getHeader}
+					headerContentRender={() => <Header />}
 					menuDataRender={() => menus}
 					menuItemRender={(item, dom) => {
 						return (

@@ -1,15 +1,10 @@
-import { Exchange, getExchanges, getGlobalCrypto } from '@/api'
+import { Exchange, getExchanges } from '@/api'
 import Table from './table'
 
 const Spot = async ({ searchParams: { currency } }) => {
-	const [exchanges, global] = await Promise.all([
-		getExchanges({}) as unknown as Exchange[],
-		getGlobalCrypto({
-			convert: currency
-		})
-	])
+	const [exchanges] = await Promise.all([getExchanges({}) as unknown as Exchange[]])
 
-	return <Table data={exchanges} global={global.data} />
+	return <Table data={exchanges} />
 }
 
 export default Spot
