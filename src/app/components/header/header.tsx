@@ -20,7 +20,7 @@ const Header: FC = () => {
 	const dispatch = useDispatch<AppDispatch>()
 	const navigate = useRouter()
 	const pathname = usePathname()
-	// const sym = useSearchParams().get('currency')
+	// const currency = useSearchParams().get('currency')
 	const coins = useAppSelector(state => state.coin.coins)
 	const global = useAppSelector(state => state.global.value)
 	const darkMode = useAppSelector(state => state.global.isDark)

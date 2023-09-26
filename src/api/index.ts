@@ -115,10 +115,14 @@ export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, pa
 
 // /v1/exchanges
 export type ExchangePap = {
+	currencies: number
+	confidence_score: number
 	description: string
+	markets: number
 	quotes: {
 		[currency: string]: {
 			adjusted_volume_24h: number
+			reported_volume_30d: number
 		}
 	}
 }
@@ -296,10 +300,20 @@ export const getCoinMarkets = (params, id) => get<CoinMarketResponse>(`${HOST_CG
 
 // /v3/exchanges
 export type ExchangeDetail = {
+	facebook_url: string
 	reddit_url: string
 	image: string
 	name: string
 	trade_volume_24h_btc_normalized: number
+	twitter_handle: string
+	url: string
+	trust_score: number
+	other_url_1: string
+	other_url_2: string
+	tickers: {
+		base: string
+		target: string
+	}[]
 }
 
 export const getExchangesDetail = id => get<ExchangeDetail>(`${HOST_CG}/exchanges/${id}`, {}, false)

@@ -42,12 +42,12 @@ const Table: FC<Props> = ({ data }) => {
 		{
 			title: 'Volume (24h) Normalized',
 			align: 'center',
-			render: (_, record) => formatPrice(quote[symbol]?.price * record.trade_volume_24h_btc_normalized)
+			render: (_, record) => formatPrice(quote[symbol]?.price * record.trade_volume_24h_btc_normalized, '$')
 		},
 		{
 			title: 'Volume (24h)',
 			align: 'center',
-			render: (_, record) => formatPrice(quote[symbol]?.price * record.trade_volume_24h_btc)
+			render: (_, record) => formatPrice(quote[symbol]?.price * record.trade_volume_24h_btc, '$')
 		},
 		{
 			title: 'Trust Score',

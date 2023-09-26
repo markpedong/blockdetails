@@ -5,7 +5,7 @@ const Exchanges = async ({ params, searchParams: { currency } }) => {
 	const [data, exchanges] = await Promise.all([
 		getExchangesDetail(params.id) as unknown as ExchangeDetail,
 		// SOME OF THE CURRENCY THAT IS SUPPORTED ON CMC IS NOT SUPPORTED ON PAPRIKA
-		getExchangesPaprika({ quotes: 'USD' })
+		getExchangesPaprika({ quotes: currency })
 	])
 
 	const filtered = exchanges?.filter(exchange => exchange.active === true && exchange.website_status === true)

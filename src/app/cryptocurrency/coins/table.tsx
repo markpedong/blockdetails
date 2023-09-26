@@ -1,9 +1,9 @@
 'use client'
 
-import { Cryptocurrency, DefiData, Fiat, TGlobalData } from '@/api'
+import { Cryptocurrency, DefiData, Fiat, GlobalData, TGlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { setCoinArray } from '@/redux/features/coinSlice'
-import { getFiatsArray } from '@/redux/features/globalSlice'
+import { getFiatsArray, setGlobalData } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas, numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -15,21 +15,26 @@ import { default as NextLink } from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { ValuesType } from 'utility-types'
 
 const { Link, Text, Title } = Typography
+
+type Defi = ValuesType<DefiData>
 
 type Props = {
 	data: []
 	fiats: Fiat[]
-	defi: DefiData
+	defi: Defi
+	initGlobal?: GlobalData
 }
 
-const Table: FC<Props> = ({ data, defi, fiats }) => {
+const Table: FC<Props> = ({ data, defi, fiats, initGlobal }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
+	const currency = params.get('currency')
 	const coins = useAppSelector(state => state.coin.coins)
 	const g = useAppSelector(state => state.global.value)
-	const [global, setGlobal] = useState<TGlobalData>()
+	const [global, setGlobal] = useState<TGlobalData | null>(null)
 	const { symbol, sign } = useAppSelector(state => state.global.currency)
 	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
 	const columns: ProColumns<Cryptocurrency>[] = [
@@ -138,22 +143,29 @@ const Table: FC<Props> = ({ data, defi, fiats }) => {
 	]
 
 	useEffect(() => {
-		dispatch(setCoinArray(data.slice(0, 9)))
-		dispatch(getFiatsArray(fiats))
+		const isUSD = !currency
 
-		// MUST BE SET THE INITIAL TO USD
 		const globalData = {
-			defi_vol: numberWithSuffix(g.defi_volume_24h_reported),
-			defi_per: g.defi_24h_percentage_change,
-			defi_dom: +defi.data.defi_dominance,
-			mcap: numberWithSuffix(g.quote?.[symbol]?.total_market_cap),
-			mcap_per: g.quote?.[symbol]?.total_market_cap_yesterday_percentage_change,
-			volume: numberWithSuffix(g.quote?.[symbol]?.total_volume_24h),
-			top_defi: defi.data.top_coin_name,
-			top_defi_dom: defi.data.top_coin_defi_dominance
+			defi_vol: numberWithSuffix(isUSD ? initGlobal.defi_volume_24h_reported : g.defi_volume_24h_reported),
+			defi_per: isUSD ? initGlobal.defi_24h_percentage_change : g.defi_24h_percentage_change,
+			defi_dom: +defi.defi_dominance,
+			mcap: numberWithSuffix(
+				isUSD ? initGlobal.quote?.USD?.total_market_cap : g.quote?.[symbol]?.total_market_cap
+			),
+			mcap_per: isUSD
+				? initGlobal.quote?.USD?.total_market_cap_yesterday_percentage_change
+				: g.quote?.[symbol]?.total_market_cap_yesterday_percentage_change,
+			volume: numberWithSuffix(
+				isUSD ? initGlobal.quote?.USD?.total_volume_24h : g.quote?.[symbol]?.total_volume_24h
+			),
+			top_defi: defi.top_coin_name,
+			top_defi_dom: defi.top_coin_defi_dominance
 		}
 
 		setGlobal(globalData)
+		isUSD && dispatch(setGlobalData(initGlobal))
+		dispatch(setCoinArray(data.slice(0, 9)))
+		dispatch(getFiatsArray(fiats))
 	}, [sign, symbol])
 
 	return (
