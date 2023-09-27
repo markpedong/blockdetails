@@ -12,6 +12,7 @@ type Props = {
 const Links: FC<Props> = ({ exchange, pap }) => {
 	console.log('pap', pap)
 	console.log('exchange', exchange)
+
 	return (
 		<Space direction="vertical">
 			<div style={{ display: 'flex', gap: '10px' }}>

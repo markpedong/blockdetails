@@ -1,6 +1,6 @@
 'use client'
 
-import { TGlobalData, getGlobalCrypto } from '@/api'
+import { getGlobalCrypto } from '@/api'
 import { MODAL_FORM_PROPS } from '@/constants'
 import { setCurrency, setGlobalData, toggleDarkMode } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
@@ -10,8 +10,8 @@ import { SearchOutlined } from '@ant-design/icons'
 import { ModalForm, ProFormText } from '@ant-design/pro-components'
 import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import { FC, useEffect, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
 const { Link, Text } = Typography
@@ -20,13 +20,12 @@ const Header: FC = () => {
 	const dispatch = useDispatch<AppDispatch>()
 	const navigate = useRouter()
 	const pathname = usePathname()
-	// const currency = useSearchParams().get('currency')
+	const currency = useSearchParams().get('currency')
 	const coins = useAppSelector(state => state.coin.coins)
 	const global = useAppSelector(state => state.global.value)
 	const darkMode = useAppSelector(state => state.global.isDark)
 	const fiats = useAppSelector(state => state.global.fiats)
 	const { symbol } = useAppSelector(state => state.global.currency)
-	const [data, setData] = useState<TGlobalData>()
 
 	const renderSearch = () => {
 		return (
@@ -70,39 +69,39 @@ const Header: FC = () => {
 		)
 	}
 
-	useEffect(() => {
-		const data = {
-			active: global?.active_cryptocurrencies,
-			exchanges: global?.active_exchanges,
-			mcap: numberWithSuffix(global?.quote[symbol]?.total_market_cap),
-			mcap_per: global?.quote[symbol]?.total_market_cap_yesterday_percentage_change,
-			volume: numberWithSuffix(global?.quote[symbol]?.total_volume_24h),
-			volume_per: global?.quote[symbol]?.total_volume_24h_yesterday_percentage_change,
-			btc: global?.btc_dominance?.toFixed(2)?.replace('-', ''),
-			btc_per: global?.btc_dominance_24h_percentage_change,
-			eth: global?.eth_dominance?.toFixed(2)?.replace('-', ''),
-			eth_per: global?.eth_dominance_24h_percentage_change
-		}
+	const fetchNewGlobal = async () => {
+		const { sign, symbol: newSymbol } = fiats.find(fiat => fiat.symbol === symbol)
+		const global = await getGlobalCrypto({ convert: symbol })
 
-		setData(data)
-	}, [symbol])
+		dispatch(setGlobalData(global.data))
+		dispatch(setCurrency({ sign, symbol: newSymbol }))
+	}
+
+	useEffect(() => {
+		fetchNewGlobal()
+	}, [symbol, currency])
 
 	return (
 		<Row style={{ display: 'flex', justifyContent: 'space-between' }}>
 			<Space style={{ fontSize: '0.7rem' }}>
-				Cryptos:<Link style={{ fontSize: '0.7rem' }}>{data?.active}</Link>
-				Exchanges:<Link style={{ fontSize: '0.7rem' }}>{data?.exchanges}</Link>
+				Cryptos:<Link style={{ fontSize: '0.7rem' }}>{global.active_cryptocurrencies}</Link>
+				Exchanges:<Link style={{ fontSize: '0.7rem' }}>{global.active_exchanges}</Link>
 				Market Cap:
 				<Link style={{ fontSize: '0.7rem' }}>
-					{data?.mcap} {renderPer(data?.mcap_per)}
+					{numberWithSuffix(global?.quote[symbol]?.total_market_cap)}{' '}
+					{renderPer(global?.quote[symbol]?.total_market_cap_yesterday_percentage_change)}
 				</Link>
 				24h Vol:
 				<Link style={{ fontSize: '0.7rem' }}>
-					{data?.volume} {renderPer(data?.volume_per)}
+					{numberWithSuffix(global?.quote[symbol]?.total_volume_24h)}{' '}
+					{renderPer(global?.quote[symbol]?.total_volume_24h_yesterday_percentage_change)}
 				</Link>
 				Dominance:
 				<Link style={{ fontSize: '0.7rem' }}>
-					BTC: {data?.btc}%{renderPer(data?.btc_per)} ETH: {data?.eth}%{renderPer(data?.eth_per)}
+					BTC: {global?.btc_dominance?.toFixed(2)?.replace('-', '')}%
+					{renderPer(global?.btc_dominance_24h_percentage_change)} ETH:{' '}
+					{global?.eth_dominance?.toFixed(2)?.replace('-', '')}%
+					{renderPer(global?.eth_dominance_24h_percentage_change)}
 				</Link>
 			</Space>
 			<Space align="center">
@@ -116,17 +115,13 @@ const Header: FC = () => {
 							.toLowerCase()
 							.includes(input.toLowerCase())
 					}
-					onChange={async val => {
+					onChange={val => {
 						const { sign, symbol } = fiats.find(fiat => fiat.symbol === val)
-						const global = await getGlobalCrypto({
-							convert: val
-						})
 
-						dispatch(setGlobalData(global.data))
 						dispatch(setCurrency({ sign, symbol }))
 
 						navigate.push(`${pathname}?currency=${symbol}`)
-						navigate.refresh()
+						// navigate.refresh()
 					}}
 					style={{ width: 150 }}
 					value={symbol}

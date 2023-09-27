@@ -12,22 +12,16 @@ export const formatPrice = (num: number | string, symbol?, precision = 2) => {
 	}
 }
 
-export const numberWithSuffix = (number: number) => {
-	const suffixes = ['', 'K', 'M', 'B', 'T'] // Suffixes for thousands, millions, billions, trillions
-	let magnitude = Math.floor(Math.log10(number) / 3) // Calculate the magnitude in terms of thousands
+export const numberWithSuffix = (number): string => {
+	// Set a threshold value for abbreviation (e.g., 1 million)
+	const abbreviationThreshold = 1000000
 
-	if (magnitude > 0) {
-		// Divide the number by the appropriate power of 1000
-		let formattedNumber = number / Math.pow(1000, magnitude)
-
-		// Get the appropriate suffix for the magnitude
-		let suffix = suffixes[magnitude]
-
-		// Format the number using numeral.js with one decimal place
-		return numeral(formattedNumber).format('0.0') + suffix
+	// Check if the number is smaller than the threshold
+	if (number < abbreviationThreshold) {
+		return numeral(number).format('0,0') // Format small numbers with commas
 	} else {
-		// For numbers less than 1000 or 1, return the actual value
-		return number?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+		const formatted = numeral(number).format('0.0a') // Abbreviate larger numbers
+		return formatted.toUpperCase()
 	}
 }
 

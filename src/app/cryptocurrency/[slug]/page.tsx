@@ -29,7 +29,7 @@ const Detail = async ({ params, searchParams: { currency } }) => {
 	const [cg, chart, markets] = await Promise.all([
 		getCoinDetail(id),
 		getMarketChart(id, {
-			vs_currency: currency.toLowerCase(),
+			vs_currency: currency?.toLowerCase(),
 			days: '1'
 		}),
 		getCoinMarkets(
