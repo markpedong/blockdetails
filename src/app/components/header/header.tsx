@@ -1,7 +1,7 @@
 'use client'
 
 import { getGlobalCrypto } from '@/api'
-import { MODAL_FORM_PROPS } from '@/constants'
+import { MODAL_FORM_PROPS, PAP_FIAT } from '@/constants'
 import { setCurrency, setGlobalData, toggleDarkMode } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
@@ -10,8 +10,8 @@ import { SearchOutlined } from '@ant-design/icons'
 import { ModalForm, ProFormText } from '@ant-design/pro-components'
 import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { FC, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { FC } from 'react'
 import { useDispatch } from 'react-redux'
 
 const { Link, Text } = Typography
@@ -20,7 +20,6 @@ const Header: FC = () => {
 	const dispatch = useDispatch<AppDispatch>()
 	const navigate = useRouter()
 	const pathname = usePathname()
-	const currency = useSearchParams().get('currency')
 	const coins = useAppSelector(state => state.coin.coins)
 	const global = useAppSelector(state => state.global.value)
 	const darkMode = useAppSelector(state => state.global.isDark)
@@ -69,18 +68,6 @@ const Header: FC = () => {
 		)
 	}
 
-	const fetchNewGlobal = async () => {
-		const { sign, symbol: newSymbol } = fiats.find(fiat => fiat.symbol === symbol)
-		const global = await getGlobalCrypto({ convert: symbol })
-
-		dispatch(setGlobalData(global.data))
-		dispatch(setCurrency({ sign, symbol: newSymbol }))
-	}
-
-	useEffect(() => {
-		fetchNewGlobal()
-	}, [symbol, currency])
-
 	return (
 		<Row style={{ display: 'flex', justifyContent: 'space-between' }}>
 			<Space style={{ fontSize: '0.7rem' }}>
@@ -109,19 +96,29 @@ const Header: FC = () => {
 				<Select
 					showSearch
 					placeholder="USD, PHP, CNY"
-					options={fiats.map(item => ({ label: `${item.sign} ${item.name}`, value: item.symbol }))}
+					options={fiats.map(item => {
+						const exchange = pathname.split('/')[1] === 'exchanges'
+
+						return {
+							label: `${item.sign} ${item.name}`,
+							value: item.symbol,
+							disabled: !PAP_FIAT.includes(item.symbol) && exchange
+						}
+					})}
 					filterOption={(input, option) =>
 						String(option?.label ?? '')
 							.toLowerCase()
 							.includes(input.toLowerCase())
 					}
-					onChange={val => {
+					onChange={async val => {
 						const { sign, symbol } = fiats.find(fiat => fiat.symbol === val)
 
+						const global = await getGlobalCrypto({ convert: val })
+
+						dispatch(setGlobalData(global.data))
 						dispatch(setCurrency({ sign, symbol }))
 
 						navigate.push(`${pathname}?currency=${symbol}`)
-						// navigate.refresh()
 					}}
 					style={{ width: 150 }}
 					value={symbol}

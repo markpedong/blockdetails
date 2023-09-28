@@ -7,7 +7,6 @@ import { Button, Space, Typography } from 'antd'
 import Image from 'next/image'
 import React, { FC, useRef } from 'react'
 import { ValuesType } from 'utility-types'
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
 type TableListItem = ValuesType<CoinMarketResponse['tickers']>
@@ -34,7 +33,9 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 			render: (_, record) => (
 				<Space align="center">
 					<Image src={record.market.logo} alt={`logo${record.market.name}`} width={25} height={25} />
-					<Link href={`/exchanges/${record.market.identifier}` + `?${params}`}>{record.market.name}</Link>
+					<Typography.Link href={`/exchanges/${record.market.identifier}` + `?${params}`}>
+						{record.market.name}
+					</Typography.Link>
 				</Space>
 			)
 		},
@@ -42,7 +43,7 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 			title: 'Pair',
 			align: 'center',
 			render: (_, record) => (
-				<Typography.Link>
+				<Typography.Link href={record.trade_url} target="_blank">
 					{record.base}/{record.target}
 				</Typography.Link>
 			)
@@ -86,6 +87,7 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 			)
 		}
 	]
+	console.log(markets[0])
 	const reducedMarkets = markets
 		.sort((a, b) => b.converted_volume.usd - a.converted_volume.usd)
 		.filter(item => item.target === 'USDT')

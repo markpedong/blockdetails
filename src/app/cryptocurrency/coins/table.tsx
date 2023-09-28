@@ -11,7 +11,6 @@ import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
-import { default as NextLink } from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
@@ -25,13 +24,12 @@ type Props = {
 	data: []
 	fiats: Fiat[]
 	defi: Defi
-	initGlobal?: GlobalData
+	initGlobal: GlobalData
 }
 
 const Table: FC<Props> = ({ data, defi, fiats, initGlobal }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
-	const currency = params.get('currency')
 	const coins = useAppSelector(state => state.coin.coins)
 	const g = useAppSelector(state => state.global.value)
 	const { symbol, sign } = useAppSelector(state => state.global.currency)
@@ -47,10 +45,11 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal }) => {
 			align: 'left',
 			render: (_, record) => {
 				const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
+
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<NextLink href={`/cryptocurrency/${record.slug}?${params.toString()}`}>{record.name}</NextLink>
+						<Link href={`/cryptocurrency/${record.slug}?${params.toString()}`}>{record.name}</Link>
 					</Space>
 				)
 			}
@@ -142,8 +141,7 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal }) => {
 	]
 
 	useEffect(() => {
-		!currency && dispatch(setGlobalData(initGlobal))
-
+		dispatch(setGlobalData(initGlobal))
 		dispatch(setCoinArray(data.slice(0, 9)))
 		dispatch(getFiatsArray(fiats))
 	}, [sign, symbol])

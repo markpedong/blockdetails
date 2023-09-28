@@ -1,6 +1,6 @@
 'use client'
 
-import { Cryptocurrency, Exchange, ExchangeDetail, ExchangePap } from '@/api'
+import { Cryptocurrency, ExchangeDetail, ExchangePap } from '@/api'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { Col, Progress, Row, Space, Typography } from 'antd'
@@ -35,9 +35,10 @@ const Detail: FC<Props> = ({ exchange, id, pap }) => {
 			title: 'Name',
 			align: 'left',
 			render: (_, record) => {
+				// const src = `https://assets.coingecko.com/markets/images/52/small/${record.coin_id}.jpg`
 				return (
 					<Space align="center">
-						{/* <Image src={record.image} alt={`logo${record.id}`} width={25} height={25} /> */}
+						{/* <Image src={src} alt={`logo${record.id}`} width={25} height={25} /> */}
 						<Typography.Link onClick={() => router.push(`/exchanges/${record.id}`)}>
 							{record.coin_id}
 						</Typography.Link>

@@ -12,10 +12,7 @@ const Coins = async ({ searchParams: { currency } }) => {
 		}),
 		getFiats(),
 		getDefi(),
-		!currency &&
-			getGlobalCrypto({
-				convert: 'USD'
-			})
+		getGlobalCrypto({ convert: currency ?? 'USD' })
 	])
 
 	return <Table data={coins.data} fiats={fiats.data} defi={defi.data} initGlobal={global.data} />

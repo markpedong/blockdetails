@@ -291,6 +291,7 @@ export type CoinMarketResponse = {
 			name: string
 			identifier: string
 		}
+		trade_url: string
 		trust_score: string
 		volume: number
 	}[]
