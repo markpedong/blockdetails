@@ -1,19 +1,19 @@
 'use client'
 
 import logo from '@/assets/logo.svg'
-import { setCurrency } from '@/redux/features/globalSlice'
+import { GLOBAL_STATE, setCurrency } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import withTheme from '@/theme'
 import { theme } from 'antd'
 import enUS from 'antd/locale/en_US'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import Header from '../header/header'
 import menus from './menus'
+import Link from 'next/link'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
@@ -24,7 +24,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 	const [collapsed, setCollapsed] = useState(true)
 	const pathname = usePathname()
 	const params = useSearchParams()
-	const navigate = useRouter()
 	const fiats = useAppSelector(state => state.global.fiats)
 
 	return withTheme({
@@ -55,12 +54,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 						return (
 							<Link
 								onClick={() => {
-									const { sign, symbol } = fiats.find(fiat => fiat.symbol === params.get('currency'))
-									dispatch(setCurrency({ sign, symbol }))
+									const { sign, symbol } =
+										fiats.find(fiat => fiat.symbol === params.get('currency')) ??
+										GLOBAL_STATE.currency
 
-									navigate.refresh()
+									dispatch(setCurrency({ sign, symbol }))
 								}}
-								href={item.path + `?${params.toString()}`}
+								href={item.path + (params.toString() && `?${params.toString()}`)}
 							>
 								{dom}
 							</Link>

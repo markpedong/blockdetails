@@ -1,7 +1,7 @@
 import formatMoney from 'accounting-js/lib/formatMoney.js'
 import numeral from 'numeral'
 
-export const formatPrice = (num: number | string, symbol?, precision = 2) => {
+export const formatPrice = (num: number | string, symbol = '$', precision = 2) => {
 	if (num) {
 		return formatMoney(num, { symbol, precision })
 	} else {

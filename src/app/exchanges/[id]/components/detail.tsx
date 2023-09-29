@@ -3,7 +3,7 @@
 import { Cryptocurrency, ExchangeDetail, ExchangePap } from '@/api'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
-import { Col, Progress, Row, Space, Typography } from 'antd'
+import { Button, Col, Progress, Row, Space, Typography } from 'antd'
 import Image from 'next/image'
 import { FC } from 'react'
 import Links from './links'
@@ -18,14 +18,29 @@ type Props = {
 	pap: ExchangePap
 }
 
+type TableListItem = {
+	bid_ask_spread_percentage: number
+	coin_id: string
+	base: string
+	last: number
+	trade_url: string
+	target: string
+	trust_score: string
+	volume: number
+}
+
 const Detail: FC<Props> = ({ exchange, id, pap }) => {
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const coins = useAppSelector(state => state.coin.coins)
 	const router = useRouter()
 	const { quote } = coins[0] as unknown as Cryptocurrency
-	const filtered = exchange.tickers?.filter(exchange => exchange.target === 'USDT')
+	const tickers = exchange.tickers?.filter(
+		(item, index, self) => index === self.findIndex(t => t.coin_id === item.coin_id)
+	)
 
-	const columns: ProColumns[] = [
+	console.log(tickers)
+
+	const columns: ProColumns<TableListItem>[] = [
 		{
 			title: '#',
 			align: 'center',
@@ -35,12 +50,13 @@ const Detail: FC<Props> = ({ exchange, id, pap }) => {
 			title: 'Name',
 			align: 'left',
 			render: (_, record) => {
-				// const src = `https://assets.coingecko.com/markets/images/52/small/${record.coin_id}.jpg`
+				// const src = `https://assets.coingecko.com/coins/images/6319/large/${record.base.toLowerCase()}.png`
+
 				return (
 					<Space align="center">
-						{/* <Image src={src} alt={`logo${record.id}`} width={25} height={25} /> */}
-						<Typography.Link onClick={() => router.push(`/exchanges/${record.id}`)}>
-							{record.coin_id}
+						{/* <Image src={src} alt={record.coin_id} width={25} height={25} /> */}
+						<Typography.Link onClick={() => router.push(`/exchanges/${record.coin_id}`)}>
+							{record.coin_id.charAt(0).toUpperCase() + record.coin_id.slice(1)}
 						</Typography.Link>
 					</Space>
 				)
@@ -56,19 +72,24 @@ const Detail: FC<Props> = ({ exchange, id, pap }) => {
 			)
 		},
 		{
+			title: 'Spread Percentage',
+			align: 'center',
+			render: (_, record) => record.bid_ask_spread_percentage.toFixed(2)
+		},
+		{
+			title: 'Price',
+			align: 'center',
+			render: (_, record) => formatPrice(record.last)
+		},
+		{
 			title: 'Volume (24h)',
 			align: 'center',
-			render: (_, record) => formatPrice(quote[symbol]?.price * record.trade_volume_24h_btc, '$')
+			render: (_, record) => formatPrice(record.volume, '$')
 		},
 		{
 			title: 'Trust Score',
 			align: 'center',
-			render: (_, record) => (
-				<div>
-					<Progress percent={record.trust_score * 10} showInfo={false} size={[30, 15]} />
-					{record.trust_score}
-				</div>
-			)
+			render: (_, record) => <Button style={{ backgroundColor: record.trust_score }} />
 		}
 	]
 
@@ -95,7 +116,7 @@ const Detail: FC<Props> = ({ exchange, id, pap }) => {
 			</Col>
 			<Col span={24}>
 				<Typography.Title level={4}>{exchange.name} Markets:</Typography.Title>
-				<ProTable {...PRO_TABLE_PROPS} rowKey="id" columns={columns} search={false} dataSource={filtered} />
+				<ProTable {...PRO_TABLE_PROPS} rowKey="id" columns={columns} search={false} dataSource={tickers} />
 			</Col>
 		</Row>
 	)

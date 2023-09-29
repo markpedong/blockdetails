@@ -1,7 +1,7 @@
 import { Fiat, GlobalData } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const initialState = {
+export const GLOBAL_STATE = {
 	value: {
 		active_cryptocurrencies: null,
 		active_exchanges: null,
@@ -23,7 +23,7 @@ const initialState = {
 
 export const globalData = createSlice({
 	name: 'global',
-	initialState,
+	initialState: GLOBAL_STATE,
 	reducers: {
 		setGlobalData: (state, action: PayloadAction<GlobalData>) => {
 			state.value = action.payload

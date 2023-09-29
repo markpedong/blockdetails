@@ -9,7 +9,6 @@ import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
-import Link from 'next/link'
 import React, { FC } from 'react'
 
 type Props = {
@@ -33,7 +32,7 @@ const Table: FC<Props> = ({ data }) => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
+						<Typography.Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Typography.Link>
 					</Space>
 				)
 			}

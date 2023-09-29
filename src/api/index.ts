@@ -314,6 +314,7 @@ export type ExchangeDetail = {
 	tickers: {
 		base: string
 		target: string
+		coin_id: string
 	}[]
 }
 

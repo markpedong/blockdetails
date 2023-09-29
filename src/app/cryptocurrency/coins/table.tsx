@@ -142,7 +142,7 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal }) => {
 
 	useEffect(() => {
 		dispatch(setGlobalData(initGlobal))
-		dispatch(setCoinArray(data.slice(0, 9)))
+		dispatch(setCoinArray(data))
 		dispatch(getFiatsArray(fiats))
 	}, [sign, symbol])
 

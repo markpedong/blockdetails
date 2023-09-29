@@ -22,14 +22,14 @@ const Detail = async ({ params, searchParams: { currency } }) => {
 		}),
 		getQuotesLatest({
 			slug: params.slug,
-			convert: currency,
+			convert: currency ?? 'USD',
 			aux: 'num_market_pairs,cmc_rank,date_added,tags,platform,max_supply,circulating_supply,total_supply,market_cap_by_total_supply,volume_24h_reported,volume_7d,volume_7d_reported,volume_30d,volume_30d_reported,is_active,is_fiat'
 		})
 	])
 	const [cg, chart, markets] = await Promise.all([
 		getCoinDetail(id),
 		getMarketChart(id, {
-			vs_currency: currency?.toLowerCase(),
+			vs_currency: currency?.toLowerCase() ?? 'usd',
 			days: '1'
 		}),
 		getCoinMarkets(
