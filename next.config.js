@@ -2,6 +2,7 @@
 const nextConfig = {
 	// Enable source map if needed
 	productionBrowserSourceMaps: true,
+	reactStrictMode: false,
 	images: {
 		domains: ['assets.coingecko.com', 's2.coinmarketcap.com']
 	},
@@ -18,8 +19,7 @@ const nextConfig = {
 				permanent: true
 			}
 		]
-	},
-	reactStrictMode: false
+	}
 }
 
 module.exports = nextConfig
