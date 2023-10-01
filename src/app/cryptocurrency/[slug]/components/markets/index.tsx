@@ -87,11 +87,11 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 			)
 		}
 	]
-	console.log(markets[0])
+
 	const reducedMarkets = markets
-		.sort((a, b) => b.converted_volume.usd - a.converted_volume.usd)
-		.filter(item => item.target === 'USDT')
-		.reduce((acc, curr) => {
+		?.sort((a, b) => b.converted_volume.usd - a.converted_volume.usd)
+		?.filter(item => item.target === 'USDT')
+		?.reduce((acc, curr) => {
 			const existingMarket = acc.find(entry => entry.market.identifier === curr.market.identifier)
 
 			if (!existingMarket) {
@@ -112,7 +112,7 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 				actionRef={actionRef}
 				rowKey="trade_url"
 				columns={columns}
-				pagination={{ pageSize: tab === 'markets' ? reducedMarkets.length : 6, showSizeChanger: false }}
+				pagination={{ pageSize: tab === 'markets' ? reducedMarkets?.length : 6, showSizeChanger: false }}
 				search={false}
 			/>
 		</div>

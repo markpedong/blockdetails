@@ -8,6 +8,7 @@ type Props = {}
 
 const Wallets: FC<Props> = () => {
 	const [readMore, setReadMore] = useState(false)
+
 	return (
 		<div>
 			<Typography.Title level={2}>Wallets</Typography.Title>
@@ -66,6 +67,7 @@ const Wallets: FC<Props> = () => {
 							width: 300
 						}}
 						hoverable
+						key={item.title}
 					>
 						<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 							<img src={item.img} alt={item.title} style={{ height: '100px', width: 'auto' }} />

@@ -7,7 +7,7 @@ import { Col, Row, Typography } from 'antd'
 import Image from 'next/image'
 import { FC } from 'react'
 import Links from './links'
-import MarketaData from './market-data'
+import MarketData from './market-data'
 import MarketTable from './market-table'
 
 type Props = {
@@ -28,7 +28,7 @@ const Detail: FC<Props> = ({ exchange, id, pap, cg }) => {
 					<Typography.Text style={{ fontSize: '2rem', fontWeight: 700 }}>{exchange.name}</Typography.Text>
 				</div>
 				<Links exchange={exchange} pap={pap} />
-				<MarketaData exchange={exchange} pap={pap} />
+				<MarketData exchange={exchange} pap={pap} />
 			</Col>
 			<Col span={16}>
 				<div>

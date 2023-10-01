@@ -1,10 +1,11 @@
-import { CoinData, QuoteData } from '@/api'
+import { CoinData, CoinIds, QuoteData } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
 	coin: CoinData
 	coins: CoinData[]
 	quote: QuoteData
+	ids: CoinIds[]
 }
 
 const initialState: InitialState = {
@@ -25,7 +26,8 @@ const initialState: InitialState = {
 			source_code: []
 		}
 	},
-	quote: { cmc_rank: '', circulating_supply: undefined, max_supply: undefined, total_supply: undefined, quote: {} }
+	quote: { cmc_rank: '', circulating_supply: undefined, max_supply: undefined, total_supply: undefined, quote: {} },
+	ids: []
 }
 
 export const Coin = createSlice({
@@ -40,9 +42,12 @@ export const Coin = createSlice({
 		},
 		setQuotes: (state, action: PayloadAction<QuoteData>) => {
 			state.quote = action.payload
+		},
+		setGlobalIds: (state, action: PayloadAction<CoinIds[]>) => {
+			state.ids = action.payload
 		}
 	}
 })
 
-export const { setCoin, setCoinArray, setQuotes } = Coin.actions
+export const { setCoin, setCoinArray, setQuotes, setGlobalIds } = Coin.actions
 export default Coin.reducer

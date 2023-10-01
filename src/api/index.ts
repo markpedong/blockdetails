@@ -4,6 +4,16 @@ const HOST_CG = process.env.NEXT_PUBLIC_HOST_CG
 const HOST_CMC = process.env.NEXT_PUBLIC_HOST_CMC_PROD
 const HOST_PAP = process.env.NEXT_PUBLIC_HOST_PAP
 
+// //cryptocurrency/map
+export type CoinIds = {
+	id: number
+	name: string
+	symbol: string
+	slug: string
+}
+
+export const getCoinIds = params => get<CoinIds[]>(`${HOST_CMC}/v1/cryptocurrency/map`, params)
+
 // /v1/global-metrics/quotes/latest
 export type GlobalData = {
 	active_cryptocurrencies: number
@@ -22,24 +32,6 @@ export type GlobalData = {
 			total_volume_24h_yesterday_percentage_change: number
 		}
 	}
-}
-
-export type TGlobalData = {
-	active?: number
-	exchanges?: number
-	mcap?: string
-	mcap_per?: number
-	volume?: string
-	volume_per?: number
-	btc?: string
-	btc_per?: number
-	eth?: string
-	eth_per?: number
-	defi_vol?: string
-	defi_per?: number
-	defi_dom?: number
-	top_defi?: string
-	top_defi_dom?: number
 }
 
 export const getGlobalCrypto = params => get<GlobalData>(`${HOST_CMC}/v1/global-metrics/quotes/latest`, params)
@@ -133,6 +125,10 @@ export type CGCoinData = {
 	id: string
 	image: string
 	name: string
+	price_change_percentage_24h: number
+	current_price: number
+	total_volume: number
+	symbol: string
 }
 export const getCoinList = params => get(`${HOST_CG}/coins/markets`, params, false)
 
@@ -316,9 +312,14 @@ export type ExchangeDetail = {
 	other_url_1: string
 	other_url_2: string
 	tickers: {
-		base: string
-		target: string
+		bid_ask_spread_percentage: number
 		coin_id: string
+		base: string
+		last: number
+		trade_url: string
+		target: string
+		trust_score: string
+		volume: number
 	}[]
 }
 

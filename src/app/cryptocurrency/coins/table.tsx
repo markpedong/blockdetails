@@ -1,8 +1,8 @@
 'use client'
 
-import { Cryptocurrency, DefiData, Fiat, GlobalData } from '@/api'
+import { CoinIds, Cryptocurrency, DefiData, Fiat, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
-import { setCoinArray } from '@/redux/features/coinSlice'
+import { setCoinArray, setGlobalIds } from '@/redux/features/coinSlice'
 import { getFiatsArray, setGlobalData } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas, numberWithSuffix } from '@/utils'
@@ -25,9 +25,10 @@ type Props = {
 	fiats: Fiat[]
 	defi: Defi
 	initGlobal: GlobalData
+	ids: CoinIds[]
 }
 
-const Table: FC<Props> = ({ data, defi, fiats, initGlobal }) => {
+const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
 	const coins = useAppSelector(state => state.coin.coins)
@@ -144,6 +145,7 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal }) => {
 		dispatch(setGlobalData(initGlobal))
 		dispatch(setCoinArray(data))
 		dispatch(getFiatsArray(fiats))
+		dispatch(setGlobalIds(ids))
 	}, [sign, symbol])
 
 	return (

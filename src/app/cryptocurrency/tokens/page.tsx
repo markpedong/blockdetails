@@ -1,7 +1,7 @@
 import { getCryptocurrency } from '@/api'
 import Table from './components/table/page'
 
-const Tokens = async ({ searchParams: { currency } }) => {
+const Tokens = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {
 	const tokens = await getCryptocurrency({
 		aux: 'cmc_rank,circulating_supply',
 		limit: 5000,

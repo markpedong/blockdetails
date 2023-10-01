@@ -22,13 +22,13 @@ const MarketTitle: FC<{
 	)
 }
 
-const MarketaData: FC<Props> = ({ exchange, pap }) => {
+const MarketData: FC<Props> = ({ exchange, pap }) => {
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
 
 	return (
 		<Row style={{ marginBlockStart: '3rem' }}>
 			<Col span={12}>
-				<MarketTitle title="Volume (24h)" data={formatPrice(pap.quotes[symbol].adjusted_volume_24h, sign)} />
+				<MarketTitle title="Volume (24h)" data={formatPrice(pap.quotes[symbol]?.adjusted_volume_24h, sign)} />
 				<MarketTitle title="Currencies" data={pap.currencies} />
 				<MarketTitle title="Confidence Score" data={pap.confidence_score.toFixed(2)} />
 				<div style={{ paddingBlockStart: '1rem', gap: '5px', display: 'flex' }}>
@@ -39,7 +39,7 @@ const MarketaData: FC<Props> = ({ exchange, pap }) => {
 				</div>
 			</Col>
 			<Col span={12}>
-				<MarketTitle title="Volume (30d)" data={formatPrice(pap.quotes[symbol].reported_volume_30d, sign)} />
+				<MarketTitle title="Volume (30d)" data={formatPrice(pap.quotes[symbol]?.reported_volume_30d, sign)} />
 				<MarketTitle title="Market" data={pap.markets} />
 				<MarketTitle title="Score" data={exchange.trust_score} />
 				<div style={{ paddingBlockStart: '1rem', gap: '5px', display: 'flex' }}>
@@ -53,4 +53,4 @@ const MarketaData: FC<Props> = ({ exchange, pap }) => {
 	)
 }
 
-export default MarketaData
+export default MarketData
