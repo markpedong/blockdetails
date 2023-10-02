@@ -94,6 +94,7 @@ export type Exchange = {
 	id: string
 	image: string
 	name: string
+	markets: number
 	sessions_per_month: number
 	trade_volume_24h_btc_normalized: number
 	trade_volume_24h_btc: number
@@ -107,6 +108,8 @@ export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, pa
 
 // /v1/exchanges
 export type ExchangePap = {
+	id: string
+	name: string
 	currencies: number
 	confidence_score: number
 	description: string
@@ -117,7 +120,13 @@ export type ExchangePap = {
 			reported_volume_30d: number
 		}
 	}
+	fiats: {
+		name: string
+		symbol: string
+	}[]
+	reported_rank: number
 }
+
 export const getExchangesPaprika = params => get<ExchangePap>(`${HOST_PAP}/v1/exchanges`, params)
 
 // /coins/list

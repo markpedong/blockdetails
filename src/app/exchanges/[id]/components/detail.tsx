@@ -13,13 +13,15 @@ import MarketTable from './market-table'
 type Props = {
 	exchange: ExchangeDetail
 	id: string
-	pap: ExchangePap
 	cg: CGCoinData[]
+	pap: ExchangePap[]
 }
 
-const Detail: FC<Props> = ({ exchange, id, pap, cg }) => {
+const Detail: FC<Props> = ({ exchange, id, cg, pap: exchanges }) => {
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
+	const pap = exchanges?.find(paprika => paprika.id === id || paprika.name === exchange?.name)
 
+	// REFER TO COINBASE EXCHANGE FOR BUG
 	return (
 		<Row>
 			<Col span={8}>
@@ -36,7 +38,7 @@ const Detail: FC<Props> = ({ exchange, id, pap, cg }) => {
 				</div>
 				<div>
 					<Typography.Title level={2}>
-						{formatPrice(pap.quotes[symbol]?.adjusted_volume_24h, sign)}
+						{formatPrice(pap?.quotes[symbol]?.adjusted_volume_24h, sign)}
 					</Typography.Title>
 				</div>
 				<div>{pap?.description}</div>

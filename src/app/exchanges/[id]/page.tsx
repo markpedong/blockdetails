@@ -1,20 +1,17 @@
-import { CGCoinData, ExchangeDetail, getCoinList, getExchangesDetail, getExchangesPaprika } from '@/api'
+import { CGCoinData, ExchangeDetail, ExchangePap, getCoinList, getExchangesDetail, getExchangesPaprika } from '@/api'
 import Detail from './components/detail'
 
 const Exchanges = async ({ params, searchParams: { currency } }) => {
-	const [data, exchanges, coins] = await Promise.all([
+	const [data, coins, pap] = await Promise.all([
 		getExchangesDetail(params.id) as unknown as ExchangeDetail,
-		getExchangesPaprika({ quotes: currency ?? 'USD' }),
 		getCoinList({
 			vs_currency: currency?.toLowerCase() ?? 'usd',
 			order: 'market_cap_desc'
-		}) as unknown as CGCoinData[]
+		}) as unknown as CGCoinData[],
+		getExchangesPaprika({ quotes: currency ?? 'USD' }) as unknown as ExchangePap[]
 	])
 
-	const filtered = exchanges?.filter(exchange => exchange.active === true && exchange.website_status === true)
-	const pap = filtered?.find(paprika => paprika.id === params.id || paprika.name === data?.name)
-
-	return <Detail exchange={data} pap={pap} id={params.id} cg={coins} />
+	return <Detail exchange={data} id={params.id} cg={coins} pap={pap} />
 }
 
 export default Exchanges
