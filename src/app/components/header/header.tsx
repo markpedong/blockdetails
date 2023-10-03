@@ -95,7 +95,7 @@ const Header: FC = () => {
 				{renderSearch()}
 				<Select
 					showSearch
-					placeholder="USD, PHP, CNY"
+					placeholder="USD, PHP, CNY,"
 					options={fiats.map(item => {
 						const exchange = pathname.split('/')[1] === 'exchanges'
 
