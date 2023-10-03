@@ -10,7 +10,7 @@ const get = async <T>(url: string, data = {}, key = true): Promise<ApiResponse<T
 		await fetch(`${url}${stringify(data) ? '?' + stringify(data) : ''} `, {
 			headers: key
 				? {
-						'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY_PROD
+						'X-CMC_PRO_API_KEY': process.env.API_KEY_PROD
 				  }
 				: {},
 			next: {

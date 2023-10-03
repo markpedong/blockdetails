@@ -1,8 +1,8 @@
 import { get } from './http'
 
-const HOST_CG = process.env.NEXT_PUBLIC_HOST_CG
-const HOST_CMC = process.env.NEXT_PUBLIC_HOST_CMC_PROD
-const HOST_PAP = process.env.NEXT_PUBLIC_HOST_PAP
+const HOST_CG = process.env.HOST_CG
+const HOST_CMC = process.env.HOST_CMC_PROD
+const HOST_PAP = process.env.HOST_PAP
 
 // //cryptocurrency/map
 export type CoinIds = {
