@@ -5,7 +5,7 @@ import { PRO_TABLE_PROPS } from '@/constants'
 import { setCoinArray, setGlobalIds } from '@/redux/features/coinSlice'
 import { getFiatsArray, setGlobalData } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
-import { formatPrice, numberWithCommas, numberWithSuffix } from '@/utils'
+import { formatPrice, navigate, numberWithCommas, numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
@@ -46,11 +46,10 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids }) => {
 			align: 'left',
 			render: (_, record) => {
 				const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
-
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Link href={`/cryptocurrency/${record.slug}?${params.toString()}`}>{record.name}</Link>
+						<Link href={navigate(`/cryptocurrency/${record.slug}`, params)}>{record.name}</Link>
 					</Space>
 				)
 			}

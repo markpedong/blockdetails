@@ -309,7 +309,7 @@ export type CoinMarketResponse = {
 export const getCoinMarkets = (params, id) => get<CoinMarketResponse>(`${HOST_CG}/coins/${id}/tickers`, params, false)
 
 // /v3/exchanges
-export type ExchangeDetail = {
+export type TExchangeDetail = {
 	facebook_url: string
 	reddit_url: string
 	image: string
@@ -332,4 +332,7 @@ export type ExchangeDetail = {
 	}[]
 }
 
-export const getExchangesDetail = id => get<ExchangeDetail>(`${HOST_CG}/exchanges/${id}`, {}, false)
+export const getExchangesDetail = id => get<TExchangeDetail>(`${HOST_CG}/exchanges/${id}`, {}, false)
+
+// /v3/exchanges/binance/volume_chart
+export const getExchangeChart = (id: string, params) => get(`${HOST_CG}/exchanges/${id}/volume_chart`, params)

@@ -19,7 +19,7 @@ const MarketData: FC<Props> = ({ data, title, volMcap = false, divider = true, s
 
 	return (
 		<>
-			<Col span={5.5}>
+			<Col>
 				<Text strong>{title}:</Text>
 				{data && (
 					<div>

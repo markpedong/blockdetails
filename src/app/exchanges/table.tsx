@@ -3,7 +3,7 @@
 import { Cryptocurrency, Exchange, ExchangePap } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { formatPrice } from '@/utils'
+import { formatPrice, navigate } from '@/utils'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Popover, Progress, Space, Typography } from 'antd'
 import Image from 'next/image'
@@ -19,7 +19,7 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 	const params = useSearchParams()
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const coins = useAppSelector(state => state.coin.coins)
-	const data = x.map(i => ({ ...i, ...pap.find(q => q.name === i.name || q.id === i.id) }))
+	const data = x.map(i => ({ ...i, ...pap.find(q => q.name === i.name || q.id === i.id), id: i.id }))
 	const { quote } = coins[0] as unknown as Cryptocurrency
 	const columns: ProColumns<Exchange & ExchangePap>[] = [
 		{
@@ -31,19 +31,20 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 			title: 'Name',
 			align: 'left',
 			render: (_, record) => {
+				console.log(record)
 				return (
 					<Popover
 						title={
 							record.description && (
 								<div style={{ inlineSize: 300 }}>
-									<span dangerouslySetInnerHTML={{ __html: record.description }} />
+									<span dangerouslySetInnerHTML={{ __html: record.description.split('\n')[0] }} />
 								</div>
 							)
 						}
 					>
 						<Space align="center">
 							<Image src={record.image} alt={`logo${record.id}`} width={25} height={25} />
-							<Typography.Link href={`/exchanges/${record.id}?${params.toString()}`}>
+							<Typography.Link href={navigate(`/exchanges/${record.id}`, params)}>
 								{record.name}
 							</Typography.Link>
 						</Space>
@@ -68,8 +69,6 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 				const price = record.quotes?.[symbol]?.adjusted_volume_24h
 				const price30 = record.quotes?.[symbol]?.reported_volume_30d
 
-				//  ||
-				// quote['USD']?.price * record.trade_volume_24h_btc_normalized
 				return (
 					<>
 						<div>

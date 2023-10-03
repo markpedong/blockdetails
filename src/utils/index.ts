@@ -1,4 +1,5 @@
 import formatMoney from 'accounting-js/lib/formatMoney.js'
+import { ReadonlyURLSearchParams } from 'next/navigation'
 import numeral from 'numeral'
 
 export const formatPrice = (num: number | string, symbol = '$', precision = 2) => {
@@ -39,11 +40,14 @@ export const numberWithCommas = (number: number) => {
 
 export const extractDomain = (url: string) => {
 	// Remove protocol (http, https, etc.)
-	const withoutProtocol = url.replace(/^(https?:\/\/)?(www\.)?/, '')
+	const withoutProtocol = url?.replace(/^(https?:\/\/)?(www\.)?/, '')
 
 	// Remove path and query parameters
-	const parts = withoutProtocol.split('/')
-	const domain = parts[0].replace(/\.com$/, '')
+	const parts = withoutProtocol?.split('/')
+	const domain = parts?.[0].replace(/\.com$/, '')
 
 	return domain
 }
+
+export const navigate = (url: string, params: ReadonlyURLSearchParams) =>
+	url + (params?.toString() && `?${params?.toString()}`)

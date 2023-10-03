@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux'
 import Header from '../header/header'
 import menus from './menus'
 import Link from 'next/link'
+import { navigate } from '@/utils'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))
@@ -60,7 +61,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 									dispatch(setCurrency({ sign, symbol }))
 								}}
-								href={item.path + (params.toString() && `?${params.toString()}`)}
+								href={navigate(item.path, params)}
 							>
 								{dom}
 							</Link>

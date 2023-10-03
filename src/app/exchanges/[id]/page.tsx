@@ -1,17 +1,39 @@
-import { CGCoinData, ExchangeDetail, ExchangePap, getCoinList, getExchangesDetail, getExchangesPaprika } from '@/api'
-import Detail from './components/detail'
+import {
+	CGCoinData,
+	TExchangeDetail,
+	ExchangePap,
+	getCoinList,
+	getExchangeChart,
+	getExchangesDetail,
+	getExchangesPaprika
+} from '@/api'
+import ExchangeDetail from './components/detail'
 
-const Exchanges = async ({ params, searchParams: { currency } }) => {
-	const [data, coins, pap] = await Promise.all([
-		getExchangesDetail(params.id) as unknown as ExchangeDetail,
+const Detail = async ({ params, searchParams: { currency } }) => {
+	const [data, coins, pap, chart] = await Promise.all([
+		getExchangesDetail(params.id) as unknown as TExchangeDetail,
 		getCoinList({
 			vs_currency: currency?.toLowerCase() ?? 'usd',
 			order: 'market_cap_desc'
 		}) as unknown as CGCoinData[],
-		getExchangesPaprika({ quotes: currency ?? 'USD' }) as unknown as ExchangePap[]
+		getExchangesPaprika({ quotes: currency ?? 'USD' }) as unknown as ExchangePap[],
+		getExchangeChart(params.id, { days: 1 })
 	])
 
-	return <Detail exchange={data} id={params.id} cg={coins} pap={pap} />
+	return (
+		<ExchangeDetail
+			exchange={data}
+			id={params.id}
+			cg={coins}
+			pap={pap}
+			chart={
+				chart?.map(i => ({
+					date: i[0],
+					value: Number(i[1])
+				})) ?? []
+			}
+		/>
+	)
 }
 
-export default Exchanges
+export default Detail

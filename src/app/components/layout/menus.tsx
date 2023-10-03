@@ -1,6 +1,6 @@
 import Coins from '@/app/cryptocurrency/coins/page'
 import Tokens from '@/app/cryptocurrency/tokens/page'
-import Spot from '@/app/exchanges/spot/page'
+import Exchanges from '@/app/exchanges/page'
 import { AppstoreAddOutlined, GlobalOutlined } from '@ant-design/icons'
 
 export default [
@@ -25,12 +25,6 @@ export default [
 		path: '/exchanges',
 		name: 'Exchange',
 		icon: <AppstoreAddOutlined />,
-		children: [
-			{
-				path: '/exchanges/spot',
-				name: 'Spot',
-				element: <Spot />
-			}
-		]
+		element: <Exchanges />
 	}
 ]

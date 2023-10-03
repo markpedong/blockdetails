@@ -1,7 +1,7 @@
 import { Exchange, getExchanges, getExchangesPaprika } from '@/api'
 import Table from './table'
 
-const Spot = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {
+const Exchanges = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {
 	const [exchanges, pap] = await Promise.all([
 		getExchanges({ per_page: 250 }) as unknown as Exchange[],
 		getExchangesPaprika({ quotes: currency ?? 'USD' })
@@ -11,4 +11,4 @@ const Spot = async ({ searchParams: { currency } }: { searchParams?: { currency?
 	return <Table data={exchanges} pap={filtered} />
 }
 
-export default Spot
+export default Exchanges

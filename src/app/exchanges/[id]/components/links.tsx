@@ -1,34 +1,41 @@
-import { ExchangeDetail, ExchangePap } from '@/api'
+import { TExchangeDetail, ExchangePap } from '@/api'
 import { extractDomain } from '@/utils'
 import { FacebookFilled, PushpinFilled, RedditCircleFilled, TwitterCircleFilled } from '@ant-design/icons'
-import { Space, Typography } from 'antd'
+import { Typography } from 'antd'
 import React, { FC } from 'react'
 
+const { Link } = Typography
+
 type Props = {
-	exchange: ExchangeDetail
+	exchange: TExchangeDetail
 	pap: ExchangePap
 }
 
-const Links: FC<Props> = ({ exchange, pap }) => {
+const Links: FC<Props> = ({ exchange }) => {
 	return (
-		<Space direction="vertical">
+		<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
 			<div style={{ display: 'flex', gap: '10px' }}>
 				<PushpinFilled />
-				<Typography.Link>{extractDomain(exchange.url)}</Typography.Link>
+				<Link href={exchange.url} target="_blank">
+					{' '}
+					{extractDomain(exchange.url)}
+				</Link>
 			</div>
-			<div style={{ display: 'flex', gap: '10px' }}>
-				<RedditCircleFilled />
-				<Typography.Link>{extractDomain(exchange.reddit_url)}</Typography.Link>
-			</div>
+			{exchange.reddit_url && (
+				<div style={{ display: 'flex', gap: '10px' }}>
+					<RedditCircleFilled />
+					<Link>{extractDomain(exchange.reddit_url)}</Link>
+				</div>
+			)}
 			<div style={{ display: 'flex', gap: '10px' }}>
 				<FacebookFilled />
-				<Typography.Link>{extractDomain(exchange.facebook_url)}</Typography.Link>
+				<Link>{extractDomain(exchange.facebook_url)}</Link>
 			</div>
 			<div style={{ display: 'flex', gap: '10px' }}>
 				<TwitterCircleFilled />
-				<Typography.Link href={`https://twitter.com/${exchange.twitter_handle}`}>Twitter</Typography.Link>
+				<Link href={`https://twitter.com/${exchange.twitter_handle}`}>Twitter</Link>
 			</div>
-		</Space>
+		</div>
 	)
 }
 

@@ -10,7 +10,7 @@ import {
 	getMarketChart,
 	getQuotesLatest
 } from '@/api'
-import Details from './components/details/page'
+import Details from './components/details'
 
 const Detail = async ({ params, searchParams: { currency } }) => {
 	const [data, quoteData, coinIds] = await Promise.all([
@@ -44,7 +44,6 @@ const Detail = async ({ params, searchParams: { currency } }) => {
 
 	return (
 		<Details
-			global={global.data}
 			coin={Object.values(data.data)[0] as CoinData}
 			markets={markets as unknown as CoinMarketResponse}
 			quotes={Object.values(quoteData.data)[0] as QuoteData}

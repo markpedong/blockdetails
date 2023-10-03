@@ -1,13 +1,11 @@
 'use client'
 
-import { CoinData, CoinDataCG, CoinMarketResponse, GlobalData, QuoteData } from '@/api'
-import { Col, Divider, Row, Segmented, Space, Tag, Typography } from 'antd'
-import Image from 'next/image'
-import { FC, useEffect, useState } from 'react'
-import LinksDropdown from '../links-dropdown'
+import { CoinData, CoinDataCG, CoinMarketResponse, QuoteData } from '@/api'
+import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
+import { setCoin, setQuotes } from '@/redux/features/coinSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
-import MarketData from '../market-data'
 import {
 	AreaChartOutlined,
 	InfoCircleOutlined,
@@ -16,14 +14,16 @@ import {
 	SolutionOutlined,
 	WalletOutlined
 } from '@ant-design/icons'
+import { Col, Divider, Row, Segmented, Space, Tag, Typography } from 'antd'
+import Image from 'next/image'
+import { FC, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { AppDispatch, useAppSelector } from '@/redux/store'
-import { setCoin, setQuotes } from '@/redux/features/coinSlice'
-import ChartData from '../chart-data'
-import Statistics from '../statistics'
-import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
-import Markets from '../markets'
-import Wallets from '../wallets'
+import ChartData from './chart-data'
+import LinksDropdown from './links-dropdown'
+import MarketData from './market-data'
+import Markets from './markets'
+import Statistics from './statistics'
+import Wallets from './wallet'
 
 type Props = {
 	coin: CoinData
@@ -32,10 +32,9 @@ type Props = {
 	id: string
 	markets: CoinMarketResponse
 	chart: { date: string; value: number }[]
-	global: GlobalData
 }
 
-const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id, global }: Props) => {
+const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => {
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const [currentTab, setCurrentTab] = useState('overview')
 	const dispatch = useDispatch<AppDispatch>()
@@ -46,6 +45,8 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id, global }: Pr
 		dispatch(setCoinCG(cg))
 		dispatch(setChart(chart))
 	}, [sign, symbol])
+
+	console.log(quotes?.quote?.[symbol]?.price)
 
 	return (
 		<Row>
@@ -94,13 +95,15 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id, global }: Pr
 				<Space>
 					<div>
 						<Typography.Text style={{ fontSize: '2.3rem', fontWeight: 700 }}>
+							{/* PRICE NUMBER BUG FIX */}
+							{quotes?.quote?.[symbol]?.price}
 							{formatPrice(quotes?.quote?.[symbol]?.price, sign)}
 						</Typography.Text>
 					</div>
 					<div>{renderPercentage(quotes?.quote?.[symbol]?.percent_change_24h)}</div>
 				</Space>
 				<Divider />
-				<Row gutter={16}>
+				<Row gutter={16} wrap={false}>
 					<MarketData title="Market Cap" data={quotes.quote?.[symbol]?.market_cap} />
 					<MarketData
 						title="Fully Diluted Market Cap"

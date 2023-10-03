@@ -3,12 +3,13 @@
 import { Cryptocurrency } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { formatPrice, numberWithCommas } from '@/utils'
+import { formatPrice, navigate, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import React, { FC } from 'react'
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 
 const Table: FC<Props> = ({ data }) => {
 	const { symbol, sign } = useAppSelector(state => state.global.currency)
+	const params = useSearchParams()
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
 			title: '#',
@@ -32,7 +34,9 @@ const Table: FC<Props> = ({ data }) => {
 				return (
 					<Space align="center">
 						<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-						<Typography.Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Typography.Link>
+						<Typography.Link href={navigate(`/cryptocurrency/${record.slug}`, params)}>
+							{record.name}
+						</Typography.Link>
 					</Space>
 				)
 			}

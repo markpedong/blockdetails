@@ -1,7 +1,7 @@
-import { CGCoinData, ExchangeDetail } from '@/api'
+import { CGCoinData, TExchangeDetail } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { formatPrice } from '@/utils'
+import { formatPrice, navigate } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Button, Col, Space, Typography } from 'antd'
@@ -10,10 +10,10 @@ import { useSearchParams } from 'next/navigation'
 import { FC } from 'react'
 import { ValuesType } from 'utility-types'
 
-type Tickers = ValuesType<ExchangeDetail['tickers']>
+type Tickers = ValuesType<TExchangeDetail['tickers']>
 
 type Props = {
-	exchange: ExchangeDetail
+	exchange: TExchangeDetail
 	cg: CGCoinData[]
 }
 
@@ -22,10 +22,10 @@ const MarketTable: FC<Props> = ({ exchange, cg }) => {
 	const ids = useAppSelector(state => state.coin.ids)
 	const params = useSearchParams()
 	const tickers = exchange.tickers
-		.filter((item, index, self) => index === self.findIndex(t => t.coin_id === item.coin_id))
-		.map(item => cg.find(coin => coin.id === item.coin_id))
-		.filter(Boolean)
-	const data = tickers.map(i => {
+		?.filter((item, index, self) => index === self.findIndex(t => t.coin_id === item.coin_id))
+		?.map(item => cg.find(coin => coin.id === item.coin_id))
+		?.filter(Boolean)
+	const data = tickers?.map(i => {
 		const { slug } = ids?.find(q => q.symbol.toLowerCase() === i.symbol.toLowerCase()) ?? { slug: '' }
 
 		return { ...i, ...exchange.tickers.find(q => q.coin_id === i.id), slug }
@@ -44,7 +44,7 @@ const MarketTable: FC<Props> = ({ exchange, cg }) => {
 					<Space align="center">
 						<Image src={record.image} alt={record.id} width={25} height={25} />
 						<Typography.Link
-							href={`/cryptocurrency/${record.slug}?${params.toString()}`}
+							href={navigate(`/cryptocurrency/${record.slug}`, params)}
 							disabled={!record.slug}
 						>
 							{record.name}

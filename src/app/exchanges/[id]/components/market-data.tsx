@@ -1,4 +1,4 @@
-import { ExchangeDetail, ExchangePap } from '@/api'
+import { TExchangeDetail, ExchangePap } from '@/api'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { BookFilled } from '@ant-design/icons'
@@ -6,7 +6,7 @@ import { Col, Row, Typography } from 'antd'
 import { FC } from 'react'
 
 type Props = {
-	exchange: ExchangeDetail
+	exchange: TExchangeDetail
 	pap: ExchangePap
 }
 
