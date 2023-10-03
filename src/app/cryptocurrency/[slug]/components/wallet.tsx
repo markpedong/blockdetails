@@ -2,6 +2,7 @@
 
 import { wallet_types, wallets } from '@/constants/wallet'
 import { Button, Card, Space, Typography } from 'antd'
+import Image from 'next/image'
 import { FC, useState } from 'react'
 
 type Props = {}
@@ -49,7 +50,7 @@ const Wallets: FC<Props> = () => {
 						</Typography.Title>
 						<div>
 							{wallet_types.map(i => (
-								<div>
+								<div key={i.title}>
 									<Typography.Title level={4} style={{ color: '#1677ff' }}>
 										{i.title}
 									</Typography.Title>
@@ -70,7 +71,7 @@ const Wallets: FC<Props> = () => {
 						key={item.title}
 					>
 						<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-							<img src={item.img} alt={item.title} style={{ height: '100px', width: 'auto' }} />
+							<Image src={item.img} alt={item.title} style={{ height: '100px', width: 'auto' }} />
 							<Typography.Title level={5}>{item.title}</Typography.Title>
 							<Typography.Link>{item.link}</Typography.Link>
 						</div>

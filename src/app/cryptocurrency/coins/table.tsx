@@ -150,7 +150,7 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids }) => {
 	return (
 		<>
 			<Space direction="vertical" size={20} style={{ paddingBlockEnd: 50 }}>
-				<Title level={3}>Today's Cryptocurrency Market</Title>
+				<Title level={3}>Today&apos;s Cryptocurrency Market</Title>
 				<div>
 					<Text>The Global Crypto Market cap is </Text>
 					<Link>
@@ -183,8 +183,8 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids }) => {
 					</Text>
 				</div>
 				<Space direction="vertical" size={0}>
-					<Text>Bitcoin's price is currently {formatPrice(quote?.[symbol]?.price, sign)} </Text>
-					<Text>Bitcoin’s dominance is currently {renderPer(g?.btc_dominance)}</Text>
+					<Text>Bitcoin&apos;s price is currently {formatPrice(quote?.[symbol]?.price, sign)} </Text>
+					<Text>Bitcoin&apos;s dominance is currently {renderPer(g?.btc_dominance)}</Text>
 				</Space>
 			</Space>
 			<ProTable<Cryptocurrency>
