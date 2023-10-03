@@ -1,8 +1,8 @@
 'use client'
 
-import { CGCoinData, Cryptocurrency, TExchangeDetail, ExchangePap } from '@/api'
-import { useAppSelector } from '@/redux/store'
-import { formatPrice } from '@/utils'
+import { CGCoinData, Cryptocurrency, TExchangeDetail, ExchangePap } from '@/_api'
+import { useAppSelector } from '@/_redux/store'
+import { formatPrice } from '@/_utils'
 import { Col, Row, Typography } from 'antd'
 import Image from 'next/image'
 import { FC } from 'react'

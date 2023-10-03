@@ -1,6 +1,6 @@
 'use client'
 
-import { wallet_types, wallets } from '@/constants/wallet'
+import { wallet_types, wallets } from '@/_constants/wallet'
 import { Button, Card, Space, Typography } from 'antd'
 import Image from 'next/image'
 import { FC, useState } from 'react'

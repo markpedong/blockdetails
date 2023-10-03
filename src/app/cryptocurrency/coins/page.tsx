@@ -1,4 +1,4 @@
-import { getCoinIds, getCryptocurrency, getDefi, getFiats, getGlobalCrypto } from '@/api'
+import { getCoinIds, getCryptocurrency, getDefi, getFiats, getGlobalCrypto } from '@/_api'
 import Table from './table'
 
 const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {

@@ -6,7 +6,7 @@ import {
 	getExchangeChart,
 	getExchangesDetail,
 	getExchangesPaprika
-} from '@/api'
+} from '@/_api'
 import ExchangeDetail from './components/detail'
 
 const Detail = async ({ params, searchParams: { currency } }) => {

@@ -1,4 +1,4 @@
-import { getCryptocurrency } from '@/api'
+import { getCryptocurrency } from '@/_api'
 import Table from './components/table'
 
 const Tokens = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {

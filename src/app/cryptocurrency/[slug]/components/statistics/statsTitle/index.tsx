@@ -1,5 +1,5 @@
-import { useAppSelector } from '@/redux/store'
-import { formatPrice, numberWithCommas } from '@/utils'
+import { useAppSelector } from '@/_redux/store'
+import { formatPrice, numberWithCommas } from '@/_utils'
 import { Typography, Divider } from 'antd'
 import React, { FC } from 'react'
 

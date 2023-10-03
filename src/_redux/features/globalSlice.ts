@@ -1,4 +1,4 @@
-import { Fiat, GlobalData } from '@/api'
+import { Fiat, GlobalData } from '@/_api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export const GLOBAL_STATE = {
