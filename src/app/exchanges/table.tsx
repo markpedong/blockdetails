@@ -1,9 +1,9 @@
 'use client'
 
-import { Cryptocurrency, Exchange, ExchangePap } from '@/_api'
-import { PRO_TABLE_PROPS } from '@/_constants'
-import { useAppSelector } from '@/_redux/store'
-import { formatPrice, navigate } from '@/_utils'
+import { Cryptocurrency, Exchange, ExchangePap } from '@/api'
+import { PRO_TABLE_PROPS } from '@/constants'
+import { useAppSelector } from '@/redux/store'
+import { formatPrice, navigate } from '@/utils'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Popover, Progress, Space, Typography } from 'antd'
 import Image from 'next/image'

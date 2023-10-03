@@ -2,7 +2,7 @@ import { Card, Col, Divider } from 'antd'
 import React, { FC } from 'react'
 import StatsTitle from './statsTitle'
 import StatsPer from './statsPer'
-import { useAppSelector } from '@/_redux/store'
+import { useAppSelector } from '@/redux/store'
 
 const Statistics: FC = () => {
 	const { symbol } = useAppSelector(state => state.global.currency)

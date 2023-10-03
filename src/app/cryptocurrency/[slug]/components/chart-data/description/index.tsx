@@ -1,6 +1,6 @@
-import { useAppSelector } from '@/_redux/store'
-import { formatPrice, numberWithCommas } from '@/_utils'
-import { renderPer } from '@/_utils/antd'
+import { useAppSelector } from '@/redux/store'
+import { formatPrice, numberWithCommas } from '@/utils'
+import { renderPer } from '@/utils/antd'
 import { Typography } from 'antd'
 import React, { FC } from 'react'
 

@@ -1,7 +1,7 @@
-import StyledComponentsRegistry from '../_lib/AntdRegistry'
+import StyledComponentsRegistry from '../lib/AntdRegistry'
 import { Inter } from 'next/font/google'
 import Layout from './_components/_layout/page'
-import { ReduxProvider } from '@/_redux/provider'
+import { ReduxProvider } from '@/redux/provider'
 
 const inter = Inter({ subsets: ['latin'] })
 

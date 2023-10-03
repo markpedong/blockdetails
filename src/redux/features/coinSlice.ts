@@ -1,4 +1,4 @@
-import { CoinData, CoinIds, ExchangePap, QuoteData } from '@/_api'
+import { CoinData, CoinIds, ExchangePap, QuoteData } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {

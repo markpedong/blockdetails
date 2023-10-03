@@ -1,4 +1,4 @@
-import { Exchange, getExchanges, getExchangesPaprika } from '@/_api'
+import { Exchange, getExchanges, getExchangesPaprika } from '@/api'
 import Table from './table'
 
 const Exchanges = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {

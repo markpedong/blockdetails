@@ -9,7 +9,7 @@ import {
 	getDetail,
 	getMarketChart,
 	getQuotesLatest
-} from '@/_api'
+} from '@/api'
 import Details from './components/details'
 
 const Detail = async ({ params, searchParams: { currency } }) => {

@@ -1,5 +1,5 @@
-import { TExchangeDetail, ExchangePap } from '@/_api'
-import { extractDomain } from '@/_utils'
+import { TExchangeDetail, ExchangePap } from '@/api'
+import { extractDomain } from '@/utils'
 import { FacebookFilled, PushpinFilled, RedditCircleFilled, TwitterCircleFilled } from '@ant-design/icons'
 import { Typography } from 'antd'
 import React, { FC } from 'react'

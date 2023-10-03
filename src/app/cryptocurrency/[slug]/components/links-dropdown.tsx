@@ -1,4 +1,4 @@
-import { extractDomain } from '@/_utils'
+import { extractDomain } from '@/utils'
 import { DownOutlined, ExclamationCircleOutlined, LinkOutlined, ShareAltOutlined } from '@ant-design/icons'
 import { Dropdown, Tag, Typography } from 'antd'
 import React, { FC } from 'react'

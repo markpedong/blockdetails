@@ -1,9 +1,9 @@
 'use client'
 
-import logo from '@/_assets/logo.svg'
-import { GLOBAL_STATE, setCurrency } from '@/_redux/features/globalSlice'
-import { AppDispatch, useAppSelector } from '@/_redux/store'
-import withTheme from '@/_theme'
+import logo from '@/assets/logo.svg'
+import { GLOBAL_STATE, setCurrency } from '@/redux/features/globalSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
+import withTheme from '@/theme'
 import { theme } from 'antd'
 import enUS from 'antd/locale/en_US'
 import dynamic from 'next/dynamic'
@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux'
 import Header from '../header'
 import menus from './menus'
 import Link from 'next/link'
-import { navigate } from '@/_utils'
+import { navigate } from '@/utils'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-components').then(com => com.ProLayout), { ssr: false })
 const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvider))

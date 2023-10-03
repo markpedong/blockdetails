@@ -1,11 +1,11 @@
 'use client'
 
-import { CoinData, CoinDataCG, CoinMarketResponse, QuoteData } from '@/_api'
-import { setChart, setCoinCG } from '@/_redux/features/coinGSlice'
-import { setCoin, setQuotes } from '@/_redux/features/coinSlice'
-import { AppDispatch, useAppSelector } from '@/_redux/store'
-import { formatPrice } from '@/_utils'
-import { renderPercentage } from '@/_utils/antd'
+import { CoinData, CoinDataCG, CoinMarketResponse, QuoteData } from '@/api'
+import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
+import { setCoin, setQuotes } from '@/redux/features/coinSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
+import { formatPrice } from '@/utils'
+import { renderPercentage } from '@/utils/antd'
 import {
 	AreaChartOutlined,
 	InfoCircleOutlined,

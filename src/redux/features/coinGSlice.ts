@@ -1,4 +1,4 @@
-import { CoinDataCG } from '@/_api'
+import { CoinDataCG } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {

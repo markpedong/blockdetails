@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/_redux/store'
+import { useAppSelector } from '@/redux/store'
 import { DollarOutlined, PieChartOutlined, RadarChartOutlined } from '@ant-design/icons'
 import { Col, Segmented } from 'antd'
 import React, { FC } from 'react'
