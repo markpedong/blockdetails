@@ -1,6 +1,5 @@
 'use client'
 
-import { getGlobalCrypto } from '@/api'
 import { MODAL_FORM_PROPS, PAP_FIAT } from '@/constants'
 import { setCurrency, setGlobalData, toggleDarkMode } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
@@ -68,6 +67,22 @@ const Header: FC = () => {
 		)
 	}
 
+	const changeCurrency = async val => {
+		const { sign, symbol } = fiats.find(fiat => fiat.symbol === val)
+
+		const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_CMC_PROD}/v1/global-metrics/quotes/latest`, {
+			headers: {
+				'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY_PROD
+			}
+		})
+		const global = await res.json()
+
+		dispatch(setGlobalData(global.data))
+		dispatch(setCurrency({ sign, symbol }))
+
+		navigate.push(`${pathname}?currency=${symbol}`)
+	}
+
 	return (
 		<Row style={{ display: 'flex', justifyContent: 'space-between' }}>
 			<Space style={{ fontSize: '0.7rem' }}>
@@ -110,16 +125,7 @@ const Header: FC = () => {
 							.toLowerCase()
 							.includes(input.toLowerCase())
 					}
-					onChange={async val => {
-						const { sign, symbol } = fiats.find(fiat => fiat.symbol === val)
-
-						const global = await getGlobalCrypto({ convert: val })
-
-						dispatch(setGlobalData(global.data))
-						dispatch(setCurrency({ sign, symbol }))
-
-						navigate.push(`${pathname}?currency=${symbol}`)
-					}}
+					onChange={changeCurrency}
 					style={{ width: 150 }}
 					value={symbol}
 				/>
