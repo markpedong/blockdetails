@@ -44,7 +44,11 @@ const Table: FC<Props> = ({ data }) => {
 		{
 			title: 'Price',
 			align: 'right',
-			render: (_, { quote }) => formatPrice(quote[symbol]?.price, sign)
+			render: (_, { quote }) => (
+				<div>
+					{sign} {numberWithCommas(quote[symbol]?.price)}
+				</div>
+			)
 		},
 		{
 			title: '1h %',

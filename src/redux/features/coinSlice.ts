@@ -1,12 +1,15 @@
-import { CoinData, CoinIds, ExchangePap, QuoteData } from '@/api'
+import { CoinData, CoinIds, ExchangePap, GetTrendingResponse, QuoteData } from '@/api'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ValuesType } from 'utility-types'
 
+type Trending = ValuesType<GetTrendingResponse['coins']>
 type InitialState = {
 	coin: CoinData
 	coins: CoinData[]
 	quote: QuoteData
 	ids: CoinIds[]
 	exchanges: ExchangePap[]
+	trending: Trending[]
 }
 
 const initialState: InitialState = {
@@ -29,7 +32,8 @@ const initialState: InitialState = {
 	},
 	quote: { cmc_rank: '', circulating_supply: undefined, max_supply: undefined, total_supply: undefined, quote: {} },
 	ids: [],
-	exchanges: []
+	exchanges: [],
+	trending: []
 }
 
 export const Coin = createSlice({
@@ -50,9 +54,12 @@ export const Coin = createSlice({
 		},
 		setExchanges: (state, action: PayloadAction<ExchangePap[]>) => {
 			state.exchanges = action.payload
+		},
+		setTrending: (state, action: PayloadAction<Trending[]>) => {
+			state.trending = action.payload
 		}
 	}
 })
 
-export const { setCoin, setCoinArray, setQuotes, setGlobalIds, setExchanges } = Coin.actions
+export const { setCoin, setCoinArray, setQuotes, setGlobalIds, setExchanges, setTrending } = Coin.actions
 export default Coin.reducer

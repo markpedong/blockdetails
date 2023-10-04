@@ -1,8 +1,8 @@
 'use client'
 
-import { CoinIds, Cryptocurrency, DefiData, Fiat, GlobalData } from '@/api'
+import { CoinIds, Cryptocurrency, DefiData, Fiat, GetTrendingResponse, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
-import { setCoinArray, setGlobalIds } from '@/redux/features/coinSlice'
+import { setCoinArray, setGlobalIds, setTrending } from '@/redux/features/coinSlice'
 import { getFiatsArray, setGlobalData } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, navigate, numberWithCommas, numberWithSuffix } from '@/utils'
@@ -19,6 +19,7 @@ import { ValuesType } from 'utility-types'
 const { Link, Text, Title } = Typography
 
 type Defi = ValuesType<DefiData>
+type Trending = ValuesType<GetTrendingResponse['coins']>
 
 type Props = {
 	data: []
@@ -26,9 +27,10 @@ type Props = {
 	defi: Defi
 	initGlobal: GlobalData
 	ids: CoinIds[]
+	trending: Trending[]
 }
 
-const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids }) => {
+const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids, trending }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
 	const coins = useAppSelector(state => state.coin.coins)
@@ -57,7 +59,11 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids }) => {
 		{
 			title: 'Price',
 			align: 'right',
-			render: (_, { quote }) => formatPrice(quote[symbol]?.price, sign)
+			render: (_, { quote }) => (
+				<div>
+					{sign} {numberWithCommas(quote[symbol]?.price)}
+				</div>
+			)
 		},
 		{
 			title: '1h %',
@@ -145,6 +151,7 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids }) => {
 		dispatch(setCoinArray(data))
 		dispatch(getFiatsArray(fiats))
 		dispatch(setGlobalIds(ids))
+		dispatch(setTrending(trending))
 	}, [sign, symbol])
 
 	return (

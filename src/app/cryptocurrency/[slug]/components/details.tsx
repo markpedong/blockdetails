@@ -4,7 +4,7 @@ import { CoinData, CoinDataCG, CoinMarketResponse, QuoteData } from '@/api'
 import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
 import { setCoin, setQuotes } from '@/redux/features/coinSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
-import { formatPrice } from '@/utils'
+import { numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
 import {
 	AreaChartOutlined,
@@ -45,8 +45,6 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 		dispatch(setCoinCG(cg))
 		dispatch(setChart(chart))
 	}, [sign, symbol])
-
-	console.log(quotes?.quote?.[symbol]?.price)
 
 	return (
 		<Row>
@@ -95,9 +93,7 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 				<Space>
 					<div>
 						<Typography.Text style={{ fontSize: '2.3rem', fontWeight: 700 }}>
-							{/* PRICE NUMBER BUG FIX */}
-							{quotes?.quote?.[symbol]?.price}
-							{formatPrice(quotes?.quote?.[symbol]?.price, sign)}
+							{sign} {numberWithCommas(quotes?.quote?.[symbol]?.price)}
 						</Typography.Text>
 					</div>
 					<div>{renderPercentage(quotes?.quote?.[symbol]?.percent_change_24h)}</div>

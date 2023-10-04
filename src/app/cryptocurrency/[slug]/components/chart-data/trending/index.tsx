@@ -1,27 +1,12 @@
-import { GetTrendingResponse, getTrending } from '@/api'
 import { useAppSelector } from '@/redux/store'
 import { numberWithCommas } from '@/utils'
 import ProCard from '@ant-design/pro-card'
 import { Space, Typography } from 'antd'
 import Image from 'next/image'
-import React, { FC, useEffect, useState } from 'react'
-import { ValuesType } from 'utility-types'
-
-type TTrending = ValuesType<GetTrendingResponse['coins'][]>
+import { FC } from 'react'
 
 const Trending: FC = () => {
-	const coinCG = useAppSelector(state => state.coinCG.coin)
-	const [coins, setCoins] = useState<TTrending>()
-
-	const initInfo = async () => {
-		const data = await getTrending()
-
-		setCoins(data.coins)
-	}
-
-	useEffect(() => {
-		initInfo()
-	}, [coinCG.id])
+	const coins = useAppSelector(state => state.coin.trending)
 
 	return (
 		<div>
