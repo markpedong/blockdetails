@@ -31,7 +31,6 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 			title: 'Name',
 			align: 'left',
 			render: (_, record) => {
-				console.log(record)
 				return (
 					<Popover
 						title={
@@ -66,7 +65,7 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 			),
 			align: 'center',
 			render: (_, record) => {
-				const price = record.quotes?.[symbol]?.adjusted_volume_24h
+				const price = record.quotes?.[symbol]?.reported_volume_24h
 				const price30 = record.quotes?.[symbol]?.reported_volume_30d
 
 				return (

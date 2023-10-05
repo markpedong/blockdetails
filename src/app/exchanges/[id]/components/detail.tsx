@@ -29,9 +29,10 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 			paprika.id === id || paprika.name.split(' ')[0].toLowerCase() === exchange.name?.split(' ')[0].toLowerCase()
 	)
 	const { quote } = coins[0] as unknown as Cryptocurrency
-	const price = pap?.quotes?.[symbol]?.adjusted_volume_24h
+	const price = pap?.quotes?.[symbol]?.reported_volume_24h
 	const lowestValue = chart?.reduce((acc, curr) => (curr.value < acc.value ? curr : acc), chart[0] || undefined)
 
+	console.log(pap)
 	return (
 		<Row>
 			<Col span={8}>
@@ -50,7 +51,7 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 				<Links exchange={exchange} pap={pap} />
 				{pap && <MarketData exchange={exchange} pap={pap} />}
 				<div style={{ marginBlockStart: '3rem' }}>
-					<Typography.Text>{pap.description}</Typography.Text>
+					<span dangerouslySetInnerHTML={{ __html: pap.description }} />
 				</div>
 			</Col>
 
@@ -60,7 +61,6 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 				</div>
 				<div>
 					<Typography.Title level={2}>
-						{/* {formatPrice(pap?.quotes[symbol]?.adjusted_volume_24h, sign)} */}
 						{formatPrice(
 							price ?? quote['USD']?.price * exchange.trade_volume_24h_btc_normalized,
 							price ? sign : '$'

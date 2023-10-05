@@ -71,7 +71,13 @@ const Wallets: FC<Props> = () => {
 						key={item.title}
 					>
 						<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-							<Image src={item.img} alt={item.title} style={{ height: '100px', width: 'auto' }} />
+							<Image
+								src={item.img}
+								alt={item.title}
+								height={0}
+								width={0}
+								style={{ height: '56px', width: '56px', objectFit: 'cover' }}
+							/>
 							<Typography.Title level={5}>{item.title}</Typography.Title>
 							<Typography.Link>{item.link}</Typography.Link>
 						</div>

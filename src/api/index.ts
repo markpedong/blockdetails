@@ -116,8 +116,8 @@ export type ExchangePap = {
 	markets: number
 	quotes: {
 		[currency: string]: {
-			adjusted_volume_24h: number
 			reported_volume_30d: number
+			reported_volume_24h: number
 		}
 	}
 	fiats: {
