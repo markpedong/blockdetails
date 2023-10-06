@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import global from './features/globalSlice'
 import coin from './features/coinSlice'
 import coinCG from './features/coinGSlice'
+import exchange from './features/exchangeSlice'
 import { TypedUseSelectorHook, useSelector } from 'react-redux'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, createTransform } from 'redux-persist'
@@ -11,6 +12,7 @@ type RootType = {
 	global: ReturnType<typeof global>
 	coin: ReturnType<typeof coin>
 	coinCG: ReturnType<typeof coinCG>
+	exchange: ReturnType<typeof exchange>
 }
 
 const persistConfig = {
@@ -28,7 +30,8 @@ const persistConfig = {
 const reducer = combineReducers({
 	global,
 	coin,
-	coinCG
+	coinCG,
+	exchange
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

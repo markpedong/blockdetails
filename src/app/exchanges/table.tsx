@@ -1,27 +1,30 @@
 'use client'
 
-import { Cryptocurrency, Exchange, ExchangePap } from '@/api'
+import { Cryptocurrency, TExchange, ExchangePap } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
-import { useAppSelector } from '@/redux/store'
+import { setExchangeDetail } from '@/redux/features/exchangeSlice'
+import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, navigate } from '@/utils'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Popover, Progress, Space, Typography } from 'antd'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { FC } from 'react'
+import { useDispatch } from 'react-redux'
 
 type Props = {
-	data: Exchange[]
+	data: TExchange[]
 	pap: ExchangePap[]
 }
 
 const Table: FC<Props> = ({ data: x, pap }) => {
+	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const coins = useAppSelector(state => state.coin.coins)
 	const data = x.map(i => ({ ...i, ...pap.find(q => q.name === i.name || q.id === i.id), id: i.id }))
 	const { quote } = coins[0] as unknown as Cryptocurrency
-	const columns: ProColumns<Exchange & ExchangePap>[] = [
+	const columns: ProColumns<TExchange & ExchangePap>[] = [
 		{
 			title: '#',
 			align: 'center',
@@ -43,7 +46,12 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 					>
 						<Space align="center">
 							<Image src={record.image} alt={`logo${record.id}`} width={25} height={25} />
-							<Typography.Link href={navigate(`/exchanges/${record.id}`, params)}>
+							<Typography.Link
+								href={navigate(`/exchanges/${record.id}`, params)}
+								onClick={() => {
+									dispatch(setExchangeDetail(record))
+								}}
+							>
 								{record.name}
 							</Typography.Link>
 						</Space>
@@ -116,7 +124,7 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 		}
 	]
 
-	return <ProTable<Exchange> {...PRO_TABLE_PROPS} rowKey="id" columns={columns} search={false} dataSource={data} />
+	return <ProTable<TExchange> {...PRO_TABLE_PROPS} rowKey="id" columns={columns} search={false} dataSource={data} />
 }
 
 export default Table

@@ -25,7 +25,16 @@ const Detail = async ({ params, searchParams: { currency } }) => {
 		}),
 		getAllCoinIds()
 	])
-	const { id } = coinIds?.find(i => i.name.toLowerCase() === params.slug) ?? ''
+	const { id } =
+		coinIds?.find(i => {
+			const name = i.name.toLowerCase() === params.slug
+
+			if (!name) {
+				return i.id === params.slug
+			}
+
+			return name
+		}) ?? ''
 	const [cg, chart, markets] = await Promise.all([
 		getCoinDetail(id),
 		getMarketChart(id, {

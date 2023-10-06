@@ -24,15 +24,15 @@ type Props = {
 const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) => {
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
 	const coins = useAppSelector(state => state.coin.coins)
+	const detail = useAppSelector(state => state.exchange.detail)
 	const pap = exchanges?.find(
 		paprika =>
 			paprika.id === id || paprika.name.split(' ')[0].toLowerCase() === exchange.name?.split(' ')[0].toLowerCase()
 	)
 	const { quote } = coins[0] as unknown as Cryptocurrency
-	const price = pap?.quotes?.[symbol]?.reported_volume_24h
+	const price = detail?.quotes?.[symbol]?.reported_volume_24h
 	const lowestValue = chart?.reduce((acc, curr) => (curr.value < acc.value ? curr : acc), chart[0] || undefined)
 
-	console.log(pap)
 	return (
 		<Row>
 			<Col span={8}>
@@ -49,9 +49,9 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 					<Typography.Text style={{ fontSize: '2rem', fontWeight: 700 }}>{exchange.name}</Typography.Text>
 				</div>
 				<Links exchange={exchange} pap={pap} />
-				{pap && <MarketData exchange={exchange} pap={pap} />}
+				{pap && <MarketData exchange={exchange} />}
 				<div style={{ marginBlockStart: '3rem' }}>
-					<span dangerouslySetInnerHTML={{ __html: pap.description }} />
+					<span dangerouslySetInnerHTML={{ __html: detail.description.split('\n')[0] }} />
 				</div>
 			</Col>
 

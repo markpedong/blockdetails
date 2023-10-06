@@ -1,7 +1,7 @@
 import { CoinMarketResponse } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { formatPrice } from '@/utils'
+import { formatPrice, navigate } from '@/utils'
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components'
 import { Button, Space, Typography } from 'antd'
 import Image from 'next/image'
@@ -33,7 +33,7 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 			render: (_, record) => (
 				<Space align="center">
 					<Image src={record.market.logo} alt={`logo${record.market.name}`} width={25} height={25} />
-					<Typography.Link href={`/exchanges/${record.market.identifier}` + `?${params}`}>
+					<Typography.Link href={navigate(`/exchanges/${record.market.identifier}`, params)}>
 						{record.market.name}
 					</Typography.Link>
 				</Space>

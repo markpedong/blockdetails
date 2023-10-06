@@ -49,5 +49,4 @@ export const extractDomain = (url: string) => {
 	return domain
 }
 
-export const navigate = (url: string, params: ReadonlyURLSearchParams) =>
-	url + (params?.toString() && `?${params?.toString()}`)
+export const navigate = (url: string, params: ReadonlyURLSearchParams) => `${url}${params ? '?' + params : ''}`

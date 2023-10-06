@@ -17,23 +17,28 @@ const Links: FC<Props> = ({ exchange }) => {
 			<div style={{ display: 'flex', gap: '10px' }}>
 				<PushpinFilled />
 				<Link href={exchange.url} target="_blank">
-					{' '}
 					{extractDomain(exchange.url)}
 				</Link>
 			</div>
 			{exchange.reddit_url && (
 				<div style={{ display: 'flex', gap: '10px' }}>
 					<RedditCircleFilled />
-					<Link>{extractDomain(exchange.reddit_url)}</Link>
+					<Link href={exchange.reddit_url} target="_blank">
+						{extractDomain(exchange.reddit_url)}
+					</Link>
 				</div>
 			)}
 			<div style={{ display: 'flex', gap: '10px' }}>
 				<FacebookFilled />
-				<Link>{extractDomain(exchange.facebook_url)}</Link>
+				<Link href={exchange.facebook_url} target="_blank">
+					{extractDomain(exchange.facebook_url)}
+				</Link>
 			</div>
 			<div style={{ display: 'flex', gap: '10px' }}>
 				<TwitterCircleFilled />
-				<Link href={`https://twitter.com/${exchange.twitter_handle}`}>Twitter</Link>
+				<Link href={`https://twitter.com/${exchange.twitter_handle}`} target="_blank">
+					Twitter
+				</Link>
 			</div>
 		</div>
 	)

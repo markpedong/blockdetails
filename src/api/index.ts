@@ -88,7 +88,7 @@ export type Fiat = {
 export const getFiats = () => get<Fiat[]>(`${HOST_CMC}/v1/fiat/map`)
 
 // /v3/exchanges
-export type Exchange = {
+export type TExchange = {
 	country: string
 	description: string
 	id: string
@@ -104,7 +104,7 @@ export type Exchange = {
 	year_established: number
 }
 
-export const getExchanges = params => get<Exchange[]>(`${HOST_CG}/exchanges`, params, false)
+export const getExchanges = params => get<TExchange[]>(`${HOST_CG}/exchanges`, params, false)
 
 // /v1/exchanges
 export type ExchangePap = {
