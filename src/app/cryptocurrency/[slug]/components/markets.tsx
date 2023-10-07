@@ -51,22 +51,17 @@ const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 		{
 			title: '+2% Depth',
 			align: 'center',
-			render: (_, record) => formatPrice(record.cost_to_move_up_usd, sign)
+			render: (_, record) => formatPrice(record.cost_to_move_up_usd, sign) ?? 0
 		},
 		{
 			title: '-2% Depth',
 			align: 'center',
-			render: (_, record) => formatPrice(record.cost_to_move_down_usd, sign)
-		},
-		{
-			title: 'Price',
-			align: 'center',
-			render: (_, record) => formatPrice(record.last, sign)
+			render: (_, record) => formatPrice(record.cost_to_move_down_usd, sign) ?? 0
 		},
 		{
 			title: '24h Volume',
 			align: 'center',
-			render: (_, record) => formatPrice(record.converted_volume.usd, sign)
+			render: (_, record) => formatPrice(record.converted_volume.usd, sign) ?? 0
 		},
 		{
 			title: 'Spread',

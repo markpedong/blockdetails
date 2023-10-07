@@ -1,7 +1,7 @@
 import { CGCoinData, TExchangeDetail } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { useAppSelector } from '@/redux/store'
-import { formatPrice, navigate } from '@/utils'
+import { formatPrice, navigate, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Button, Col, Space, Typography } from 'antd'
@@ -66,7 +66,7 @@ const MarketTable: FC<Props> = ({ exchange, cg }) => {
 		{
 			title: 'Price',
 			align: 'center',
-			render: (_, record) => formatPrice(record.current_price, sign)
+			render: (_, record) => sign + numberWithCommas(record.current_price)
 		},
 		{
 			title: '24 %',
@@ -99,7 +99,7 @@ const MarketTable: FC<Props> = ({ exchange, cg }) => {
 				columns={columns}
 				search={false}
 				dataSource={data}
-				pagination={{ pageSize: 6 }}
+				pagination={{ defaultPageSize: 6 }}
 			/>
 		</Col>
 	)

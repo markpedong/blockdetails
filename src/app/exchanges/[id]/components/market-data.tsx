@@ -24,14 +24,12 @@ const MarketTitle: FC<{
 const MarketData: FC<Props> = ({ exchange }) => {
 	const detail = useAppSelector(state => state.exchange.detail)
 	const { sign, symbol } = useAppSelector(state => state.global.currency)
+	const market = detail?.quotes[symbol]
 
 	return (
 		<Row style={{ marginBlockStart: '3rem' }}>
 			<Col span={12}>
-				<MarketTitle
-					title="Volume (24h)"
-					data={formatPrice(detail?.quotes[symbol]?.reported_volume_24h, sign)}
-				/>
+				<MarketTitle title="Volume (24h)" data={formatPrice(market?.reported_volume_24h, sign)} />
 				<MarketTitle title="Currencies" data={detail?.currencies} />
 				<MarketTitle title="Confidence Score" data={detail?.confidence_score.toFixed(2)} />
 				<div style={{ paddingBlockStart: '1rem', gap: '5px', display: 'flex' }}>
@@ -42,12 +40,9 @@ const MarketData: FC<Props> = ({ exchange }) => {
 				</div>
 			</Col>
 			<Col span={12}>
-				<MarketTitle
-					title="Volume (30d)"
-					data={formatPrice(detail?.quotes[symbol]?.reported_volume_30d, sign)}
-				/>
+				<MarketTitle title="Volume (30d)" data={formatPrice(market?.reported_volume_30d, sign)} />
 				<MarketTitle title="Market" data={detail?.markets} />
-				<MarketTitle title="Score" data={exchange.trust_score} />
+				{exchange.trust_score && <MarketTitle title="Score" data={exchange.trust_score} />}
 				<div style={{ paddingBlockStart: '1rem', gap: '5px', display: 'flex' }}>
 					<BookFilled />
 					<a href={exchange.other_url_2} target="_blank">

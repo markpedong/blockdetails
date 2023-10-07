@@ -26,15 +26,19 @@ export const numberWithSuffix = (number): string => {
 	}
 }
 
-export const numberWithCommas = (number: number) => {
-	if (number >= 1) {
-		return numeral(number).format('0,0.00')
-	} else if (number >= 0.1) {
-		return numeral(number).format('0,0.00')
-	} else if (number >= 0.001) {
-		return numeral(number).format('0,0.0000')
-	} else {
-		return numeral(number).format('0,0.00000000')
+export const numberWithCommas = number => {
+	const formats = [
+		{ threshold: 1, format: '0,0.00' },
+		{ threshold: 0.1, format: '0,0.00' },
+		{ threshold: 0.001, format: '0,0.000' },
+		{ threshold: 0.0001, format: '0,0.0000' },
+		{ threshold: 0, format: '0,0.00000000' }
+	]
+
+	for (let format of formats) {
+		if (number >= format.threshold) {
+			return numeral(number).format(format.format)
+		}
 	}
 }
 
