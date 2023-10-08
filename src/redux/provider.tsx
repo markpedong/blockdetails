@@ -11,7 +11,11 @@ let persistor = persistStore(store)
 export const ReduxProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<Provider store={store}>
-			<PersistGate persistor={persistor}>{children}</PersistGate>
+			<PersistGate persistor={persistor}>
+				{/* <ApiProvider api={globalSliceTest}> */}
+				{children}
+				{/* </ApiProvider> */}
+			</PersistGate>
 		</Provider>
 	)
 }

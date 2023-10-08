@@ -2,6 +2,7 @@
 
 import { MODAL_FORM_PROPS, PAP_FIAT } from '@/constants'
 import { setCurrency, setGlobalData, toggleDarkMode } from '@/redux/features/globalSlice'
+import { useGetGlobalDataQuery } from '@/redux/features/testSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -17,6 +18,7 @@ const { Link, Text } = Typography
 
 const Header: FC = () => {
 	const dispatch = useDispatch<AppDispatch>()
+	const { data } = useGetGlobalDataQuery({})
 	const navigate = useRouter()
 	const pathname = usePathname()
 	const coins = useAppSelector(state => state.coin.coins)
@@ -24,6 +26,8 @@ const Header: FC = () => {
 	const darkMode = useAppSelector(state => state.global.isDark)
 	const fiats = useAppSelector(state => state.global.fiats)
 	const { symbol } = useAppSelector(state => state.global.currency)
+
+	console.log(data)
 
 	const renderSearch = () => {
 		return (
