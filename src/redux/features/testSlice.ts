@@ -9,9 +9,11 @@ export const globalSliceTest = createApi({
 			'X-CMC_PRO_API_KEY': process.env.NEXT_PUBLIC_API_KEY_PROD
 		}
 	}),
+	tagTypes: ['globalData'],
 	endpoints: builder => ({
 		getGlobalData: builder.query({
-			query: () => '/v1/global-metrics/quotes/latest'
+			query: ({ convert }) => `/v1/global-metrics/quotes/latest?convert=${convert}`,
+			providesTags: ['globalData']
 		})
 	})
 })

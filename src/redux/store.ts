@@ -43,8 +43,10 @@ export const store = configureStore({
 	middleware: getDefaultMiddleware => {
 		return getDefaultMiddleware({
 			serializableCheck: {
-				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-			}
+				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+				warnAfter: 128
+			},
+			immutableCheck: { warnAfter: 128 }
 		}).concat(globalSliceTest.middleware)
 	}
 })
