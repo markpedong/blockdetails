@@ -40,5 +40,10 @@ export const globalData = createSlice({
 	}
 })
 
+export const toggleTheme = s => s.global.isDark
+export const getGlobal = s => s.global.value
+export const getAllFiats = s => s.global.fiats
+export const getAllCurrency = s => s.global.currency
+
 export const { setGlobalData, toggleDarkMode, setCurrency, getFiatsArray } = globalData.actions
 export default globalData.reducer

@@ -24,6 +24,7 @@ import MarketData from './market-data'
 import Markets from './markets'
 import Statistics from './statistics'
 import Wallets from './wallet'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 
 type Props = {
 	coin: CoinData
@@ -35,7 +36,7 @@ type Props = {
 }
 
 const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => {
-	const { sign, symbol } = useAppSelector(state => state.global.currency)
+	const { sign, symbol } = useAppSelector(getAllCurrency)
 	const [currentTab, setCurrentTab] = useState('overview')
 	const dispatch = useDispatch<AppDispatch>()
 

@@ -46,5 +46,7 @@ export const CoinCG = createSlice({
 	}
 })
 
+export const getCoinCG = s => s.coinCG.coin
+
 export const { setCoinCG, setChart } = CoinCG.actions
 export default CoinCG.reducer

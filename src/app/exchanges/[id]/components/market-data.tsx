@@ -1,4 +1,6 @@
 import { TExchangeDetail } from '@/api'
+import { getExchangeDetail } from '@/redux/features/exchangeSlice'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { BookFilled } from '@ant-design/icons'
@@ -22,8 +24,8 @@ const MarketTitle: FC<{
 }
 
 const MarketData: FC<Props> = ({ exchange }) => {
-	const detail = useAppSelector(state => state.exchange.detail)
-	const { sign, symbol } = useAppSelector(state => state.global.currency)
+	const detail = useAppSelector(getExchangeDetail)
+	const { sign, symbol } = useAppSelector(getAllCurrency)
 	const market = detail?.quotes[symbol]
 
 	return (

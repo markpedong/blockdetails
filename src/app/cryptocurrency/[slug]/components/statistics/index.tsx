@@ -3,12 +3,15 @@ import React, { FC } from 'react'
 import StatsTitle from './statsTitle'
 import StatsPer from './statsPer'
 import { useAppSelector } from '@/redux/store'
+import { getAllCurrency } from '@/redux/features/globalSlice'
+import { getBitcoin, getQuotes } from '@/redux/features/coinSlice'
+import { getCoinCG } from '@/redux/features/coinGSlice'
 
 const Statistics: FC = () => {
-	const { symbol } = useAppSelector(state => state.global.currency)
-	const coin = useAppSelector(state => state.coin.coin)
-	const quotes = useAppSelector(state => state.coin.quote)
-	const coinCG = useAppSelector(state => state.coinCG.coin)
+	const { symbol } = useAppSelector(getAllCurrency)
+	const coin = useAppSelector(getBitcoin)
+	const quotes = useAppSelector(getQuotes)
+	const coinCG = useAppSelector(getCoinCG)
 
 	return (
 		<Col span={9}>

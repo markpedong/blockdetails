@@ -1,5 +1,6 @@
 import { CGCoinData, TExchangeDetail } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice, navigate, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -18,7 +19,7 @@ type Props = {
 }
 
 const MarketTable: FC<Props> = ({ exchange, cg }) => {
-	const { sign } = useAppSelector(state => state.global.currency)
+	const { sign } = useAppSelector(getAllCurrency)
 	const ids = useAppSelector(state => state.coin.ids)
 	const params = useSearchParams()
 	const tickers = exchange.tickers

@@ -2,7 +2,9 @@
 
 import { Cryptocurrency, TExchange, ExchangePap } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
+import { getCoins } from '@/redux/features/coinSlice'
 import { setExchangeDetail } from '@/redux/features/exchangeSlice'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, navigate } from '@/utils'
 import { ProColumns, ProTable } from '@ant-design/pro-components'
@@ -20,8 +22,8 @@ type Props = {
 const Table: FC<Props> = ({ data: x, pap }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
-	const { sign, symbol } = useAppSelector(state => state.global.currency)
-	const coins = useAppSelector(state => state.coin.coins)
+	const { sign, symbol } = useAppSelector(getAllCurrency)
+	const coins = useAppSelector(getCoins)
 	const data = x.map(i => ({ ...i, ...pap.find(q => q.name === i.name || q.id === i.id), id: i.id }))
 	const { quote } = coins[0] as unknown as Cryptocurrency
 	const columns: ProColumns<TExchange & ExchangePap>[] = [

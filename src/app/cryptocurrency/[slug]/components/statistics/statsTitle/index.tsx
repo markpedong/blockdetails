@@ -1,3 +1,5 @@
+import { getBitcoin } from '@/redux/features/coinSlice'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas } from '@/utils'
 import { Typography, Divider } from 'antd'
@@ -12,8 +14,8 @@ type Props = {
 }
 
 const StatsTitle: FC<Props> = ({ dataSign, data, title, dataSym, divider = true }) => {
-	const { sign } = useAppSelector(state => state.global.currency)
-	const coin = useAppSelector(state => state.coin.coin)
+	const { sign } = useAppSelector(getAllCurrency)
+	const coin = useAppSelector(getBitcoin)
 
 	return (
 		<>

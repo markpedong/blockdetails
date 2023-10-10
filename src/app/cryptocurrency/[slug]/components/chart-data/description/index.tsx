@@ -1,3 +1,6 @@
+import { getCoinCG } from '@/redux/features/coinGSlice'
+import { getBitcoin, getQuotes } from '@/redux/features/coinSlice'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -5,10 +8,10 @@ import { Typography } from 'antd'
 import React, { FC } from 'react'
 
 const Description: FC = () => {
-	const { symbol, sign } = useAppSelector(state => state.global.currency)
-	const coin = useAppSelector(state => state.coin.coin)
-	const coinCG = useAppSelector(state => state.coinCG.coin)
-	const quotes = useAppSelector(state => state.coin.quote)
+	const { symbol, sign } = useAppSelector(getAllCurrency)
+	const coin = useAppSelector(getBitcoin)
+	const coinCG = useAppSelector(getCoinCG)
+	const quotes = useAppSelector(getQuotes)
 
 	return (
 		<div>

@@ -1,3 +1,4 @@
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -14,7 +15,7 @@ type Props = {
 }
 
 const StatsPer: FC<Props> = ({ data, title, date, per, divider = true }) => {
-	const { sign } = useAppSelector(state => state.global.currency)
+	const { sign } = useAppSelector(getAllCurrency)
 
 	const subtractedDate = new Date().getFullYear() - new Date(date).getFullYear()
 

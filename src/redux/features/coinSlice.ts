@@ -61,5 +61,9 @@ export const Coin = createSlice({
 	}
 })
 
+export const getCoins = s => s.coin.coins
+export const getBitcoin = s => s.coin.coin
+export const getQuotes = s => s.coin.quote
+
 export const { setCoin, setCoinArray, setQuotes, setGlobalIds, setExchanges, setTrending } = Coin.actions
 export default Coin.reducer

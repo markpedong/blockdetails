@@ -1,7 +1,7 @@
 'use client'
 
 import logo from '@/assets/logo.svg'
-import { GLOBAL_STATE, setCurrency } from '@/redux/features/globalSlice'
+import { GLOBAL_STATE, getAllFiats, setCurrency, toggleTheme } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import withTheme from '@/theme'
 import { theme } from 'antd'
@@ -21,11 +21,11 @@ const ConfigProvider = dynamic(() => import('antd').then(com => com.ConfigProvid
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	const dispatch = useDispatch<AppDispatch>()
-	const darkMode = useAppSelector(state => state.global.isDark)
+	const darkMode = useAppSelector(toggleTheme)
 	const [collapsed, setCollapsed] = useState(true)
 	const pathname = usePathname()
 	const params = useSearchParams()
-	const fiats = useAppSelector(state => state.global.fiats)
+	const fiats = useAppSelector(getAllFiats)
 
 	return withTheme({
 		darkMode,

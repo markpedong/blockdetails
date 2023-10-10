@@ -38,5 +38,7 @@ export const Exchange = createSlice({
 	}
 })
 
+export const getExchangeDetail = s => s.exchange.detail
+
 export const { setExchangeDetail } = Exchange.actions
 export default Exchange.reducer

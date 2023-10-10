@@ -10,6 +10,9 @@ import Links from './links'
 import MarketData from './market-data'
 import MarketTable from './market-table'
 import dynamic from 'next/dynamic'
+import { getAllCurrency } from '@/redux/features/globalSlice'
+import { getCoins } from '@/redux/features/coinSlice'
+import { getExchangeDetail } from '@/redux/features/exchangeSlice'
 
 const Line = dynamic(() => import('@ant-design/charts').then(i => i.Line))
 
@@ -22,9 +25,9 @@ type Props = {
 }
 
 const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) => {
-	const { sign, symbol } = useAppSelector(state => state.global.currency)
-	const coins = useAppSelector(state => state.coin.coins)
-	const detail = useAppSelector(state => state.exchange.detail)
+	const { sign, symbol } = useAppSelector(getAllCurrency)
+	const coins = useAppSelector(getCoins)
+	const detail = useAppSelector(getExchangeDetail)
 	const pap = exchanges?.find(
 		paprika =>
 			paprika.id === id || paprika.name.split(' ')[0].toLowerCase() === exchange.name?.split(' ')[0].toLowerCase()

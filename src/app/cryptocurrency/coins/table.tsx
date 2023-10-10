@@ -2,8 +2,8 @@
 
 import { CoinIds, Cryptocurrency, DefiData, Fiat, GetTrendingResponse, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
-import { setCoinArray, setGlobalIds, setTrending } from '@/redux/features/coinSlice'
-import { getFiatsArray, setGlobalData } from '@/redux/features/globalSlice'
+import { getCoins, setCoinArray, setGlobalIds, setTrending } from '@/redux/features/coinSlice'
+import { getAllCurrency, getFiatsArray, getGlobal, setGlobalData } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, navigate, numberWithCommas, numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -33,9 +33,9 @@ type Props = {
 const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids, trending }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
-	const coins = useAppSelector(state => state.coin.coins)
-	const g = useAppSelector(state => state.global.value)
-	const { symbol, sign } = useAppSelector(state => state.global.currency)
+	const coins = useAppSelector(getCoins)
+	const g = useAppSelector(getGlobal)
+	const { symbol, sign } = useAppSelector(getAllCurrency)
 	const { quote } = (coins?.[0] as unknown as Cryptocurrency) ?? {}
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{

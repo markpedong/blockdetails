@@ -8,6 +8,8 @@ import Image from 'next/image'
 import React, { FC, useRef } from 'react'
 import { ValuesType } from 'utility-types'
 import { useSearchParams } from 'next/navigation'
+import { getAllCurrency } from '@/redux/features/globalSlice'
+import { getBitcoin } from '@/redux/features/coinSlice'
 
 type TableListItem = ValuesType<CoinMarketResponse['tickers']>
 type Props = {
@@ -18,8 +20,8 @@ type Props = {
 
 const Markets: FC<Props> = ({ data: markets, tab = 'overview' }) => {
 	const actionRef = useRef<ActionType>()
-	const coin = useAppSelector(state => state.coin.coin)
-	const { sign } = useAppSelector(state => state.global.currency)
+	const coin = useAppSelector(getBitcoin)
+	const { sign } = useAppSelector(getAllCurrency)
 	const params = useSearchParams()
 	const columns: ProColumns<TableListItem>[] = [
 		{

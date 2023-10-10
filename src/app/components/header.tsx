@@ -1,7 +1,16 @@
 'use client'
 
 import { MODAL_FORM_PROPS, PAP_FIAT } from '@/constants'
-import { setCurrency, setGlobalData, toggleDarkMode } from '@/redux/features/globalSlice'
+import { getCoins } from '@/redux/features/coinSlice'
+import {
+	getAllCurrency,
+	getAllFiats,
+	getGlobal,
+	setCurrency,
+	setGlobalData,
+	toggleDarkMode,
+	toggleTheme
+} from '@/redux/features/globalSlice'
 import { useGetGlobalDataQuery } from '@/redux/features/testSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
@@ -21,13 +30,37 @@ const Header: FC = () => {
 	const { data } = useGetGlobalDataQuery({})
 	const navigate = useRouter()
 	const pathname = usePathname()
-	const coins = useAppSelector(state => state.coin.coins)
-	const global = useAppSelector(state => state.global.value)
-	const darkMode = useAppSelector(state => state.global.isDark)
-	const fiats = useAppSelector(state => state.global.fiats)
-	const { symbol } = useAppSelector(state => state.global.currency)
+	const coins = useAppSelector(getCoins)
+	const global = useAppSelector(getGlobal)
+	const darkMode = useAppSelector(toggleTheme)
+	const fiats = useAppSelector(getAllFiats)
+	const { symbol } = useAppSelector(getAllCurrency)
 
-	console.log(data)
+	const renderFiatOptions = fiats =>
+		fiats.map(item => {
+			const exchange = pathname.split('/')[1] === 'exchanges'
+
+			return {
+				label: `${item.sign} ${item.name}`,
+				value: item.symbol,
+				disabled: !PAP_FIAT.includes(item.symbol) && exchange
+			}
+		})
+
+	const renderCoins = coins =>
+		coins.map(record => {
+			const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
+
+			return (
+				<div style={{ display: 'flex', marginBlock: '10px', gap: '10px' }} key={record.id}>
+					<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
+					<Space align="center">
+						<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
+						<Text type="secondary">{record.symbol}</Text>
+					</Space>
+				</div>
+			)
+		})
 
 	const renderSearch = () => {
 		return (
@@ -49,19 +82,7 @@ const Header: FC = () => {
 				<Row justify="space-between">
 					<Col span={12}>
 						<Typography.Title level={5}>Coins:</Typography.Title>
-						{coins.map(record => {
-							const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
-
-							return (
-								<div style={{ display: 'flex', marginBlock: '10px', gap: '10px' }} key={record.id}>
-									<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
-									<Space align="center">
-										<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
-										<Text type="secondary">{record.symbol}</Text>
-									</Space>
-								</div>
-							)
-						})}
+						{renderCoins(coins)}
 					</Col>
 					<Col span={12}>
 						<Typography.Title level={5}>Exchanges:</Typography.Title>
@@ -115,15 +136,7 @@ const Header: FC = () => {
 				<Select
 					showSearch
 					placeholder="USD, PHP, CNY,"
-					options={fiats.map(item => {
-						const exchange = pathname.split('/')[1] === 'exchanges'
-
-						return {
-							label: `${item.sign} ${item.name}`,
-							value: item.symbol,
-							disabled: !PAP_FIAT.includes(item.symbol) && exchange
-						}
-					})}
+					options={renderFiatOptions(fiats)}
 					filterOption={(input, option) =>
 						String(option?.label ?? '')
 							.toLowerCase()

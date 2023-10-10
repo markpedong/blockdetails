@@ -1,3 +1,5 @@
+import { getQuotes } from '@/redux/features/coinSlice'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas } from '@/utils'
 import { Col, Divider, Typography } from 'antd'
@@ -14,8 +16,8 @@ type Props = {
 }
 
 const MarketData: FC<Props> = ({ data, title, volMcap = false, divider = true, supply = false }) => {
-	const { sign, symbol } = useAppSelector(state => state.global.currency)
-	const quotes = useAppSelector(state => state.coin.quote)
+	const { sign, symbol } = useAppSelector(getAllCurrency)
+	const quotes = useAppSelector(getQuotes)
 
 	return (
 		<>

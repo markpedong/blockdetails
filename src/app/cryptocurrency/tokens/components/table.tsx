@@ -2,6 +2,7 @@
 
 import { Cryptocurrency } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice, navigate, numberWithCommas } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -17,7 +18,7 @@ type Props = {
 }
 
 const Table: FC<Props> = ({ data }) => {
-	const { symbol, sign } = useAppSelector(state => state.global.currency)
+	const { symbol, sign } = useAppSelector(getAllCurrency)
 	const params = useSearchParams()
 	const columns: ProColumns<Cryptocurrency>[] = [
 		{
