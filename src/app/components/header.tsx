@@ -11,7 +11,6 @@ import {
 	toggleDarkMode,
 	toggleTheme
 } from '@/redux/features/globalSlice'
-import { useGetGlobalDataQuery } from '@/redux/features/testSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
@@ -27,7 +26,6 @@ const { Link, Text } = Typography
 
 const Header: FC = () => {
 	const dispatch = useDispatch<AppDispatch>()
-	const { data } = useGetGlobalDataQuery({})
 	const navigate = useRouter()
 	const pathname = usePathname()
 	const coins = useAppSelector(getCoins)
