@@ -84,6 +84,7 @@ const Header: FC = () => {
 					</Col>
 					<Col span={12}>
 						<Typography.Title level={5}>Exchanges:</Typography.Title>
+						{/* RENDER EXCHANGES */}
 					</Col>
 				</Row>
 			</ModalForm>
