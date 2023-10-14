@@ -282,7 +282,7 @@ export type GetTrendingResponse = {
 
 export const getTrending = () => get<GetTrendingResponse>(`${HOST_CG}/search/trending`, {}, false)
 
-// /coins/{}/tickers?order=volume_desc&depth=true
+// /coins/COIN NAME/tickers?order=volume_desc&depth=true
 export type CoinMarketResponse = {
 	tickers: {
 		coin_id: string
