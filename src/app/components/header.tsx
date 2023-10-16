@@ -134,7 +134,7 @@ const Header: FC = () => {
 				{renderSearch()}
 				<Select
 					showSearch
-					placeholder="USD, PHP, CNY,"
+					placeholder="USD, PHP, CNY..."
 					options={renderFiatOptions(fiats)}
 					filterOption={(input, option) =>
 						String(option?.label ?? '')
