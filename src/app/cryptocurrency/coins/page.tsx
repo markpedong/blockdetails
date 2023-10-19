@@ -1,8 +1,17 @@
-import { getCoinIds, getCryptocurrency, getDefi, getFiats, getGlobalCrypto, getTrending } from '@/api'
+import {
+	ExchangePap,
+	getCoinIds,
+	getCryptocurrency,
+	getDefi,
+	getExchangesPaprika,
+	getFiats,
+	getGlobalCrypto,
+	getTrending
+} from '@/api'
 import Table from './table'
 
 const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {
-	const [coins, fiats, defi, global, ids, trending] = await Promise.all([
+	const [coins, fiats, defi, global, ids, trending, exchanges] = await Promise.all([
 		getCryptocurrency({
 			aux: 'cmc_rank,circulating_supply',
 			limit: 5000,
@@ -13,7 +22,8 @@ const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency
 		getDefi(),
 		getGlobalCrypto({ convert: currency ?? 'USD' }),
 		getCoinIds({ limit: 5000 }),
-		getTrending()
+		getTrending(),
+		getExchangesPaprika({ quotes: currency ?? 'USD' }) as unknown as ExchangePap[]
 	])
 
 	return (
@@ -24,6 +34,7 @@ const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency
 			initGlobal={global.data}
 			ids={ids.data}
 			trending={trending.coins}
+			exchanges={exchanges}
 		/>
 	)
 }

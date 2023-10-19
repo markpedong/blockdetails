@@ -1,8 +1,8 @@
 'use client'
 
-import { CoinIds, Cryptocurrency, DefiData, Fiat, GetTrendingResponse, GlobalData } from '@/api'
+import { CoinIds, Cryptocurrency, DefiData, ExchangePap, Fiat, GetTrendingResponse, GlobalData } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
-import { getCoins, setCoinArray, setGlobalIds, setTrending } from '@/redux/features/coinSlice'
+import { getCoins, setCoinArray, setExchanges, setGlobalIds, setTrending } from '@/redux/features/coinSlice'
 import { getAllCurrency, getFiatsArray, getGlobal, setGlobalData } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { formatPrice, navigate, numberWithCommas, numberWithSuffix } from '@/utils'
@@ -28,9 +28,10 @@ type Props = {
 	initGlobal: GlobalData
 	ids: CoinIds[]
 	trending: Trending[]
+	exchanges: ExchangePap[]
 }
 
-const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids, trending }) => {
+const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids, trending, exchanges }) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const params = useSearchParams()
 	const coins = useAppSelector(getCoins)
@@ -152,6 +153,7 @@ const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids, trending }) => {
 		dispatch(getFiatsArray(fiats))
 		dispatch(setGlobalIds(ids))
 		dispatch(setTrending(trending))
+		dispatch(setExchanges(exchanges))
 	}, [sign, symbol])
 
 	return (

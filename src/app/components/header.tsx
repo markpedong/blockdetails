@@ -1,5 +1,6 @@
 'use client'
 
+import { getExchanges } from '@/api'
 import { MODAL_FORM_PROPS, PAP_FIAT } from '@/constants'
 import { getCoins } from '@/redux/features/coinSlice'
 import {
@@ -33,6 +34,8 @@ const Header: FC = () => {
 	const darkMode = useAppSelector(toggleTheme)
 	const fiats = useAppSelector(getAllFiats)
 	const { symbol } = useAppSelector(getAllCurrency)
+	const exchanges = useAppSelector(getExchanges)
+	console.log(exchanges)
 
 	const renderFiatOptions = fiats =>
 		fiats.map(item => {
