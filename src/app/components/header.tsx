@@ -1,8 +1,7 @@
 'use client'
 
-import { getExchanges } from '@/api'
 import { MODAL_FORM_PROPS, PAP_FIAT } from '@/constants'
-import { getCoins } from '@/redux/features/coinSlice'
+import { getCoins, getExchangesSlice } from '@/redux/features/coinSlice'
 import {
 	getAllCurrency,
 	getAllFiats,
@@ -34,8 +33,7 @@ const Header: FC = () => {
 	const darkMode = useAppSelector(toggleTheme)
 	const fiats = useAppSelector(getAllFiats)
 	const { symbol } = useAppSelector(getAllCurrency)
-	const exchanges = useAppSelector(getExchanges)
-	console.log(exchanges)
+	const exchanges = useAppSelector(getExchangesSlice)
 
 	const renderFiatOptions = fiats =>
 		fiats.map(item => {
@@ -48,7 +46,7 @@ const Header: FC = () => {
 			}
 		})
 
-	const renderCoins = coins =>
+	const renderCoins = () =>
 		coins.map(record => {
 			const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
 
@@ -62,6 +60,13 @@ const Header: FC = () => {
 				</div>
 			)
 		})
+
+	const renderExchanges = () => {
+		return exchanges.map(i => {
+			console.log('exchange', i)
+			return <div></div>
+		})
+	}
 
 	const renderSearch = () => {
 		return (
@@ -83,11 +88,11 @@ const Header: FC = () => {
 				<Row justify="space-between">
 					<Col span={12}>
 						<Typography.Title level={5}>Coins:</Typography.Title>
-						{renderCoins(coins)}
+						{renderCoins()}
 					</Col>
 					<Col span={12}>
 						<Typography.Title level={5}>Exchanges:</Typography.Title>
-						{/* RENDER EXCHANGES */}
+						{renderExchanges()}
 					</Col>
 				</Row>
 			</ModalForm>
