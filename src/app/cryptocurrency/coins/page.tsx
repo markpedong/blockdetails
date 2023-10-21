@@ -1,9 +1,9 @@
 import {
-	ExchangePap,
+	TExchange,
 	getCoinIds,
 	getCryptocurrency,
 	getDefi,
-	getExchangesPaprika,
+	getExchanges,
 	getFiats,
 	getGlobalCrypto,
 	getTrending
@@ -23,7 +23,7 @@ const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency
 		getGlobalCrypto({ convert: currency ?? 'USD' }),
 		getCoinIds({ limit: 5000 }),
 		getTrending(),
-		getExchangesPaprika({ quotes: currency ?? 'USD' }) as unknown as ExchangePap[]
+		getExchanges({ per_page: 250 }) as unknown as TExchange[]
 	])
 
 	return (

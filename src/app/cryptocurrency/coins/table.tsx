@@ -1,6 +1,6 @@
 'use client'
 
-import { CoinIds, Cryptocurrency, DefiData, ExchangePap, Fiat, GetTrendingResponse, GlobalData } from '@/api'
+import { CoinIds, Cryptocurrency, DefiData, Fiat, GetTrendingResponse, GlobalData, TExchange } from '@/api'
 import { PRO_TABLE_PROPS } from '@/constants'
 import { getCoins, setCoinArray, setExchanges, setGlobalIds, setTrending } from '@/redux/features/coinSlice'
 import { getAllCurrency, getFiatsArray, getGlobal, setGlobalData } from '@/redux/features/globalSlice'
@@ -28,7 +28,7 @@ type Props = {
 	initGlobal: GlobalData
 	ids: CoinIds[]
 	trending: Trending[]
-	exchanges: ExchangePap[]
+	exchanges: TExchange[]
 }
 
 const Table: FC<Props> = ({ data, defi, fiats, initGlobal, ids, trending, exchanges }) => {
