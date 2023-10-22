@@ -1,8 +1,12 @@
 import {
+	CoinsItem,
+	ExchangeItem,
 	TExchange,
 	getCoinIds,
+	getCoinsList,
 	getCryptocurrency,
 	getDefi,
+	getExchangeList,
 	getExchanges,
 	getFiats,
 	getGlobalCrypto,
@@ -11,7 +15,7 @@ import {
 import Table from './table'
 
 const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {
-	const [coins, fiats, defi, global, ids, trending, exchanges] = await Promise.all([
+	const [coins, fiats, defi, global, ids, trending, exchanges, coinsID, exchangeID] = await Promise.all([
 		getCryptocurrency({
 			aux: 'cmc_rank,circulating_supply',
 			limit: 5000,
@@ -23,7 +27,9 @@ const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency
 		getGlobalCrypto({ convert: currency ?? 'USD' }),
 		getCoinIds({ limit: 5000 }),
 		getTrending(),
-		getExchanges({ per_page: 250 }) as unknown as TExchange[]
+		getExchanges({ per_page: 250 }) as unknown as TExchange[],
+		getCoinsList() as unknown as CoinsItem[],
+		getExchangeList() as unknown as ExchangeItem[]
 	])
 
 	return (
@@ -35,6 +41,8 @@ const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency
 			ids={ids.data}
 			trending={trending.coins}
 			exchanges={exchanges}
+			coinsID={coinsID}
+			exchangeID={exchangeID}
 		/>
 	)
 }

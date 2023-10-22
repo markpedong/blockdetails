@@ -33,7 +33,7 @@ const MarketData: FC<Props> = ({ exchange }) => {
 			<Col span={12}>
 				<MarketTitle title="Volume (24h)" data={formatPrice(market?.reported_volume_24h, sign)} />
 				<MarketTitle title="Currencies" data={detail?.currencies} />
-				<MarketTitle title="Confidence Score" data={detail?.confidence_score.toFixed(2)} />
+				<MarketTitle title="Confidence Score" data={detail?.confidence_score?.toFixed(2)} />
 				<div style={{ paddingBlockStart: '1rem', gap: '5px', display: 'flex' }}>
 					<BookFilled />
 					<a href={exchange.other_url_1} target="_blank">

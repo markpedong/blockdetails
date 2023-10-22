@@ -76,7 +76,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 							}}
 						>
 							<Image src={logo} alt="logo" style={{ width: 30, height: 30 }} />
-							<h1>Block Details</h1>
+							<h1>
+								<Link href={navigate('/')} style={{ color: 'black' }}>
+									Block Details
+								</Link>
+							</h1>
 						</div>
 					)}
 				>

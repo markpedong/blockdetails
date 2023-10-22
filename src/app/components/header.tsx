@@ -1,7 +1,7 @@
 'use client'
 
 import { MODAL_FORM_PROPS, PAP_FIAT } from '@/constants'
-import { getCoins, getExchangesSlice } from '@/redux/features/coinSlice'
+import { getCoins, getCoinsID, getExchangeID, getExchangesSlice } from '@/redux/features/coinSlice'
 import {
 	getAllCurrency,
 	getAllFiats,
@@ -15,8 +15,8 @@ import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { SearchOutlined } from '@ant-design/icons'
-import { ModalForm, ProFormText } from '@ant-design/pro-components'
-import { Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
+import { ModalForm } from '@ant-design/pro-components'
+import { AutoComplete, Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { FC } from 'react'
@@ -34,6 +34,8 @@ const Header: FC = () => {
 	const fiats = useAppSelector(getAllFiats)
 	const { symbol } = useAppSelector(getAllCurrency)
 	const exchanges = useAppSelector(getExchangesSlice)
+	const coinsID = useAppSelector(getCoinsID)
+	const exchangeID = useAppSelector(getExchangeID)
 
 	const renderFiatOptions = fiats =>
 		fiats.map(item => {
@@ -47,7 +49,7 @@ const Header: FC = () => {
 		})
 
 	const renderCoins = () =>
-		coins.map(record => {
+		coins.slice(0, 9).map(record => {
 			const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
 
 			return (
@@ -61,14 +63,23 @@ const Header: FC = () => {
 			)
 		})
 
-	const renderExchanges = () => {
-		return exchanges.map(i => {
-			console.log('exchange', i)
-			return <div></div>
+	const renderExchanges = () =>
+		exchanges.slice(0, 9).map(i => {
+			return (
+				<div key={i.name} style={{ display: 'flex', marginBlock: '10px', gap: '10px' }}>
+					<Image src={i.image} alt={`logo${i.image}`} width={25} height={25} />
+					<Space align="center">
+						<Link href={`/exchanges/${i.id}`}>{i.name}</Link>
+						<Text type="secondary">{i.name.split(' ')[0]}</Text>
+					</Space>
+				</div>
+			)
 		})
-	}
 
 	const renderSearch = () => {
+		const exchanges = exchangeID.map(i => ({ ...i, type: 'exchange' }))
+		const coins = coinsID.map(i => ({ ...i, type: 'coins' }))
+		const options = coins.concat(exchanges)
 		return (
 			<ModalForm
 				{...MODAL_FORM_PROPS}
@@ -83,8 +94,23 @@ const Header: FC = () => {
 				submitter={false}
 				modalProps={{ closeIcon: false }}
 				width={600}
+				title="Search for a Cryptocurrency!"
 			>
-				<ProFormText placeholder="eg. Ethereum, Avalanche, Binance Smart Chain" />
+				<AutoComplete
+					options={options.map(i => ({
+						label: (
+							<Link href={`/${i.type === 'coins' ? 'cryptocurrency' : 'exchanges'}/${i.id}`}>
+								{i.name}
+							</Link>
+						),
+						value: i.id.toLocaleUpperCase()
+					}))}
+					placeholder="eg. Ethereum, Avalanche, Binance Smart Chain"
+					style={{ width: '100%' }}
+					filterOption={(inputValue, option) =>
+						option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+					}
+				/>
 				<Row justify="space-between">
 					<Col span={12}>
 						<Typography.Title level={5}>Coins:</Typography.Title>

@@ -336,3 +336,13 @@ export const getExchangesDetail = id => get<TExchangeDetail>(`${HOST_CG}/exchang
 
 // /v3/exchanges/binance/volume_chart
 export const getExchangeChart = (id: string, params) => get(`${HOST_CG}/exchanges/${id}/volume_chart`, params)
+
+// /api/v3/coins/list?include_platform=false
+export type CoinsItem = { id: string; symbol: string; name: string }
+
+export const getCoinsList = () => get<CoinsItem[]>(`${HOST_CG}/coins/list`)
+
+// /api/v3/exchanges/list
+export type ExchangeItem = { id: string; symbol: string; name: string }
+
+export const getExchangeList = () => get<ExchangeItem[]>(`${HOST_CG}/exchanges/list`)

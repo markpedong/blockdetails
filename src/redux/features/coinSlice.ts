@@ -1,4 +1,4 @@
-import { CoinData, CoinIds, GetTrendingResponse, QuoteData, TExchange } from '@/api'
+import { CoinData, CoinIds, CoinsItem, ExchangeItem, GetTrendingResponse, QuoteData, TExchange } from '@/api'
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { ValuesType } from 'utility-types'
 
@@ -10,6 +10,8 @@ type InitialState = {
 	ids: CoinIds[]
 	exchanges: TExchange[]
 	trending: Trending[]
+	coinsID: CoinsItem[]
+	exchangeID: ExchangeItem[]
 }
 
 const initialState: InitialState = {
@@ -33,7 +35,9 @@ const initialState: InitialState = {
 	quote: { cmc_rank: '', circulating_supply: undefined, max_supply: undefined, total_supply: undefined, quote: {} },
 	ids: [],
 	exchanges: [],
-	trending: []
+	trending: [],
+	coinsID: [],
+	exchangeID: []
 }
 
 export const Coin = createSlice({
@@ -57,6 +61,12 @@ export const Coin = createSlice({
 		},
 		setTrending: (state, action: PayloadAction<Trending[]>) => {
 			state.trending = action.payload
+		},
+		setCoinsID: (state, action: PayloadAction<CoinsItem[]>) => {
+			state.coinsID = action.payload
+		},
+		setExchangesID: (state, action: PayloadAction<ExchangeItem[]>) => {
+			state.exchangeID = action.payload
 		}
 	}
 })
@@ -64,7 +74,10 @@ export const Coin = createSlice({
 export const getCoins = s => s.coin.coins
 export const getBitcoin = s => s.coin.coin
 export const getQuotes = s => s.coin.quote
-export const getExchangesSlice = s => s.coin.exchanges
+export const getExchangesSlice = s => s.coin.exchanges as TExchange[]
+export const getCoinsID = s => s.coin.coinsID as CoinsItem[]
+export const getExchangeID = s => s.coin.exchangeID as ExchangeItem[]
 
-export const { setCoin, setCoinArray, setQuotes, setGlobalIds, setExchanges, setTrending } = Coin.actions
+export const { setCoin, setCoinArray, setQuotes, setGlobalIds, setExchanges, setTrending, setCoinsID, setExchangesID } =
+	Coin.actions
 export default Coin.reducer
