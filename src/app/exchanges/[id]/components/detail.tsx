@@ -3,7 +3,7 @@
 import { CGCoinData, Cryptocurrency, TExchangeDetail, ExchangePap } from '@/api'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
-import { Col, Row, Typography } from 'antd'
+import { Col, Flex, Row, Typography } from 'antd'
 import Image from 'next/image'
 import { FC } from 'react'
 import Links from './links'
@@ -39,18 +39,17 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 	return (
 		<Row>
 			<Col span={8}>
-				<div
+				<Flex
+					justify="start"
+					align="center"
 					style={{
-						display: 'flex',
-						justifyContent: 'start',
-						alignItems: 'center',
 						gap: '10px',
 						paddingBlockEnd: '1rem'
 					}}
 				>
 					<Image src={exchange.image} alt={`${id}`} width={30} height={30} />
 					<Typography.Text style={{ fontSize: '2rem', fontWeight: 700 }}>{exchange.name}</Typography.Text>
-				</div>
+				</Flex>
 				<Links exchange={exchange} pap={pap} />
 				{pap && <MarketData exchange={exchange} />}
 				<div style={{ marginBlockStart: '3rem' }}>

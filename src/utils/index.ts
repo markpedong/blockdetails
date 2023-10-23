@@ -27,6 +27,9 @@ export const numberWithSuffix = (number): string => {
 }
 
 export const numberWithCommas = number => {
+	if (!number) {
+		return '-'
+	}
 	const formats = [
 		{ threshold: 1, format: '0,0.00' },
 		{ threshold: 0.1, format: '0,0.00' },

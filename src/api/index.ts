@@ -178,6 +178,7 @@ export type QuoteData = {
 			percent_change_30d: number
 			percent_change_60d: number
 			market_cap: number
+			market_cap_by_total_supply: number
 		}
 	}
 }

@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/redux/store'
 import { numberWithCommas } from '@/utils'
 import ProCard from '@ant-design/pro-card'
-import { Space, Typography } from 'antd'
+import { Flex, Space, Typography } from 'antd'
 import Image from 'next/image'
 import { FC } from 'react'
 
@@ -20,17 +20,16 @@ const Trending: FC = () => {
 							wrap
 							key={coin.id}
 							title={
-								<div
+								<Flex
+									align="center"
 									style={{
-										display: 'flex',
-										alignItems: 'center',
 										gap: '10px',
 										paddingInlineEnd: '10px'
 									}}
 								>
 									<Image src={coin.large} alt={coin.id} width={25} height={25} />
 									<Typography.Link>{coin.name}</Typography.Link>
-								</div>
+								</Flex>
 							}
 							extra={`#${coin.market_cap_rank}`}
 							style={{ marginBlockStart: 24 }}

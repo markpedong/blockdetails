@@ -4,7 +4,7 @@ import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { BookFilled } from '@ant-design/icons'
-import { Col, Row, Typography } from 'antd'
+import { Col, Flex, Row, Typography } from 'antd'
 import { FC } from 'react'
 
 type Props = {
@@ -34,23 +34,23 @@ const MarketData: FC<Props> = ({ exchange }) => {
 				<MarketTitle title="Volume (24h)" data={formatPrice(market?.reported_volume_24h, sign)} />
 				<MarketTitle title="Currencies" data={detail?.currencies} />
 				<MarketTitle title="Confidence Score" data={detail?.confidence_score?.toFixed(2)} />
-				<div style={{ paddingBlockStart: '1rem', gap: '5px', display: 'flex' }}>
+				<Flex style={{ paddingBlockStart: '1rem', gap: '5px' }}>
 					<BookFilled />
 					<a href={exchange.other_url_1} target="_blank">
 						Read More:
 					</a>
-				</div>
+				</Flex>
 			</Col>
 			<Col span={12}>
 				<MarketTitle title="Volume (30d)" data={formatPrice(market?.reported_volume_30d, sign)} />
 				<MarketTitle title="Market" data={detail?.markets} />
 				{exchange.trust_score && <MarketTitle title="Score" data={exchange.trust_score} />}
-				<div style={{ paddingBlockStart: '1rem', gap: '5px', display: 'flex' }}>
+				<Flex style={{ paddingBlockStart: '1rem', gap: '5px' }}>
 					<BookFilled />
 					<a href={exchange.other_url_2} target="_blank">
 						Read More:
 					</a>
-				</div>
+				</Flex>
 			</Col>
 		</Row>
 	)

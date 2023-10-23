@@ -19,6 +19,8 @@ const MarketData: FC<Props> = ({ data, title, volMcap = false, divider = true, s
 	const { sign, symbol } = useAppSelector(getAllCurrency)
 	const quotes = useAppSelector(getQuotes)
 
+	console.log(quotes)
+
 	return (
 		<>
 			<Col>
@@ -44,7 +46,7 @@ const MarketData: FC<Props> = ({ data, title, volMcap = false, divider = true, s
 						</Paragraph>
 						<div>
 							<Text strong>Max Supply: </Text>
-							<Text>{!quotes.max_supply ? '∞' : numberWithCommas(quotes.max_supply)}</Text>
+							<Text>{numberWithCommas(quotes.max_supply)}</Text>
 						</div>
 						<div style={{}}>
 							<Text strong>Total Supply: </Text>

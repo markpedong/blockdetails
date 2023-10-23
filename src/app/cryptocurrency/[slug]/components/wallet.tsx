@@ -1,7 +1,7 @@
 'use client'
 
 import { wallet_types, wallets } from '@/constants/wallet'
-import { Button, Card, Space, Typography } from 'antd'
+import { Button, Card, Flex, Space, Typography } from 'antd'
 import Image from 'next/image'
 import { FC, useState } from 'react'
 
@@ -70,7 +70,7 @@ const Wallets: FC<Props> = () => {
 						hoverable
 						key={item.title}
 					>
-						<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+						<Flex align="center" style={{ flexDirection: 'column' }}>
 							<Image
 								src={item.img}
 								alt={item.title}
@@ -80,7 +80,7 @@ const Wallets: FC<Props> = () => {
 							/>
 							<Typography.Title level={5}>{item.title}</Typography.Title>
 							<Typography.Link>{item.link}</Typography.Link>
-						</div>
+						</Flex>
 					</Card>
 				))}
 			</Space>

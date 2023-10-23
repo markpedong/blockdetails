@@ -3,17 +3,11 @@
 import { CoinData, CoinDataCG, CoinMarketResponse, QuoteData } from '@/api'
 import { setChart, setCoinCG } from '@/redux/features/coinGSlice'
 import { setCoin, setQuotes } from '@/redux/features/coinSlice'
+import { getAllCurrency } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { numberWithCommas } from '@/utils'
 import { renderPercentage } from '@/utils/antd'
-import {
-	AreaChartOutlined,
-	InfoCircleOutlined,
-	LineChartOutlined,
-	SlidersOutlined,
-	SolutionOutlined,
-	WalletOutlined
-} from '@ant-design/icons'
+import { AreaChartOutlined, InfoCircleOutlined, SlidersOutlined, WalletOutlined } from '@ant-design/icons'
 import { Col, Divider, Row, Segmented, Space, Tag, Typography } from 'antd'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
@@ -24,7 +18,7 @@ import MarketData from './market-data'
 import Markets from './markets'
 import Statistics from './statistics'
 import Wallets from './wallet'
-import { getAllCurrency } from '@/redux/features/globalSlice'
+import About from './about'
 
 type Props = {
 	coin: CoinData
@@ -101,7 +95,10 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 				</Space>
 				<Divider />
 				<Row gutter={16} wrap={false}>
-					<MarketData title="Market Cap" data={quotes.quote?.[symbol]?.market_cap} />
+					<MarketData
+						title="Market Cap"
+						data={quotes.quote?.[symbol]?.market_cap || quotes.quote?.[symbol]?.market_cap_by_total_supply}
+					/>
 					<MarketData
 						title="Fully Diluted Market Cap"
 						data={quotes.quote?.[symbol]?.fully_diluted_market_cap}
@@ -133,19 +130,9 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 							icon: <WalletOutlined />
 						},
 						{
-							label: 'News',
-							value: 'news',
-							icon: <SolutionOutlined />
-						},
-						{
 							label: 'About',
 							value: 'about',
 							icon: <InfoCircleOutlined />
-						},
-						{
-							label: 'Analytics',
-							value: 'analytics',
-							icon: <LineChartOutlined />
 						}
 					]}
 				/>
@@ -169,6 +156,7 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 				)}
 				{currentTab === 'markets' && <Markets data={markets.tickers} id={id} tab="markets" />}
 				{currentTab === 'wallets' && <Wallets />}
+				{currentTab === 'about' && <About />}
 			</Col>
 		</Row>
 	)

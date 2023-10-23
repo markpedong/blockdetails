@@ -16,7 +16,7 @@ import { numberWithSuffix } from '@/utils'
 import { renderPer } from '@/utils/antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { ModalForm } from '@ant-design/pro-components'
-import { AutoComplete, Col, Input, Row, Select, Space, Switch, Typography } from 'antd'
+import { AutoComplete, Col, Flex, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { FC } from 'react'
@@ -53,26 +53,26 @@ const Header: FC = () => {
 			const src = `https://s2.coinmarketcap.com/static/img/coins/64x64/${record.id}.png`
 
 			return (
-				<div style={{ display: 'flex', marginBlock: '10px', gap: '10px' }} key={record.id}>
+				<Flex style={{ marginBlock: '10px', gap: '10px' }} key={record.id}>
 					<Image src={src} alt={`logo${record.slug}`} width={25} height={25} />
 					<Space align="center">
 						<Link href={`/cryptocurrency/${record.slug}`}>{record.name}</Link>
 						<Text type="secondary">{record.symbol}</Text>
 					</Space>
-				</div>
+				</Flex>
 			)
 		})
 
 	const renderExchanges = () =>
 		exchanges.slice(0, 9).map(i => {
 			return (
-				<div key={i.name} style={{ display: 'flex', marginBlock: '10px', gap: '10px' }}>
+				<Flex key={i.name} style={{ marginBlock: '10px', gap: '10px' }}>
 					<Image src={i.image} alt={`logo${i.image}`} width={25} height={25} />
 					<Space align="center">
 						<Link href={`/exchanges/${i.id}`}>{i.name}</Link>
 						<Text type="secondary">{i.name.split(' ')[0]}</Text>
 					</Space>
-				</div>
+				</Flex>
 			)
 		})
 
@@ -142,7 +142,7 @@ const Header: FC = () => {
 	}
 
 	return (
-		<Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+		<Flex justify="space-between">
 			<Space style={{ fontSize: '0.7rem' }}>
 				Cryptos:<Link style={{ fontSize: '0.7rem' }}>{global.active_cryptocurrencies}</Link>
 				Exchanges:<Link style={{ fontSize: '0.7rem' }}>{global.active_exchanges}</Link>
@@ -189,7 +189,7 @@ const Header: FC = () => {
 					unCheckedChildren="Light"
 				/>
 			</Space>
-		</Row>
+		</Flex>
 	)
 }
 

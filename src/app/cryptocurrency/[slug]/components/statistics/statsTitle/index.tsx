@@ -2,7 +2,7 @@ import { getBitcoin } from '@/redux/features/coinSlice'
 import { getAllCurrency } from '@/redux/features/globalSlice'
 import { useAppSelector } from '@/redux/store'
 import { formatPrice, numberWithCommas } from '@/utils'
-import { Typography, Divider } from 'antd'
+import { Typography, Divider, Flex } from 'antd'
 import React, { FC } from 'react'
 
 type Props = {
@@ -19,7 +19,7 @@ const StatsTitle: FC<Props> = ({ dataSign, data, title, dataSym, divider = true 
 
 	return (
 		<>
-			<div style={{ justifyContent: 'space-between', display: 'flex' }}>
+			<Flex justify="space-between">
 				<Typography.Text type="secondary">{title}</Typography.Text>
 				{dataSign && <Typography.Text strong>{formatPrice(dataSign, sign)}</Typography.Text>}
 				{dataSym && (
@@ -28,7 +28,7 @@ const StatsTitle: FC<Props> = ({ dataSign, data, title, dataSym, divider = true 
 					</Typography.Text>
 				)}
 				{data && <Typography.Text strong>{data}</Typography.Text>}
-			</div>
+			</Flex>
 			{divider && <Divider />}
 		</>
 	)

@@ -4,7 +4,7 @@ import logo from '@/assets/logo.svg'
 import { GLOBAL_STATE, getAllFiats, setCurrency, toggleTheme } from '@/redux/features/globalSlice'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import withTheme from '@/theme'
-import { theme } from 'antd'
+import { Flex, theme } from 'antd'
 import enUS from 'antd/locale/en_US'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
@@ -68,20 +68,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 						)
 					}}
 					headerTitleRender={() => (
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center'
-							}}
-						>
+						<Flex justify="center" align="center">
 							<Image src={logo} alt="logo" style={{ width: 30, height: 30 }} />
 							<h1>
 								<Link href={navigate('/')} style={{ color: 'black' }}>
 									Block Details
 								</Link>
 							</h1>
-						</div>
+						</Flex>
 					)}
 				>
 					{children}
