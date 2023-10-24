@@ -9,41 +9,39 @@ type Props = {
 	title?: string
 }
 
-const LinksDropdown: FC<Props> = ({ dataArr, title, data }) => {
-	return (
-		<>
-			{dataArr && (
-				<Tag icon={<ExclamationCircleOutlined />} closable={false}>
-					<Dropdown
-						menu={{
-							items: dataArr?.map((item, index) => ({
-								key: index,
-								label: (
-									<Typography.Link target="_blank" href={item}>
-										{extractDomain(item)}
-									</Typography.Link>
-								)
-							}))
-						}}
-						placement="bottom"
-						arrow
-					>
-						<span style={{ fontWeight: 700 }}>
-							{title}
-							<DownOutlined style={{ paddingLeft: '5px' }} />
-						</span>
-					</Dropdown>
-				</Tag>
-			)}
-			{data && (
-				<Tag icon={<LinkOutlined />} closeIcon={<ShareAltOutlined />}>
-					<Typography.Link href={data} target="_blank">
-						<span style={{ fontWeight: 700 }}>{extractDomain(data)}</span>
-					</Typography.Link>
-				</Tag>
-			)}
-		</>
-	)
-}
+const LinksDropdown: FC<Props> = ({ dataArr, title, data }) => (
+	<>
+		{dataArr?.length > 0 && (
+			<Tag icon={<ExclamationCircleOutlined />} closable={false}>
+				<Dropdown
+					menu={{
+						items: dataArr?.map((item, index) => ({
+							key: index,
+							label: (
+								<Typography.Link target="_blank" href={item}>
+									{extractDomain(item)}
+								</Typography.Link>
+							)
+						}))
+					}}
+					placement="bottom"
+					arrow
+				>
+					<span style={{ fontWeight: 700 }}>
+						{title}
+						<DownOutlined style={{ paddingLeft: '5px' }} />
+					</span>
+				</Dropdown>
+			</Tag>
+		)}
+		{data && (
+			<Tag icon={<LinkOutlined />} closeIcon={<ShareAltOutlined />}>
+				<Typography.Link href={data} target="_blank">
+					<span style={{ fontWeight: 700 }}>{extractDomain(data)}</span>
+				</Typography.Link>
+			</Tag>
+		)}
+	</>
+)
 
 export default LinksDropdown

@@ -32,7 +32,7 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 		paprika =>
 			paprika.id === id || paprika.name.split(' ')[0].toLowerCase() === exchange.name?.split(' ')[0].toLowerCase()
 	)
-	const { quote } = coins[0] as unknown as Cryptocurrency
+	const { quote } = (coins[0] as unknown as Cryptocurrency) ?? {}
 	const price = detail?.quotes?.[symbol]?.reported_volume_24h
 	const lowestValue = chart?.reduce((acc, curr) => (curr.value < acc.value ? curr : acc), chart[0] || undefined)
 
@@ -64,7 +64,7 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 				<div>
 					<Typography.Title level={2}>
 						{formatPrice(
-							price ?? quote['USD']?.price * exchange.trade_volume_24h_btc_normalized,
+							price ?? quote?.['USD']?.price * exchange.trade_volume_24h_btc_normalized,
 							price ? sign : '$'
 						)}
 					</Typography.Title>

@@ -18,7 +18,7 @@ const MarketTitle: FC<{
 	return (
 		<div style={{ display: 'grid' }}>
 			<Typography.Text strong>{title}</Typography.Text>
-			<Typography.Link>{data}</Typography.Link>
+			<Typography.Link>{data ?? '-'}</Typography.Link>
 		</div>
 	)
 }
@@ -26,7 +26,7 @@ const MarketTitle: FC<{
 const MarketData: FC<Props> = ({ exchange }) => {
 	const detail = useAppSelector(getExchangeDetail)
 	const { sign, symbol } = useAppSelector(getAllCurrency)
-	const market = detail?.quotes[symbol]
+	const market = detail?.quotes?.[symbol]
 
 	return (
 		<Row style={{ marginBlockStart: '3rem' }}>

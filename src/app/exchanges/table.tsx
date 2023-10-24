@@ -25,7 +25,7 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 	const { sign, symbol } = useAppSelector(getAllCurrency)
 	const coins = useAppSelector(getCoins)
 	const data = x.map(i => ({ ...i, ...pap.find(q => q.name === i.name || q.id === i.id), id: i.id }))
-	const { quote } = coins[0] as unknown as Cryptocurrency
+	const { quote } = (coins[0] as unknown as Cryptocurrency) ?? {}
 	const columns: ProColumns<TExchange & ExchangePap>[] = [
 		{
 			title: '#',
@@ -82,7 +82,7 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 					<>
 						<div>
 							{formatPrice(
-								price ?? quote['USD']?.price * record.trade_volume_24h_btc_normalized,
+								price ?? quote?.['USD']?.price * record.trade_volume_24h_btc_normalized,
 								price ? sign : '$'
 							)}
 						</div>
