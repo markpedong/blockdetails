@@ -18,7 +18,8 @@ export const GLOBAL_STATE = {
 		sign: '$',
 		symbol: 'USD'
 	},
-	fiats: []
+	fiats: [],
+	fiatsCG: []
 }
 
 export const globalData = createSlice({
@@ -36,6 +37,9 @@ export const globalData = createSlice({
 		},
 		getFiatsArray: (state, action: PayloadAction<Fiat[]>) => {
 			state.fiats = action.payload
+		},
+		setFiatsCG: (state, action: PayloadAction<String[]>) => {
+			state.fiatsCG = action.payload
 		}
 	}
 })
@@ -44,6 +48,7 @@ export const toggleTheme = s => s.global.isDark
 export const getGlobal = s => s.global.value
 export const getAllFiats = s => s.global.fiats
 export const getAllCurrency = s => s.global.currency
+export const getAllFiatsCG = s => s.global.fiatsCG
 
-export const { setGlobalData, toggleDarkMode, setCurrency, getFiatsArray } = globalData.actions
+export const { setGlobalData, toggleDarkMode, setCurrency, getFiatsArray, setFiatsCG } = globalData.actions
 export default globalData.reducer

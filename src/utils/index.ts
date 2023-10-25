@@ -3,6 +3,10 @@ import { ReadonlyURLSearchParams } from 'next/navigation'
 import numeral from 'numeral'
 
 export const formatPrice = (num: number | string, symbol = '$', precision = 2) => {
+	if (!num) {
+		return '-'
+	}
+
 	if (num) {
 		return formatMoney(num, { symbol, precision })
 	} else {

@@ -5,6 +5,7 @@ import { getCoins, getCoinsID, getExchangeID, getExchangesSlice } from '@/redux/
 import {
 	getAllCurrency,
 	getAllFiats,
+	getAllFiatsCG,
 	getGlobal,
 	setCurrency,
 	setGlobalData,
@@ -36,17 +37,21 @@ const Header: FC = () => {
 	const exchanges = useAppSelector(getExchangesSlice)
 	const coinsID = useAppSelector(getCoinsID)
 	const exchangeID = useAppSelector(getExchangeID)
+	const fiatsCG = useAppSelector(getAllFiatsCG)
 
-	const renderFiatOptions = fiats =>
-		fiats.map(item => {
-			const exchange = pathname.split('/')[1] === 'exchanges'
+	const renderFiatOptions = fiats => {
+		const filteredFiats = fiats.filter(
+			item => PAP_FIAT.includes(item.symbol) && fiatsCG.includes(item.symbol.toLowerCase())
+		)
 
+		return filteredFiats.map(item => {
 			return {
 				label: `${item.sign} ${item.name}`,
 				value: item.symbol,
-				disabled: !PAP_FIAT.includes(item.symbol) && exchange
+				disabled: !PAP_FIAT.includes(item.symbol)
 			}
 		})
+	}
 
 	const renderCoins = () =>
 		coins.slice(0, 9).map(record => {
@@ -144,8 +149,12 @@ const Header: FC = () => {
 	return (
 		<Flex justify="space-between">
 			<Space style={{ fontSize: '0.7rem' }}>
-				Cryptos:<Link style={{ fontSize: '0.7rem' }}>{global.active_cryptocurrencies}</Link>
-				Exchanges:<Link style={{ fontSize: '0.7rem' }}>{global.active_exchanges}</Link>
+				<div>
+					Cryptos: <Link style={{ fontSize: '0.7rem' }}>{global.active_cryptocurrencies}</Link>
+				</div>
+				<div>
+					Exchanges: <Link style={{ fontSize: '0.7rem' }}>{global.active_exchanges}</Link>
+				</div>
 				Market Cap:
 				<Link style={{ fontSize: '0.7rem' }}>
 					{numberWithSuffix(global?.quote[symbol]?.total_market_cap)}{' '}
