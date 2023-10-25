@@ -11,7 +11,7 @@ import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
-import React, { FC } from 'react'
+import React, { FC, memo } from 'react'
 
 type Props = {
 	data: []
@@ -136,4 +136,4 @@ const Table: FC<Props> = ({ data }) => {
 	)
 }
 
-export default Table
+export default memo(Table)

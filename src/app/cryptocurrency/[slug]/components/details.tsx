@@ -10,7 +10,7 @@ import { renderPercentage } from '@/utils/antd'
 import { AreaChartOutlined, InfoCircleOutlined, SlidersOutlined, WalletOutlined } from '@ant-design/icons'
 import { Col, Divider, Row, Segmented, Space, Tag, Typography } from 'antd'
 import Image from 'next/image'
-import { FC, useEffect, useState } from 'react'
+import { FC, memo, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import ChartData from './chart-data'
 import LinksDropdown from './links-dropdown'
@@ -162,4 +162,4 @@ const Details: FC<Props> = ({ coin, markets, quotes, cg, chart, id }: Props) => 
 	)
 }
 
-export default Details
+export default memo(Details)

@@ -30,7 +30,7 @@ import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Space, Tooltip, Typography } from 'antd'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
-import { FC, useEffect } from 'react'
+import { FC, memo, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { ValuesType } from 'utility-types'
 
@@ -242,4 +242,4 @@ const Table: FC<Props> = ({
 	)
 }
 
-export default Table
+export default memo(Table)

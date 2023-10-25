@@ -11,7 +11,7 @@ import { ProColumns, ProTable } from '@ant-design/pro-components'
 import { Popover, Progress, Space, Typography } from 'antd'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
-import { FC } from 'react'
+import { FC, memo } from 'react'
 import { useDispatch } from 'react-redux'
 
 type Props = {
@@ -129,4 +129,4 @@ const Table: FC<Props> = ({ data: x, pap }) => {
 	return <ProTable<TExchange> {...PRO_TABLE_PROPS} rowKey="id" columns={columns} search={false} dataSource={data} />
 }
 
-export default Table
+export default memo(Table)

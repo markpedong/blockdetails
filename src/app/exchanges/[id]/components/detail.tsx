@@ -5,7 +5,7 @@ import { useAppSelector } from '@/redux/store'
 import { formatPrice } from '@/utils'
 import { Col, Flex, Row, Typography } from 'antd'
 import Image from 'next/image'
-import { FC } from 'react'
+import { FC, memo } from 'react'
 import Links from './links'
 import MarketData from './market-data'
 import MarketTable from './market-table'
@@ -111,4 +111,4 @@ const ExchangeDetail: FC<Props> = ({ exchange, id, cg, pap: exchanges, chart }) 
 	)
 }
 
-export default ExchangeDetail
+export default memo(ExchangeDetail)
