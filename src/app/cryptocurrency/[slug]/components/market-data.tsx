@@ -19,8 +19,6 @@ const MarketData: FC<Props> = ({ data, title, volMcap = false, divider = true, s
 	const { sign, symbol } = useAppSelector(getAllCurrency)
 	const quotes = useAppSelector(getQuotes)
 
-	console.log(quotes)
-
 	return (
 		<>
 			<Col>
