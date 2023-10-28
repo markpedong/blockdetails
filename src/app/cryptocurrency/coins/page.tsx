@@ -14,6 +14,7 @@ import {
 	getTrending
 } from '@/api'
 import Table from './table'
+import { cache } from 'react'
 
 const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency?: string } }) => {
 	const [coins, fiats, defi, global, ids, trending, exchanges, coinsID, exchangeID, cgFiats] = await Promise.all([
@@ -49,5 +50,7 @@ const Coins = async ({ searchParams: { currency } }: { searchParams?: { currency
 		/>
 	)
 }
+
+export const getCoinsTEST = cache(getCryptocurrency)
 
 export default Coins
