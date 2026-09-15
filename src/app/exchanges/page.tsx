@@ -1,42 +1,37 @@
 import { getExchanges } from '@/lib/exchange'
 import { formatCompact } from '@/lib/format'
+import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '@/lib/currency'
 import Link from 'next/link'
+import { Pagination } from '@/app/components/ui/pagination'
 
 export const metadata = {
   title: 'Cryptocurrency Exchanges | BlockDetails',
   description: 'Compare cryptocurrency exchanges by volume, trust score, and markets.',
-  openGraph: { title: 'Cryptocurrency Exchanges | BlockDetails', description: 'Exchange comparison and data.', type: 'website' }
+  openGraph: { title: 'Cryptocurrency Exchanges | BlockDetails', description: 'Exchange comparison and data.', type: 'website' },
 }
 
-const CURRENCIES = ['usd', 'eur', 'gbp']
+const PER_PAGE = 50
 
-export default async function ExchangesPage({
-  searchParams
-}: {
-  searchParams: Promise<{ currency?: string }>
-}) {
-  const { currency } = await searchParams
-  const vsCurrency = (currency || 'usd').toLowerCase()
+export default async function ExchangesPage({ searchParams }: { searchParams: Promise<{ currency?: string; page?: string }> }) {
+  const [currency, rawPage] = await Promise.all([parseCurrencyFromUrl(searchParams), (await searchParams).page])
+  const page = Math.max(1, parseInt(rawPage || '1', 10))
+
+  persistCurrency(currency)
 
   let exchanges: Awaited<ReturnType<typeof getExchanges>> = []
   try {
-    exchanges = await getExchanges()
+    // Fetch page 1 to determine total pages
+    const firstPage = await getExchanges()
+    exchanges = firstPage.slice((page - 1) * PER_PAGE, page * PER_PAGE)
   } catch {}
+
+  const baseHref = `/exchanges?currency=${currency}`
+  const totalPages = Math.max(1, Math.ceil((await getExchanges()).length / PER_PAGE))
 
   return (
     <div className="space-y-6">
       {/* Currency selector */}
-      <div className="flex gap-2 flex-wrap">
-        {CURRENCIES.map(c => (
-          <Link
-            key={c}
-            href={`/exchanges${currency !== c ? `?currency=${c}` : ''}`}
-            className={`px-3 py-1 text-xs rounded-full border transition ${currency === c ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
-          >
-            {c.toUpperCase()}
-          </Link>
-        ))}
-      </div>
+      <CurrencySelector currency={currency} baseHref={baseHref} />
 
       <table className="w-full text-sm">
         <thead>
@@ -63,7 +58,7 @@ export default async function ExchangesPage({
                 <TrustBadge score={ex.trust_score} />
               </td>
               <td className="text-right py-3 px-4 hidden sm:table-cell">{ex.markets?.toLocaleString() ?? '-'}</td>
-              <td className="text-right py-3 px-4">{formatCompact(ex.total_24h_volume?.[vsCurrency] ?? 0)}</td>
+              <td className="text-right py-3 px-4">{formatCompact(ex.total_24h_volume?.[currency] ?? 0)}</td>
               <td className="text-right py-3 pl-4 pr-1 text-center">
                 <Link href={`/exchanges/${ex.id}`} className="text-accent hover:underline">→</Link>
               </td>
@@ -75,6 +70,24 @@ export default async function ExchangesPage({
       {exchanges.length === 0 && (
         <div className="text-center py-12 text-muted">Failed to load exchanges. Please try again.</div>
       )}
+
+      <Pagination currentPage={page} totalPages={totalPages} baseHref={baseHref} />
+    </div>
+  )
+}
+
+function CurrencySelector({ currency, baseHref }: { currency: string; baseHref: string }) {
+  return (
+    <div className="flex gap-2 flex-wrap">
+      {SUPPORTED_CURRENCIES.map(c => (
+        <Link
+          key={c}
+          href={`${baseHref}${currency !== c ? `&currency=${c}` : ''}`}
+          className={`px-3 py-1 text-xs rounded-full border transition ${currency === c ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
+        >
+          {c.toUpperCase()}
+        </Link>
+      ))}
     </div>
   )
 }
