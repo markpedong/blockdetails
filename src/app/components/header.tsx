@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Nav from './layout/page'
 import { SearchDialog } from './search-dialog'
 import { ThemeToggle } from './theme-toggle'
+import { MobileNav } from './ui/mobile-nav'
 
 export default function Header({ theme, setTheme }: { theme: string; setTheme: (t: 'system' | 'light' | 'dark') => void }) {
   return (
@@ -17,6 +18,7 @@ export default function Header({ theme, setTheme }: { theme: string; setTheme: (
         <Nav />
 
         <div className="flex items-center gap-2">
+          <MobileNav />
           <SearchDialog />
           <ThemeToggle theme={theme} setTheme={setTheme} />
         </div>
