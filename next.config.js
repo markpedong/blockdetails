@@ -1,25 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	// Enable source map if needed
-	productionBrowserSourceMaps: true,
-	reactStrictMode: false,
-	images: {
-		domains: ['assets.coingecko.com', 's2.coinmarketcap.com']
-	},
-	async redirects() {
-		return [
-			{
-				source: '/',
-				destination: '/cryptocurrency/coins',
-				permanent: true
-			},
-			{
-				source: '/cryptocurrency',
-				destination: '/cryptocurrency/coins',
-				permanent: true
-			}
-		]
-	}
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'assets.coingecko.com' },
+      { protocol: 'https', hostname: 's2.coinmarketcap.com' }
+    ]
+  }
 }
 
-module.exports = nextConfig
+export default nextConfig
