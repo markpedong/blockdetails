@@ -2,9 +2,13 @@ import { getCoins, getGlobalData, getTrending } from '@/lib/crypto'
 import { formatCompact, formatPct, pctColor, formatPrice } from '@/lib/format'
 import Link from 'next/link'
 import { WatchlistButton } from '@/app/components/watchlist-button'
-import type { Coin, TrendingCoin } from '@/lib/crypto'
+import type { Coin } from '@/lib/crypto'
 
-export const metadata = { title: 'Cryptocurrency Prices by Market Cap | BlockDetails' }
+export const metadata = {
+  title: 'Cryptocurrency Prices by Market Cap | BlockDetails',
+  description: 'Track real-time cryptocurrency prices, market cap, volume, and charts for thousands of digital assets.',
+  openGraph: { title: 'Cryptocurrency Prices | BlockDetails', description: 'Real-time cryptocurrency market data.', type: 'website' }
+}
 
 const CURRENCIES = ['usd', 'eur', 'gbp', 'php', 'jpy', 'aud']
 
