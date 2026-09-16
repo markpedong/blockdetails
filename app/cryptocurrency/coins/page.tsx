@@ -1,8 +1,8 @@
-import { getCoins, getGlobalData, getTrending } from '@/lib/crypto'
-import { formatCompact, formatPct, pctColor, formatPrice } from '@/lib/format'
+import { getCoins, getGlobalData, getTrending } from '../../../lib/crypto'
+import { formatCompact, formatPct, pctColor, formatPrice } from '../../../lib/format'
 import Link from 'next/link'
-import { WatchlistButton } from '@/app/components/watchlist-button'
-import type { Coin, TrendingCoin } from '@/lib/crypto'
+import { WatchlistButton } from '../../components/watchlist-button'
+import type { Coin, TrendingCoin } from '../../../lib/crypto'
 
 export const metadata = { title: 'Cryptocurrency Prices by Market Cap | BlockDetails' }
 

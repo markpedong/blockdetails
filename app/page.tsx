@@ -1,5 +1,5 @@
-import { getGlobalData, getCoins } from '@/lib/crypto'
-import { formatCompact, formatPrice } from '@/lib/format'
+import { getGlobalData, getCoins } from '../lib/crypto'
+import { formatCompact, formatPrice } from '../lib/format'
 import Link from 'next/link'
 
 export const metadata = {
@@ -13,7 +13,30 @@ export default async function HomePage() {
   try { globalData = await getGlobalData() } catch {}
 
   let topCoins: Awaited<ReturnType<typeof getCoins>> = []
-  try { topCoins = await getCoins({ order: 'market_cap_desc', per_page: 10, sparkline: false }) } catch {}
+  try { topCoins = await getCoins({ vs_currency: 'usd', order: 'market_cap_desc', per_page: 10, sparkline: false }) } catch {}
+
+  // If both calls fail, render a fallback instead of triggering not-found
+  if (!globalData && topCoins.length === 0) {
+    return (
+      <div className="text-center py-24">
+        <h1 className="text-2xl font-bold">Unable to load data</h1>
+        <p className="text-muted mt-2">CoinGecko API may be rate-limited. Please try again in a moment.</p>
+      </div>
+    )
+  }
+
+  // Render partial data if only one call succeeded
+  const hasGlobal = !!globalData?.total_market_cap?.usd
+  const hasCoins = topCoins.length > 0
+
+  if (!hasGlobal && !hasCoins) {
+    return (
+      <div className="text-center py-24">
+        <h1 className="text-2xl font-bold">Unable to load data</h1>
+        <p className="text-muted mt-2">CoinGecko API may be rate-limited. Please try again in a moment.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-12">

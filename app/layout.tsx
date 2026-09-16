@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { ThemeProvider } from './theme-provider'
+import { ThemeProvider } from '../lib/theme-provider'
 
 export const metadata: Metadata = {
   title: 'BlockDetails — Cryptocurrency Market Dashboard',

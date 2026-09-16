@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { formatPrice } from '@/lib/format'
+import { formatPrice } from '../../lib/format'
 
 interface Point { date: number; value: number }
 

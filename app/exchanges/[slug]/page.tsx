@@ -1,9 +1,8 @@
-import { getExchangeList, getExchangeDetail, getExchangeMarkets } from '@/lib/exchange'
-import { formatCompact, formatPrice } from '@/lib/format'
+import { getExchangeList, getExchangeDetail, getExchangeMarkets } from '../../../lib/exchange'
+import { formatCompact, formatPrice } from '../../../lib/format'
 
 export async function generateStaticParams() {
-  const list = await getExchangeList()
-  return list.map(e => ({ slug: e.id }))
+  try { const list = await getExchangeList(); return list.map(e => ({ slug: e.id })) } catch { return [] }
 }
 
 export const revalidate = 600

@@ -1,6 +1,6 @@
 'use client'
 
-import { getWatchlist, toggleWatchlist } from '@/lib/storage'
+import { getWatchlist, toggleWatchlist } from '../../lib/storage'
 import { useState, useCallback } from 'react'
 
 export function WatchlistButton({ coinId }: { coinId: string }) {

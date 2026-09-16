@@ -1,9 +1,9 @@
-import { getCoinDetail, getMarketChart } from '@/lib/crypto'
-import { formatPrice, formatCompact, formatPct, pctColor } from '@/lib/format'
-import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '@/lib/currency'
-import { CoinChart } from '@/app/components/coin-chart'
-import { WatchlistButton } from '@/app/components/watchlist-button'
-import { Stat as StatComp } from '@/app/components/ui/stat'
+import { getCoinDetail, getMarketChart } from '../../../lib/crypto'
+import { formatPrice, formatCompact, formatPct, pctColor } from '../../../lib/format'
+import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '../../../lib/currency'
+import { CoinChart } from '../../components/coin-chart'
+import { WatchlistButton } from '../../components/watchlist-button'
+import { Stat as StatComp } from '../../components/ui/stat'
 import Link from 'next/link'
 
 export async function generateStaticParams() {

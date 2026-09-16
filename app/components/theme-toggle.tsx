@@ -1,6 +1,6 @@
 'use client'
 
-import { useTheme } from '@/lib/theme'
+import { useTheme } from '../../lib/theme'
 
 export function ThemeToggle({ theme, setTheme }: { theme: string; setTheme: (t: 'system' | 'light' | 'dark') => void }) {
   const modes: ('system' | 'light' | 'dark')[] = ['system', 'light', 'dark']

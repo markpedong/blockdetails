@@ -1,8 +1,8 @@
-import { getCoins, getGlobalData } from '@/lib/crypto'
-import { formatCompact, formatPct, pctColor, formatPrice } from '@/lib/format'
+import { getCoins, getGlobalData } from '../../../lib/crypto'
+import { formatCompact, formatPct, pctColor, formatPrice } from '../../../lib/format'
 import Link from 'next/link'
-import { WatchlistButton } from '@/app/components/watchlist-button'
-import type { Coin } from '@/lib/crypto'
+import { WatchlistButton } from '../../components/watchlist-button'
+import type { Coin } from '../../../lib/crypto'
 
 export const metadata = {
   title: 'Cryptocurrency Tokens | BlockDetails',

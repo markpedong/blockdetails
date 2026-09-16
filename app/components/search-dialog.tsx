@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { searchCoins } from '@/lib/crypto'
+import { searchCoins } from '../../lib/crypto'
 import Link from 'next/link'
 
 export function SearchDialog() {

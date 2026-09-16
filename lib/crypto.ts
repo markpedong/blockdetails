@@ -123,12 +123,12 @@ export async function getMarketChart(coinId: string, currency = 'usd', days = 1)
 }
 
 export async function getGlobalData(): Promise<GlobalData> {
-  return fetchCG('/global_data', { revalidate: 60 }) as unknown as Promise<GlobalData>
+  return fetchCG('/global', { revalidate: 60 }) as unknown as Promise<GlobalData>
 }
 
 export async function getTrending(): Promise<TrendingCoin[]> {
-  const data = (await fetchCG('/search/trending', { revalidate: 300 })) as { coins: Array<{ item: TrendingCoin }> }
-  return data.coins.map(c => c.item) as unknown as TrendingCoin[]
+  const data = (await fetchCG('/search/trending', { revalidate: 300 })) as { coins?: Array<{ item: TrendingCoin }> }
+  return (data.coins || []).map(c => c.item) as unknown as TrendingCoin[]
 }
 
 export async function searchCoins(query: string): Promise<Coin[]> {

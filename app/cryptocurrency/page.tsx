@@ -1,12 +1,12 @@
-import { getCoins, getGlobalData, getTrending } from '@/lib/crypto'
-import { formatCompact, formatPct, pctColor, formatPrice } from '@/lib/format'
-import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '@/lib/currency'
+import { getCoins, getGlobalData, getTrending } from '../../lib/crypto'
+import { formatCompact, formatPct, pctColor, formatPrice } from '../../lib/format'
+import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '../../lib/currency'
 import Link from 'next/link'
-import { WatchlistButton } from '@/app/components/watchlist-button'
-import { Stat as StatComp } from '@/app/components/ui/stat'
-import { Pagination } from '@/app/components/ui/pagination'
-import { SortHeader } from '@/app/components/ui/sort-header'
-import type { Coin, TrendingCoin } from '@/lib/crypto'
+import { WatchlistButton } from '../components/watchlist-button'
+import { Stat as StatComp } from '../components/ui/stat'
+import { Pagination } from '../components/ui/pagination'
+import { SortHeader } from '../components/ui/sort-header'
+import type { Coin, TrendingCoin } from '../../lib/crypto'
 
 export const metadata = {
   title: 'Cryptocurrency Prices by Market Cap | BlockDetails',
@@ -51,7 +51,7 @@ export default async function CoinsPage({ searchParams }: { searchParams: Promis
       {/* Global stats */}
       {global && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-          <StatComp label="Market Cap" value={formatCompact(global.total_market_cap[currency] ?? 0)} />
+          <StatComp label="Market Cap" value={formatCompact(global.total_market_cap?.[currency] ?? 0)} />
           <StatComp label="24h Volume" value={formatCompact(global.total_volume?.[currency] ?? 0)} />
           <StatComp label="BTC Dominance" value={`${global.btc_dominance.toFixed(1)}%`} />
           <StatComp label="Active Coins" value={formatNum(global.active_cryptocurrencies ?? 0)} />

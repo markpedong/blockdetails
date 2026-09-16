@@ -1,8 +1,8 @@
-import { getExchanges } from '@/lib/exchange'
-import { formatCompact } from '@/lib/format'
-import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '@/lib/currency'
+import { getExchanges } from '../../lib/exchange'
+import { formatCompact } from '../../lib/format'
+import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '../../lib/currency'
 import Link from 'next/link'
-import { Pagination } from '@/app/components/ui/pagination'
+import { Pagination } from '../components/ui/pagination'
 
 export const metadata = {
   title: 'Cryptocurrency Exchanges | BlockDetails',
@@ -26,7 +26,9 @@ export default async function ExchangesPage({ searchParams }: { searchParams: Pr
   } catch {}
 
   const baseHref = `/exchanges?currency=${currency}`
-  const totalPages = Math.max(1, Math.ceil((await getExchanges()).length / PER_PAGE))
+  let totalExchanges: Awaited<ReturnType<typeof getExchanges>> = []
+  try { totalExchanges = await getExchanges() } catch {}
+  const totalPages = Math.max(1, Math.ceil(totalExchanges.length / PER_PAGE))
 
   return (
     <div className="space-y-6">
