@@ -53,7 +53,7 @@ export default function SiteHeader() {
 async function MarketBar() {
   let global: GlobalMarketData | null = null
   try {
-    const res = await fetch('/api/global?currency=usd', { next: { revalidate: 60 } })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/global?currency=usd`, { next: { revalidate: 60 } })
     const json = await res.json()
     global = (json.data as GlobalMarketData) ?? null
   } catch {}
