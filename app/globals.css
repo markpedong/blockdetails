@@ -7,6 +7,7 @@
   --border: #e5e7eb;
   --muted: #6b7280;
   --accent: #16a34a;
+  --radius: 0.5rem;
 }
 
 .dark {
@@ -38,28 +39,68 @@ body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* Card utility */
-.card {
+/* App container — wider than default max-w-7xl */
+.app-container {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(0.75rem, 3vw, 2rem);
+}
+
+/* Stat card */
+.stat-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: var(--radius);
 }
 
-/* Table styling */
-table { width: 100%; border-collapse: collapse; }
+/* Table */
+.crypto-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-th {
+.crypto-table thead th {
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  font-size: 0.6875rem;
+  color: var(--muted);
+  padding: 0.625rem 1rem;
 }
 
-td, th {
-  padding: 0.75rem 1rem;
+.crypto-table tbody td,
+.crypto-table thead th {
+  padding: 0.625rem 1rem;
 }
 
-/* Scrollbar styling */
+.crypto-table tbody tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.crypto-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.crypto-table tbody tr:hover {
+  background: color-mix(in srgb, var(--muted) 3%, transparent);
+}
+
+/* Numeric columns */
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, var(--border) 25%, color-mix(in srgb, var(--muted) 10%, transparent) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }

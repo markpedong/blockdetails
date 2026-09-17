@@ -1,136 +1,155 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { formatPrice, formatCompact } from '@/lib/format'
+import { useState, useRef, useEffect } from 'react'
 
-interface CoinChartProps {
-  coinId: string
-  currency?: string
-}
+type Point = { timestamp: number; price: number }
+type Range = '1d' | '7d' | '30d' | '90d' | '1y' | '5y'
 
-export function CoinChart({ coinId, currency = 'usd' }: CoinChartProps) {
-  const [data, setData] = useState<{ date: string; price: number }[]>([])
-  const [range, setRange] = useState('7d')
+const RANGES: { label: string; key: Range; days: number }[] = [
+  { label: '24H', key: '1d', days: 1 },
+  { label: '7D', key: '7d', days: 7 },
+  { label: '30D', key: '30d', days: 30 },
+  { label: '90D', key: '90d', days: 90 },
+  { label: '1Y', key: '1y', days: 365 },
+  { label: '5Y', key: '5y', days: 1825 },
+]
+
+export function CoinChart({ coinId, currency }: { coinId: string; currency: string }) {
+  const [range, setRange] = useState<Range>('7d')
+  const [data, setData] = useState<Point[]>([])
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    async function fetchChart() {
-      try {
-        const res = await fetch(`/api/coins/${coinId}?currency=${currency}&days=${range}`)
-        const json = await res.json()
-        if (json.data?.chart) {
-          setData(json.data.chart.map((p: { timestamp: number; price: number }) => ({ date: new Date(p.timestamp).toLocaleDateString(), price: p.price })))
-        }
-      } catch {}
-    }
-    fetchChart()
+    fetch(`/api/coins/${coinId}/market_chart?vs_currency=${currency}&days=${RANGES.find(r => r.key === range)?.days ?? 7}`)
+      .then(r => r.json())
+      .then(json => {
+        if (json.prices) setData(json.prices.map((p: [number, number]) => ({ timestamp: p[0], price: p[1] })))
+      })
+      .catch(() => setData([]))
   }, [coinId, currency, range])
 
-  // Draw chart on canvas
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas || data.length === 0) return
 
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    const container = canvas.parentElement
+    if (!container) return
 
     const dpr = window.devicePixelRatio || 1
-    const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width * dpr
-    canvas.height = rect.height * dpr
+    const w = container.clientWidth
+    const h = Math.min(320, Math.max(180, w * 0.4))
+
+    canvas.width = w * dpr
+    canvas.height = h * dpr
+    canvas.style.width = `${w}px`
+    canvas.style.isolation = 'isolate'
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
     ctx.scale(dpr, dpr)
-
-    const w = rect.width
-    const h = rect.height
-    const padding = { top: 20, bottom: 30, left: 60, right: 10 }
-    const chartW = w - padding.left - padding.right
-    const chartH = h - padding.top - padding.bottom
-
-    ctx.clearRect(0, 0, w, h)
 
     const prices = data.map(d => d.price)
     const minP = Math.min(...prices)
     const maxP = Math.max(...prices)
-    const rangeP = maxP - minP || 1
+    const range = maxP - minP || 1
+
+    // Dark mode detection via CSS variable
+    const isDark = getComputedStyle(document.documentElement).getPropertyValue('--background').trim().startsWith('#1')
+
+    const pad = { top: 20, right: 50, bottom: 30, left: 10 }
+    const cw = w - pad.left - pad.right
+    const ch = h - pad.top - pad.bottom
+
+    ctx.clearRect(0, 0, w, h)
 
     // Grid lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.1)'
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'
+    ctx.strokeStyle = gridColor
     ctx.lineWidth = 1
+
     for (let i = 0; i <= 4; i++) {
-      const y = padding.top + (chartH / 4) * i
+      const y = pad.top + (ch / 4) * i
       ctx.beginPath()
-      ctx.moveTo(padding.left, y)
-      ctx.lineTo(w - padding.right, y)
+      ctx.moveTo(pad.left, y)
+      ctx.lineTo(w - pad.right, y)
       ctx.stroke()
 
       // Price labels
-      const price = maxP - (rangeP / 4) * i
-      ctx.fillStyle = 'rgba(255,255,255,0.4)'
-      ctx.font = '10px sans-serif'
+      const price = maxP - (range / 4) * i
+      ctx.fillStyle = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)'
+      ctx.font = '10px ui-monospace, SFMono-Regular, monospace'
       ctx.textAlign = 'right'
-      ctx.fillText(formatPrice(price, currency), padding.left - 5, y + 3)
+      ctx.fillText(formatPriceShort(price, currency), w - 4, y + 3)
     }
 
-    // Draw line
+    // Gradient fill
+    const gradient = ctx.createLinearGradient(0, pad.top, 0, h - pad.bottom)
+    const isUp = prices[prices.length - 1] >= prices[0]
+    if (isUp) {
+      gradient.addColorStop(0, 'rgba(22, 163, 74, 0.15)')
+      gradient.addColorStop(1, 'rgba(22, 163, 74, 0)')
+    } else {
+      gradient.addColorStop(0, 'rgba(239, 68, 68, 0.15)')
+      gradient.addColorStop(1, 'rgba(239, 68, 68, 0)')
+    }
+
+    // Area fill
     ctx.beginPath()
     data.forEach((d, i) => {
-      const x = padding.left + (i / (data.length - 1)) * chartW
-      const y = padding.top + ((maxP - d.price) / rangeP) * chartH
+      const x = pad.left + (i / (data.length - 1)) * cw
+      const y = pad.top + ch - ((d.price - minP) / range) * ch
       if (i === 0) ctx.moveTo(x, y)
       else ctx.lineTo(x, y)
     })
-
-    // Gradient fill
-    const gradient = ctx.createLinearGradient(0, padding.top, 0, h - padding.bottom)
-    gradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)')
-    gradient.addColorStop(1, 'rgba(16, 185, 129, 0)')
-
-    ctx.strokeStyle = '#10b981'
-    ctx.lineWidth = 2
-    ctx.stroke()
-
-    // Fill area
-    ctx.lineTo(padding.left + chartW, h - padding.bottom)
-    ctx.lineTo(padding.left, h - padding.bottom)
+    ctx.lineTo(pad.left + cw, pad.top + ch)
+    ctx.lineTo(pad.left, pad.top + ch)
     ctx.closePath()
     ctx.fillStyle = gradient
     ctx.fill()
 
+    // Line
+    ctx.beginPath()
+    data.forEach((d, i) => {
+      const x = pad.left + (i / (data.length - 1)) * cw
+      const y = pad.top + ch - ((d.price - minP) / range) * ch
+      if (i === 0) ctx.moveTo(x, y)
+      else ctx.lineTo(x, y)
+    })
+    ctx.strokeStyle = isUp ? '#16a34a' : '#ef4444'
+    ctx.lineWidth = 1.5
+    ctx.stroke()
+
+    // Current price dot
+    const lastX = pad.left + cw
+    const lastY = pad.top + ch - ((prices[prices.length - 1] - minP) / range) * ch
+    ctx.beginPath()
+    ctx.arc(lastX, lastY, 3, 0, Math.PI * 2)
+    ctx.fillStyle = isUp ? '#16a34a' : '#ef4444'
+    ctx.fill()
+
   }, [data, currency])
 
-  const lastPrice = data.length > 0 ? data[data.length - 1].price : null
-  const firstPrice = data.length > 0 ? data[0].price : null
-  const changePct = lastPrice && firstPrice ? ((lastPrice - firstPrice) / firstPrice * 100) : null
-
   return (
-    <div className="space-y-4">
-      {/* Range selector */}
-      <div className="flex gap-2">
-        {['1d', '7d', '30d', '90d', '1y'].map(r => (
+    <div ref={containerRef} className="w-full">
+      <canvas ref={canvasRef} className="w-full rounded" />
+      <div className="flex gap-1 mt-2 flex-wrap">
+        {RANGES.map(r => (
           <button
-            key={r}
-            onClick={() => setRange(r)}
-            className={`px-3 py-1 text-xs rounded-full border transition ${range === r ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
+            key={r.key}
+            onClick={() => setRange(r.key)}
+            className={`px-2.5 py-1 text-[10px] rounded-md border transition ${range === r.key ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
           >
-            {r}
+            {r.label}
           </button>
         ))}
       </div>
-
-      {/* Price info */}
-      {lastPrice && (
-        <div className="flex items-center gap-4">
-          <span className="text-xl font-bold">{formatPrice(lastPrice, currency)}</span>
-          {changePct != null && (
-            <span className={`text-sm ${changePct >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-              {changePct >= 0 ? '+' : ''}{changePct.toFixed(2)}%
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* Canvas chart */}
-      <canvas ref={canvasRef} className="w-full h-48 rounded-lg border border-border" />
     </div>
   )
+}
+
+function formatPriceShort(price: number, currency: string): string {
+  if (price >= 1e6) return `${(price / 1e6).toFixed(2)}M ${currency.toUpperCase()}`
+  if (price >= 1e3) return `${(price / 1e3).toFixed(2)}K ${currency.toUpperCase()}`
+  return `${price.toFixed(2)} ${currency.toUpperCase()}`
 }

@@ -1,111 +1,71 @@
-import { formatCompact, formatPrice } from '@/lib/format'
+import { formatCompact, formatPct, pctColor, formatPrice } from '@/lib/format'
 import Link from 'next/link'
-import type { ExchangeSummary, PaginatedResponse } from '@/lib/crypto'
 
-export const metadata = {
-  title: 'Cryptocurrency Exchanges | BlockDetails',
-  description: 'Compare cryptocurrency exchanges by volume, trust score, and markets.',
-  openGraph: { title: 'Cryptocurrency Exchanges | BlockDetails', description: 'Exchange comparison and data.', type: 'website' },
-}
+export const metadata = { title: 'Exchanges | BlockDetails', description: 'Compare cryptocurrency exchanges by volume, trust score, and liquidity.' }
 
-const PER_PAGE = 50
-
-export default async function ExchangesPage({ searchParams }: { searchParams: Promise<{ currency?: string; page?: string }> }) {
-  const rawPage = (await searchParams).page
-  const page = Math.max(1, parseInt(rawPage || '1', 10))
-
-  let exchanges: ExchangeSummary[] = []
+export default async function ExchangesPage() {
+  let exchanges: any[] = []
   try {
-    const res = await fetch(`/api/exchanges?per_page=${PER_PAGE}&page=${page}`)
+    const res = await fetch('/api/exchanges?order=volume_desc&per_page=50&page=1')
     const json = await res.json()
-    exchanges = (json.data as ExchangeSummary[]) ?? []
+    if (json.data) exchanges = json.data
   } catch {}
 
-  const baseHref = `/exchanges?page=${page}`
-
   return (
-    <div className="space-y-6">
-      {/* Currency selector */}
-      <CurrencySelector baseHref={baseHref} />
+    <div className="space-y-5">
+      <h1 className="text-lg sm:text-xl font-bold tracking-tight">Cryptocurrency Exchanges</h1>
+      <p className="text-sm text-muted">Compare exchanges by trading volume, trust score, and liquidity.</p>
 
-      {/* Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-muted text-xs uppercase tracking-wider border-b border-border">
-              <th className="text-right py-3 px-4 font-medium w-12">#</th>
-              <th className="text-left py-3 px-4 font-medium">Exchange</th>
-              <th className="text-right py-3 px-4 font-medium">Trust Score</th>
-              <th className="text-right py-3 px-4 font-medium hidden sm:table-cell">Markets</th>
-              <th className="text-right py-3 px-4 font-medium">Volume (24h)</th>
-              <th className="text-right py-3 px-4 font-medium text-center w-10">→</th>
-            </tr>
-          </thead>
-          <tbody>
-            {exchanges.map((ex: ExchangeSummary) => (
-              <tr key={ex.id} className="border-b border-border/50 last:border-0 hover:bg-muted/5 transition">
-                <td className="text-right py-3 px-4 text-muted">{ex.id}</td>
-                <td className="px-4">
-                  <Link href={`/exchanges/${ex.id}`} className="flex items-center gap-2.5">
-                    {ex.image && <img src={ex.image} alt={`${ex.name} logo`} className="w-6 h-6 rounded-full" />}
-                    <span className="font-medium">{ex.name}</span>
-                  </Link>
-                </td>
-                <td className="text-right py-3 px-4">
-                  <TrustBadge score={ex.trust_score} />
-                </td>
-                <td className="text-right py-3 px-4 hidden sm:table-cell">{ex.markets?.toLocaleString() ?? '-'}</td>
-                <td className="text-right py-3 px-4">{formatCompact(ex.total_24h_volume_usd ?? 0)}</td>
-                <td className="text-right py-3 px-4 text-center">
-                  <Link href={`/exchanges/${ex.id}`} className="text-accent hover:underline">→</Link>
-                </td>
+      {exchanges.length === 0 ? (
+        <div className="text-center py-16 space-y-2">
+          <p className="text-muted text-sm">No exchanges found.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm tabular-nums">
+            <thead>
+              <tr className="border-b border-border bg-muted/5 text-left text-xs uppercase tracking-wide text-muted">
+                <th className="px-4 py-2.5 font-medium">#</th>
+                <th className="px-4 py-2.5 font-medium">Exchange</th>
+                <th className="px-4 py-2.5 font-medium text-right">Trust Score</th>
+                <th className="px-4 py-2.5 font-medium text-right">24h Volume</th>
+                <th className="px-4 py-2.5 font-medium text-right">Reported Volume</th>
+                <th className="px-4 py-2.5 font-medium text-right">Coin Markets</th>
+                <th className="px-4 py-2.5 font-medium text-right">Quote Markets</th>
+                <th className="px-4 py-2.5 font-medium text-right">Scorer Markets</th>
+                <th className="px-4 py-2.5 font-medium text-right">Market Share</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {exchanges.length === 0 && (
-        <div className="text-center py-12 text-muted">Failed to load exchanges. Please try again.</div>
-      )}
-
-      <Pagination currentPage={page} baseHref={baseHref} />
-    </div>
-  )
-}
-
-function CurrencySelector({ baseHref }: { baseHref: string }) {
-  const currencies = ['usd', 'eur', 'gbp', 'jpy', 'aud', 'php'] as const
-  return (
-    <div className="flex gap-2 flex-wrap">
-      {currencies.map(c => (
-        <Link
-          key={c}
-          href={`${baseHref}&currency=${c}`}
-          className={`px-3 py-1 text-xs rounded-full border transition ${baseHref.includes(`currency=${c}`) ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
-        >
-          {c.toUpperCase()}
-        </Link>
-      ))}
-    </div>
-  )
-}
-
-function TrustBadge({ score }: { score: string | null }) {
-  const num = score != null ? (typeof score === 'string' ? parseFloat(score) : score) : 0
-  if (num <= 0) return <span className="text-muted">-</span>
-  const cls = num >= 8 ? 'bg-emerald-500/20 text-emerald-500' : num >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'
-  return <span className={`px-2 py-0.5 rounded-full text-xs ${cls}`}>{num}</span>
-}
-
-function Pagination({ currentPage, baseHref }: { currentPage: number; baseHref: string }) {
-  if (currentPage <= 1) return null
-  return (
-    <div className="flex justify-center gap-2 mt-4">
-      {currentPage > 1 && (
-        <Link href={`${baseHref.replace(/page=\d+/, `page=${currentPage - 1}`)}`} className="px-3 py-1.5 text-xs border rounded-lg hover:bg-muted/10 transition">
-          ← Prev
-        </Link>
+            </thead>
+            <tbody>
+              {exchanges.map((ex, i) => (
+                <tr key={ex.id} className="border-b border-border hover:bg-muted/5">
+                  <td className="px-4 py-2.5 text-muted">{i + 1}</td>
+                  <td className="px-4 py-2.5">
+                    <Link href={`/exchanges/${ex.id}`} className="font-medium hover:text-accent transition-colors">
+                      <div className="flex items-center gap-2">
+                        {ex.image && <img src={ex.image} alt="" className="w-5 h-5 rounded-full" />}
+                        <span>{ex.name}</span>
+                      </div>
+                    </Link>
+                  </td>
+                  <td className="px-4 py-2.5 text-right">
+                    {ex.trust_score && (
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${ex.trust_score >= 7 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
+                        {ex.trust_score}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5 text-right">{formatCompact(ex.total_volume_24h_btc ?? 0)}</td>
+                  <td className="px-4 py-2.5 text-right">{formatCompact(ex.total_volume_btc_24h ?? 0)}</td>
+                  <td className="px-4 py-2.5 text-right">{ex.num_coin_markets ?? 0}</td>
+                  <td className="px-4 py-2.5 text-right">{ex.num_quote_assets ?? 0}</td>
+                  <td className="px-4 py-2.5 text-right">{ex.num_scorer_markets ?? 0}</td>
+                  <td className="px-4 py-2.5 text-right">{ex.market_share != null ? `${(ex.market_share * 100).toFixed(1)}%` : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

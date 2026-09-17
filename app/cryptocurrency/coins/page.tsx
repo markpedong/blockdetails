@@ -6,6 +6,7 @@ import type { Coin, GlobalMarketData } from '@/lib/crypto'
 export const metadata = { title: 'Cryptocurrency Prices by Market Cap | BlockDetails' }
 
 const CURRENCIES = ['usd', 'eur', 'gbp', 'php', 'jpy', 'aud']
+const PER_PAGE = 50
 
 export default async function CoinsPage({
   searchParams,
@@ -17,10 +18,10 @@ export default async function CoinsPage({
 
   let coins: Coin[] = []
   try {
-    const res = await fetch(`/api/coins?currency=${vsCurrency}&order=market_cap_desc&per_page=50&page=${page || 1}`, { cache: 'no-store' })
+    const res = await fetch(`/api/coins?currency=${vsCurrency}&order=market_cap_desc&per_page=${PER_PAGE}&page=${page || 1}`, { cache: 'no-store' })
     const json = await res.json()
     coins = (json.data as Coin[]) ?? []
-  } catch { /* empty on error */ }
+  } catch {}
 
   let global: GlobalMarketData | null = null
   try {
@@ -29,51 +30,59 @@ export default async function CoinsPage({
     global = (json.data as GlobalMarketData) ?? null
   } catch {}
 
+  const currentPage = parseInt(page || '1', 10) || 1
+  const baseHref = `/cryptocurrency${currency ? `?currency=${vsCurrency}` : ''}`
+
   return (
-    <div className="space-y-8">
-      {/* Global stats cards */}
+    <div className="space-y-5">
+      {/* Page header */}
+      <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Cryptocurrency Prices</h1>
+
+      {/* Global stats */}
       {global && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <StatCard label="Market Cap" value={formatCompact(global.total_market_cap_usd ?? 0)} />
-          <StatCard label="24h Volume" value={formatCompact(global.total_volume_usd ?? 0)} />
-          <StatCard label="BTC Dominance" value={`${global.btc_dominance?.toFixed(1) ?? '—'}%`} />
-          <StatCard label="Active Coins" value={formatNum(global.active_cryptocurrencies ?? 0)} />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <StatItem label="Market Cap" value={formatCompact(global.total_market_cap_usd ?? 0)} />
+          <StatItem label="24h Volume" value={formatCompact(global.total_volume_usd ?? 0)} />
+          <StatItem label="BTC Dominance" value={`${global.btc_dominance?.toFixed(1) ?? '—'}%`} />
+          <StatItem label="Active Coins" value={(global.active_cryptocurrencies ?? 0).toLocaleString()} />
         </div>
       )}
 
       {/* Currency selector */}
-      <div className="flex gap-2 flex-wrap">
-        {CURRENCIES.map(c => (
-          <Link
-            key={c}
-            href={`/cryptocurrency${currency !== c ? `?currency=${c}` : ''}`}
-            className={`px-3 py-1 text-xs rounded-full border transition ${currency === c ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
-          >
-            {c.toUpperCase()}
-          </Link>
-        ))}
-      </div>
+      <CurrencySelector currency={currency ?? 'usd'} baseHref={baseHref} />
 
       {/* Table */}
       <CoinTable coins={coins} currency={vsCurrency} />
 
       {/* Pagination */}
-      <Pagination currentPage={(parseInt(page || '1', 10) || 1)} />
+      <Pagination currentPage={currentPage} baseHref={baseHref} />
     </div>
   )
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="card p-4 sm:p-5">
-      <div className="text-muted text-xs uppercase tracking-wide">{label}</div>
-      <div className="font-semibold mt-1 text-base sm:text-lg">{value}</div>
+    <div className="stat-card p-3">
+      <div className="text-muted text-[10px] uppercase tracking-wide">{label}</div>
+      <div className="font-semibold mt-0.5 text-sm sm:text-base">{value}</div>
     </div>
   )
 }
 
-function formatNum(n: number): string {
-  return new Intl.NumberFormat('en-US').format(n)
+function CurrencySelector({ currency, baseHref }: { currency: string; baseHref: string }) {
+  return (
+    <div className="flex gap-1.5 flex-wrap">
+      {CURRENCIES.map(c => (
+        <Link
+          key={c}
+          href={`${baseHref}${currency !== c ? `&currency=${c}` : ''}`}
+          className={`px-2.5 py-1 text-xs rounded-md border transition ${currency === c ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
+        >
+          {c.toUpperCase()}
+        </Link>
+      ))}
+    </div>
+  )
 }
 
 function CoinTable({ coins, currency }: { coins: Coin[]; currency: string }) {
@@ -82,45 +91,45 @@ function CoinTable({ coins, currency }: { coins: Coin[]; currency: string }) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
-      <table className="w-full text-sm">
+    <div className="rounded-lg border border-border bg-card overflow-x-auto">
+      <table className="crypto-table min-w-[640px]">
         <thead>
-          <tr className="text-muted text-xs uppercase tracking-wider border-b border-border">
-            <th className="text-right py-3 px-4 font-medium w-12">#</th>
-            <th className="text-left py-3 px-4 font-medium">Asset</th>
-            <th className="text-right py-3 px-4 font-medium">Price</th>
-            <th className="text-right py-3 px-4 font-medium hidden sm:table-cell">1h</th>
-            <th className="text-right py-3 px-4 font-medium">24h</th>
-            <th className="text-right py-3 px-4 font-medium hidden sm:table-cell">7D</th>
-            <th className="text-right py-3 px-4 font-medium hidden md:table-cell">Market Cap</th>
-            <th className="text-right py-3 px-4 font-medium hidden lg:table-cell">Volume (24h)</th>
-            <th className="text-right py-3 px-4 font-medium text-center w-10">★</th>
+          <tr>
+            <th className="text-right w-12">#</th>
+            <th className="text-left">Asset</th>
+            <th className="text-right num">Price</th>
+            <th className="text-right num hidden sm:table-cell">1h</th>
+            <th className="text-right num">24h</th>
+            <th className="text-right num hidden sm:table-cell">7D</th>
+            <th className="text-right num hidden md:table-cell">Market Cap</th>
+            <th className="text-right num hidden lg:table-cell">Volume (24h)</th>
+            <th className="text-right w-10" />
           </tr>
         </thead>
         <tbody>
           {coins.map(coin => (
-            <tr key={coin.id} className="border-b border-border/50 last:border-0 hover:bg-muted/5 transition">
-              <td className="text-right py-3 px-4 text-muted">{coin.market_cap_rank}</td>
-              <td className="px-4">
-                <Link href={`/cryptocurrency/${coin.id}`} className="flex items-center gap-2.5">
-                  {coin.image && <img src={coin.image} alt={`${coin.name} logo`} className="w-6 h-6 rounded-full" />}
+            <tr key={coin.id}>
+              <td className="text-right text-muted">{coin.market_cap_rank}</td>
+              <td>
+                <Link href={`/cryptocurrency/${coin.id}`} className="flex items-center gap-2">
+                  {coin.image && <img src={coin.image} alt="" className="w-5 h-5 rounded-full" />}
                   <span className="font-medium">{coin.name}</span>
                   <span className="text-muted text-xs hidden sm:inline">{coin.symbol.toUpperCase()}</span>
                 </Link>
               </td>
-              <td className="text-right py-3 px-4 font-medium">{formatPrice(coin.current_price, currency)}</td>
-              <td className={`text-right py-3 px-4 hidden sm:table-cell ${pctColor(coin.price_change_percentage_1h_in_currency)}`}>
+              <td className="text-right num font-medium">{formatPrice(coin.current_price, currency)}</td>
+              <td className={`text-right num hidden sm:table-cell ${pctColor(coin.price_change_percentage_1h_in_currency)}`}>
                 {coin.price_change_percentage_1h_in_currency != null ? formatPct(coin.price_change_percentage_1h_in_currency) : '-'}
               </td>
-              <td className={`text-right py-3 px-4 ${pctColor(coin.price_change_percentage_24h)}`}>
+              <td className={`text-right num ${pctColor(coin.price_change_percentage_24h)}`}>
                 {coin.price_change_percentage_24h != null ? formatPct(coin.price_change_percentage_24h) : '-'}
               </td>
-              <td className={`text-right py-3 px-4 hidden sm:table-cell ${pctColor(coin.price_change_percentage_7d_in_currency)}`}>
+              <td className={`text-right num hidden sm:table-cell ${pctColor(coin.price_change_percentage_7d_in_currency)}`}>
                 {coin.price_change_percentage_7d_in_currency != null ? formatPct(coin.price_change_percentage_7d_in_currency) : '-'}
               </td>
-              <td className="text-right py-3 px-4 hidden md:table-cell">{formatCompact(coin.market_cap)}</td>
-              <td className="text-right py-3 px-4 hidden lg:table-cell">{formatCompact(coin.total_volume)}</td>
-              <td className="text-right py-3 px-4 text-center">
+              <td className="text-right num hidden md:table-cell">{formatCompact(coin.market_cap)}</td>
+              <td className="text-right num hidden lg:table-cell">{formatCompact(coin.total_volume)}</td>
+              <td className="text-right">
                 <WatchlistButton coinId={coin.id} />
               </td>
             </tr>
@@ -131,12 +140,12 @@ function CoinTable({ coins, currency }: { coins: Coin[]; currency: string }) {
   )
 }
 
-function Pagination({ currentPage }: { currentPage: number }) {
+function Pagination({ currentPage, baseHref }: { currentPage: number; baseHref: string }) {
   if (currentPage <= 1) return null
   return (
-    <div className="flex justify-center gap-2 mt-4">
+    <div className="flex justify-center gap-1.5">
       {currentPage > 1 && (
-        <Link href={`/cryptocurrency?page=${currentPage - 1}`} className="px-3 py-1.5 text-xs border rounded-lg hover:bg-muted/10 transition">
+        <Link href={`${baseHref.replace(/page=\d+/, `page=${currentPage - 1}`)}`} className="px-3 py-1.5 text-xs border rounded-md hover:bg-muted/10 transition">
           ← Prev
         </Link>
       )}

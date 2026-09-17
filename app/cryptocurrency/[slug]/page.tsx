@@ -1,8 +1,7 @@
 import { formatPrice, formatCompact, formatPct, pctColor } from '@/lib/format'
-import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '@/lib/currency'
+import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency, type Currency } from '@/lib/currency'
 import { CoinChart } from '@/app/components/coin-chart'
 import { WatchlistButton } from '@/app/components/watchlist-button'
-import { Stat as StatComp } from '@/app/components/ui/stat'
 import type { CoinDetail, MarketChartPoint } from '@/lib/crypto'
 import Link from 'next/link'
 
@@ -35,7 +34,8 @@ type CoinApiResponse = { coin?: CoinDetail; chart?: MarketChartPoint[] }
 
 export default async function CoinDetailPage({ searchParams, params }: { searchParams: Promise<{ currency?: string }>; params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const currency = await parseCurrencyFromUrl(searchParams as unknown as Promise<Record<string, string | undefined>>)
+  let currency: Currency = 'usd'
+  try { currency = await parseCurrencyFromUrl(searchParams as Promise<{ currency?: string }>) } catch {}
   persistCurrency(currency)
 
   let apiRes: CoinApiResponse | null = null
@@ -49,9 +49,9 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
 
   if (!coin) {
     return (
-      <div className="text-center py-24">
+      <div className="text-center py-24 space-y-3">
         <h1 className="text-xl font-semibold text-red-500">Coin not found</h1>
-        <p className="text-muted mt-2">This coin may have been delisted or the ID is incorrect.</p>
+        <p className="text-muted text-sm">This coin may have been delisted or the ID is incorrect.</p>
       </div>
     )
   }
@@ -59,20 +59,20 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
   const fdv = coin.fully_diluted_valuation
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex items-start gap-4 flex-wrap">
-        {coin.image && <img src={coin.image} alt={`${coin.name} logo`} className="w-10 h-10 rounded-full" />}
+      <div className="flex items-start gap-3 flex-wrap">
+        {coin.image && <img src={coin.image} alt="" className="w-8 h-8 rounded-full" />}
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-xl font-bold tracking-tight">{coin.name}</h1>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight">{coin.name}</h1>
             <span className="text-muted text-sm">/{coin.symbol.toUpperCase()}</span>
             {coin.market_cap_rank && (
-              <span className="text-xs bg-muted/10 text-muted px-2 py-0.5 rounded-full">#{coin.market_cap_rank}</span>
+              <span className="text-[10px] bg-muted/10 text-muted px-2 py-0.5 rounded-full">#{coin.market_cap_rank}</span>
             )}
           </div>
           <div className="flex items-center gap-3 mt-1">
-            <span className="text-2xl font-bold">{formatPrice(coin.current_price, currency)}</span>
+            <span className="text-xl font-bold">{formatPrice(coin.current_price, currency)}</span>
             <WatchlistButton coinId={coin.id} />
           </div>
         </div>
@@ -81,87 +81,56 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
       {/* Currency selector */}
       <CurrencySelector currency={currency} baseHref={`/cryptocurrency/${coin.id}`} />
 
-      {/* Price stats cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard label="Market Cap" value={formatCompact(coin.market_cap)} />
-        {fdv != null && <StatCard label="FDV" value={formatCompact(fdv)} />}
-        <StatCard label="24h Volume" value={formatCompact(coin.total_volume)} />
-        <StatCard label="Circulating Supply" value={formatCompact(coin.circulating_supply)} />
-      </div>
-
       {/* Price change badges */}
       <PriceBadges coin={coin} currency={currency} />
 
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <StatRow label="Market Cap" value={formatCompact(coin.market_cap)} />
+        {fdv != null && <StatRow label="FDV" value={formatCompact(fdv)} />}
+        <StatRow label="24h Volume" value={formatCompact(coin.total_volume)} />
+        <StatRow label="Circulating Supply" value={formatCompact(coin.circulating_supply)} />
+        {coin.high_24h && <StatRow label="24h High" value={formatPrice(coin.high_24h, currency)} />}
+        {coin.low_24h && <StatRow label="24h Low" value={formatPrice(coin.low_24h, currency)} />}
+        {coin.ath && <StatRow label="ATH" value={`${formatPrice(coin.ath, currency)} (${coin.ath_change_percentage?.toFixed(1) ?? '—'}%)`} />}
+        {coin.atl && <StatRow label="ATL" value={`${formatPrice(coin.atl, currency)} (${coin.ath_change_percentage?.toFixed(1) ?? '—'}%)`} />}
+      </div>
+
       {/* Chart */}
-      <div className="card p-4">
+      <div className="rounded-lg border border-border bg-card p-4">
         <CoinChart coinId={coin.id} currency={currency} />
       </div>
 
-      {/* High/Low 24h */}
-      {(coin.high_24h || coin.low_24h) && (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {coin.high_24h && <StatCard label="24h High" value={formatPrice(coin.high_24h, currency)} />}
-          {coin.low_24h && <StatCard label="24h Low" value={formatPrice(coin.low_24h, currency)} />}
+      {/* Supply info */}
+      {(coin.circulating_supply || coin.total_supply || coin.max_supply) && (
+        <div className="text-sm space-y-1">
+          {coin.circulating_supply && (
+            <div><span className="text-muted">Circulating: </span>{formatCompact(coin.circulating_supply)} {coin.symbol.toUpperCase()}</div>
+          )}
+          {coin.total_supply && (
+            <div><span className="text-muted">Total Supply: </span>{formatCompact(coin.total_supply)} {coin.symbol.toUpperCase()}</div>
+          )}
+          {coin.max_supply && (
+            <div><span className="text-muted">Max Supply: </span>{formatCompact(coin.max_supply)} {coin.symbol.toUpperCase()}</div>
+          )}
         </div>
       )}
 
-      {/* ATH / ATL */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        {coin.ath && (
-          <div className="card p-4">
-            <div className="text-muted text-xs uppercase tracking-wide">All-Time High</div>
-            <div className="font-semibold mt-1">{formatPrice(coin.ath, currency)}</div>
-            {coin.ath_change_percentage != null && (
-              <div className={`text-xs mt-1 ${pctColor(coin.ath_change_percentage)}`}>
-                {formatPct(coin.ath_change_percentage)} from ATH
-              </div>
-            )}
-          </div>
-        )}
-        {coin.atl && (
-          <div className="card p-4">
-            <div className="text-muted text-xs uppercase tracking-wide">All-Time Low</div>
-            <div className="font-semibold mt-1">{formatPrice(coin.atl, currency)}</div>
-            {coin.ath_change_percentage != null && coin.ath_change_percentage < 0 && (
-              <div className={`text-xs mt-1 ${pctColor(coin.ath_change_percentage)}`}>
-                {formatPct(coin.ath_change_percentage)} from ATL
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Supply info */}
-      <div className="text-sm space-y-1.5">
-        {coin.circulating_supply && (
-          <div><span className="text-muted">Circulating: </span>{formatCompact(coin.circulating_supply)} {coin.symbol.toUpperCase()}</div>
-        )}
-        {coin.total_supply && (
-          <div><span className="text-muted">Total Supply: </span>{formatCompact(coin.total_supply)} {coin.symbol.toUpperCase()}</div>
-        )}
-        {coin.max_supply && (
-          <div><span className="text-muted">Max Supply: </span>{formatCompact(coin.max_supply)} {coin.symbol.toUpperCase()}</div>
-        )}
-      </div>
-
-      {/* Platform/network */}
+      {/* Platform */}
       {coin.platform_id && (
-        <div className="text-sm">
-          <span className="text-muted">Network: </span>
-          <span className="font-medium">{capitalize(coin.platform_id)}</span>
-        </div>
+        <div className="text-sm"><span className="text-muted">Network: </span><span className="font-medium">{capitalize(coin.platform_id)}</span></div>
       )}
 
       {/* Categories */}
       {coin.categories && coin.categories.length > 0 && (
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1.5 flex-wrap">
           {coin.categories.map(cat => (
-            <span key={cat} className="text-xs bg-muted/10 text-muted px-2 py-1 rounded-full">{cat}</span>
+            <span key={cat} className="text-[10px] bg-muted/10 text-muted px-2 py-0.5 rounded-full">{cat}</span>
           ))}
         </div>
       )}
 
-      {/* Description — sanitized */}
+      {/* Description */}
       {coin.description && (
         <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(coin.description) }} />
       )}
@@ -174,12 +143,12 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
 
 function CurrencySelector({ currency, baseHref }: { currency: string; baseHref: string }) {
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex gap-1.5 flex-wrap">
       {SUPPORTED_CURRENCIES.map(c => (
         <Link
           key={c}
           href={`${baseHref}${currency !== c ? `?currency=${c}` : ''}`}
-          className={`px-3 py-1 text-xs rounded-full border transition ${currency === c ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
+          className={`px-2.5 py-1 text-xs rounded-md border transition ${currency === c ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
         >
           {c.toUpperCase()}
         </Link>
@@ -190,32 +159,32 @@ function CurrencySelector({ currency, baseHref }: { currency: string; baseHref: 
 
 function PriceBadges({ coin, currency }: { coin: CoinDetail; currency: string }) {
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex gap-1.5 flex-wrap">
       {coin.price_change_percentage_1h_in_currency != null && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_1h_in_currency)}`}>
+        <span className={`text-[10px] px-2 py-0.5 rounded-full ${pctColor(coin.price_change_percentage_1h_in_currency)}`}>
           {formatPct(coin.price_change_percentage_1h_in_currency)} (1h)
         </span>
       )}
-      <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_24h)}`}>
+      <span className={`text-[10px] px-2 py-0.5 rounded-full ${pctColor(coin.price_change_percentage_24h)}`}>
         {formatPct(coin.price_change_percentage_24h)} (24h)
       </span>
       {coin.price_change_percentage_7d_in_currency != null && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_7d_in_currency)}`}>
+        <span className={`text-[10px] px-2 py-0.5 rounded-full ${pctColor(coin.price_change_percentage_7d_in_currency)}`}>
           {formatPct(coin.price_change_percentage_7d_in_currency)} (7D)
         </span>
       )}
       {coin.price_change_percentage_30d_in_currency != null && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_30d_in_currency)}`}>
+        <span className={`text-[10px] px-2 py-0.5 rounded-full ${pctColor(coin.price_change_percentage_30d_in_currency)}`}>
           {formatPct(coin.price_change_percentage_30d_in_currency)} (30D)
         </span>
       )}
       {coin.price_change_percentage_60d_in_currency != null && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_60d_in_currency)}`}>
+        <span className={`text-[10px] px-2 py-0.5 rounded-full ${pctColor(coin.price_change_percentage_60d_in_currency)}`}>
           {formatPct(coin.price_change_percentage_60d_in_currency)} (60D)
         </span>
       )}
       {coin.price_change_percentage_1y_in_currency != null && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_1y_in_currency)}`}>
+        <span className={`text-[10px] px-2 py-0.5 rounded-full ${pctColor(coin.price_change_percentage_1y_in_currency)}`}>
           {formatPct(coin.price_change_percentage_1y_in_currency)} (1Y)
         </span>
       )}
@@ -265,11 +234,11 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="card p-4">
-      <div className="text-muted text-xs uppercase tracking-wide">{label}</div>
-      <div className="font-semibold mt-1 text-sm sm:text-base">{value}</div>
+    <div className="stat-card p-3">
+      <div className="text-muted text-[10px] uppercase tracking-wide">{label}</div>
+      <div className="font-semibold mt-0.5 text-xs sm:text-sm">{value}</div>
     </div>
   )
 }
