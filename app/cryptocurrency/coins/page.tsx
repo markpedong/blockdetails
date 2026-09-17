@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { CryptoTable } from '@/components/ui/crypto-table'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const dynamic = 'force-dynamic'
+
 export default function CoinsPage() {
   return (
     <div className="app-container py-6 space-y-4">

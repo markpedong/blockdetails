@@ -5,6 +5,8 @@ import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Globe, ExternalLink, FileText } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateStaticParams() {
   try {
     const res = await fetch('/api/exchanges?order=volume_desc&per_page=50', { next: { revalidate: 86400 } })

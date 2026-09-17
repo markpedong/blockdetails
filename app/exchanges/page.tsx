@@ -7,6 +7,8 @@ import { CryptoPagination } from '@/components/ui/crypto-pagination'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const dynamic = 'force-dynamic'
+
 export default function ExchangesPage() {
   return (
     <div className="app-container py-6 space-y-4">
@@ -27,7 +29,7 @@ async function ExchangesList() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges?order=volume_desc&per_page=50`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
     )
     const json = await res.json()
     exchanges = json.data || []

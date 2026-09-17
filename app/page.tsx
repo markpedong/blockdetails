@@ -5,6 +5,8 @@ import { TrendingSection } from '@/components/trending-section'
 import { PageHeader } from '@/components/ui/page-header'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const dynamic = 'force-dynamic'
+
 export default function HomePage() {
   return (
     <div className="app-container py-6 space-y-6">
@@ -39,7 +41,7 @@ async function CoinsTable({ currency }: { currency: string }) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/coins?vs_currency=${currency}&order=market_cap_desc&per_page=25&page=1&sparkline=false&price_change_percentage=1h,24h,7d`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
     )
     const json = await res.json()
     coins = json.data || []

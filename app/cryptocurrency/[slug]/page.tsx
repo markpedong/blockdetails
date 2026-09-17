@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { ExternalLink, Globe, FileText } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const dynamic = 'force-dynamic'
+
 /* ── Server component: fetches coin data ── */
 async function CoinData({ slug, currency }: { slug: string; currency: string }) {
   let coin: any = null

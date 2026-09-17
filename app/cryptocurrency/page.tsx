@@ -4,6 +4,8 @@ import { PageHeader } from '@/components/ui/page-header'
 import { CryptoPagination } from '@/components/ui/crypto-pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const dynamic = 'force-dynamic'
+
 export default function CryptocurrencyPage() {
   return (
     <div className="app-container py-6 space-y-4">
@@ -29,7 +31,7 @@ async function CoinsList({ currency }: { currency: string }) {
   let coins: any[] = []
   let totalCount = 0
   try {
-    const res = await fetch(url.toString(), { next: { revalidate: 60 } })
+    const res = await fetch(url.toString(), { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) })
     const json = await res.json()
     coins = json.data || []
     totalCount = (json as any)?.total_count || coins.length
