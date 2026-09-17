@@ -1,5 +1,9 @@
-import { formatCompact, formatPrice } from '@/lib/format'
+import { formatCompact, formatNum } from '@/lib/format'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import { Globe, ExternalLink, FileText } from 'lucide-react'
 
 export async function generateStaticParams() {
   try {
@@ -43,8 +47,11 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
   if (!exchange) {
     return (
       <div className="text-center py-24 space-y-3">
-        <h1 className="text-xl font-semibold text-red-500">Exchange not found</h1>
-        <p className="text-muted text-sm">This exchange may have been delisted or the ID is incorrect.</p>
+        <h1 className="text-xl font-semibold text-[var(--negative)]">Exchange not found</h1>
+        <p className="text-muted-foreground text-sm">This exchange may have been delisted or the ID is incorrect.</p>
+        <Link href="/exchanges" className="inline-block text-sm bg-accent text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+          ← Back to Exchanges
+        </Link>
       </div>
     )
   }
@@ -52,60 +59,80 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
   const pairs = apiRes?.pairs ?? []
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      {/* Breadcrumb */}
+      <nav className="text-xs text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+        <span>/</span>
+        <Link href="/exchanges" className="hover:text-foreground transition-colors">Exchanges</Link>
+        <span>/</span>
+        <span className="text-foreground">{exchange.name}</span>
+      </nav>
+
       {/* Header */}
       <div className="flex items-start gap-3 flex-wrap">
         {exchange.image && (
           <img src={exchange.image} alt="" className="w-8 h-8 rounded-full" />
         )}
         <div>
-          <h1 className="text-lg sm:text-xl font-bold tracking-tight">{exchange.name}</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">{exchange.name}</h1>
           <div className="flex items-center gap-2 mt-1">
-            {exchange.trust_score && (
-              <span className={`text-xs px-2 py-0.5 rounded-full ${exchange.trust_score >= 7 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                Trust Score: {exchange.trust_score}
-              </span>
+            {exchange.trust_score ? <TrustScore score={exchange.trust_score} /> : null}
+            {exchange.year_established && (
+              <span className="text-xs text-muted-foreground">Est. {exchange.year_established}</span>
             )}
           </div>
         </div>
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        <StatRow label="24h Volume (BTC)" value={formatCompact(exchange.total_volume_btc_24h ?? 0)} />
-        <StatRow label="Total Volume (BTC)" value={formatCompact(exchange.total_volume_24h_btc ?? 0)} />
-        <StatRow label="Coin Markets" value={(exchange.num_coin_markets ?? 0).toString()} />
-        <StatRow label="Quote Assets" value={(exchange.num_quote_assets ?? 0).toString()} />
-        <StatRow label="Scorer Markets" value={(exchange.num_scorer_markets ?? 0).toString()} />
-        <StatRow label="Market Share" value={exchange.market_share != null ? `${(exchange.market_share * 100).toFixed(1)}%` : '—'} />
+      <Separator />
+
+      {/* Stats grid — no cards, just label/value rows */}
+      <div>
+        <h2 className="text-sm font-semibold mb-3">Exchange Statistics</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
+          <StatRow label="24h Volume (BTC)" value={formatCompact(exchange.total_volume_btc_24h ?? 0)} />
+          <StatRow label="Total Volume (BTC)" value={formatCompact(exchange.total_volume_24h_btc ?? 0)} />
+          <StatRow label="Coin Markets" value={(exchange.num_coin_markets ?? 0).toString()} />
+          <StatRow label="Quote Assets" value={(exchange.num_quote_assets ?? 0).toString()} />
+          <StatRow label="Market Share" value={exchange.market_share != null ? `${(exchange.market_share * 100).toFixed(1)}%` : '—'} />
+          {exchange.country && <StatRow label="Country" value={exchange.country} />}
+        </div>
       </div>
+
+      <Separator />
 
       {/* Description */}
       {exchange.description && (
-        <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(exchange.description) }} />
+        <div>
+          <h2 className="text-sm font-semibold mb-2">About</h2>
+          <div className="prose prose-sm max-w-none text-muted-foreground" dangerouslySetInnerHTML={{ __html: sanitizeHtml(exchange.description) }} />
+        </div>
       )}
 
       {/* Links */}
       {renderLinks(exchange)}
 
+      <Separator />
+
       {/* Trading pairs */}
       {pairs.length > 0 && (
-        <div className="space-y-2">
-          <h2 className="text-sm font-semibold">Trading Pairs ({pairs.length})</h2>
-          <div className="overflow-x-auto rounded-lg border border-border">
+        <div>
+          <h2 className="text-sm font-semibold mb-3">Trading Pairs ({pairs.length})</h2>
+          <div className="rounded-lg border border-border overflow-x-auto">
             <table className="w-full text-sm tabular-nums">
               <thead>
-                <tr className="border-b border-border bg-muted/5 text-left text-xs uppercase tracking-wide text-muted">
-                  <th className="px-4 py-2.5 font-medium">Base</th>
-                  <th className="px-4 py-2.5 font-medium">Quote</th>
+                <tr className="border-b border-border bg-muted/5 text-left text-xs uppercase tracking-wide text-muted-foreground">
+                  <th className="px-4 py-2.5 font-medium">Pair</th>
                   <th className="px-4 py-2.5 font-medium text-right">Volume (BTC)</th>
                 </tr>
               </thead>
               <tbody>
                 {pairs.slice(0, 100).map((pair: any) => (
                   <tr key={pair.market_id} className="border-b border-border hover:bg-muted/5">
-                    <td className="px-4 py-2.5 font-medium">{pair.base_symbol}</td>
-                    <td className="px-4 py-2.5 text-muted">{pair.quote_symbol}</td>
+                    <td className="px-4 py-2.5 font-medium">
+                      {pair.base_symbol}/{pair.quote_symbol}
+                    </td>
                     <td className="px-4 py-2.5 text-right">{formatCompact(pair.volume_btc_24h ?? 0)}</td>
                   </tr>
                 ))}
@@ -118,16 +145,43 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
   )
 }
 
-function renderLinks(exchange: any) {
-  const links: { label: string; href: string }[] = []
-  if (exchange.url) links.push({ label: '🌐 Website', href: sanitizeUrl(exchange.url) })
-  if (exchange.market_center_url) links.push({ label: '📊 Trade', href: sanitizeUrl(exchange.market_center_url) })
-  if (links.length === 0) return null
+function StatRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-4 flex-wrap text-sm">
-      {links.map(l => (
-        <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="text-accent">{l.label}</a>
-      ))}
+    <div className="flex justify-between text-sm">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium tabular-nums">{value}</span>
+    </div>
+  )
+}
+
+function TrustScore({ score }: { score: number }) {
+  const color = score >= 7 ? 'text-[var(--positive)]' : score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
+  return (
+    <Badge variant="outline" className={`tabular-nums ${color}`}>
+      {score}/10
+    </Badge>
+  )
+}
+
+function renderLinks(exchange: any) {
+  const links: { icon?: React.ReactNode; label: string; href: string }[] = []
+  if (exchange.url) links.push({ icon: <Globe className="w-3.5 h-3.5" />, label: 'Website', href: sanitizeUrl(exchange.url) })
+  if (exchange.market_center_url) links.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'Trade', href: sanitizeUrl(exchange.market_center_url) })
+  if (links.length === 0) return null
+
+  return (
+    <div>
+      <h2 className="text-sm font-semibold mb-2">Links</h2>
+      <div className="flex flex-wrap gap-2">
+        {links.map(l => (
+          <Button key={l.label} variant="outline" size="sm">
+            <a href={l.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5">
+              {l.icon}
+              <span>{l.label}</span>
+            </a>
+          </Button>
+        ))}
+      </div>
     </div>
   )
 }
@@ -146,13 +200,4 @@ function sanitizeHtml(html: string): string {
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
     .replace(/on\w+="[^"]*"|on\w+='[^']*'/gi, '')
     .replace(/javascript:/gi, 'unsafe:')
-}
-
-function StatRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="stat-card p-3">
-      <div className="text-muted text-[10px] uppercase tracking-wide">{label}</div>
-      <div className="font-semibold mt-0.5 text-xs sm:text-sm">{value}</div>
-    </div>
-  )
 }

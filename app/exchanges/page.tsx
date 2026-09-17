@@ -1,71 +1,91 @@
-import { formatCompact, formatPct, pctColor, formatPrice } from '@/lib/format'
+import { Suspense } from 'react'
 import Link from 'next/link'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { PageHeader } from '@/components/ui/page-header'
+import { CryptoPagination } from '@/components/ui/crypto-pagination'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export const metadata = { title: 'Exchanges | BlockDetails', description: 'Compare cryptocurrency exchanges by volume, trust score, and liquidity.' }
+export default function ExchangesPage() {
+  return (
+    <div className="app-container py-6 space-y-4">
+      <PageHeader
+        title="Cryptocurrency Exchanges"
+        description="Compare exchanges by volume, trust score, and supported markets."
+      />
+      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />} >
+        <ExchangesList />
+      </Suspense>
+    </div>
+  )
+}
 
-export default async function ExchangesPage() {
+async function ExchangesList() {
   let exchanges: any[] = []
+  let totalCount = 0
   try {
-    const res = await fetch('/api/exchanges?order=volume_desc&per_page=50&page=1')
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges?order=volume_desc&per_page=50`,
+      { next: { revalidate: 60 } }
+    )
     const json = await res.json()
-    if (json.data) exchanges = json.data
+    exchanges = json.data || []
+    totalCount = (json as any)?.total_count || exchanges.length
   } catch {}
 
-  return (
-    <div className="space-y-5">
-      <h1 className="text-lg sm:text-xl font-bold tracking-tight">Cryptocurrency Exchanges</h1>
-      <p className="text-sm text-muted">Compare exchanges by trading volume, trust score, and liquidity.</p>
+  if (exchanges.length === 0) {
+    return <EmptyState message="No exchanges found." />
+  }
 
-      {exchanges.length === 0 ? (
-        <div className="text-center py-16 space-y-2">
-          <p className="text-muted text-sm">No exchanges found.</p>
-        </div>
-      ) : (
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm tabular-nums">
-            <thead>
-              <tr className="border-b border-border bg-muted/5 text-left text-xs uppercase tracking-wide text-muted">
-                <th className="px-4 py-2.5 font-medium">#</th>
-                <th className="px-4 py-2.5 font-medium">Exchange</th>
-                <th className="px-4 py-2.5 font-medium text-right">Trust Score</th>
-                <th className="px-4 py-2.5 font-medium text-right">24h Volume</th>
-                <th className="px-4 py-2.5 font-medium text-right">Reported Volume</th>
-                <th className="px-4 py-2.5 font-medium text-right">Coin Markets</th>
-                <th className="px-4 py-2.5 font-medium text-right">Quote Markets</th>
-                <th className="px-4 py-2.5 font-medium text-right">Scorer Markets</th>
-                <th className="px-4 py-2.5 font-medium text-right">Market Share</th>
-              </tr>
-            </thead>
-            <tbody>
-              {exchanges.map((ex, i) => (
-                <tr key={ex.id} className="border-b border-border hover:bg-muted/5">
-                  <td className="px-4 py-2.5 text-muted">{i + 1}</td>
-                  <td className="px-4 py-2.5">
-                    <Link href={`/exchanges/${ex.id}`} className="font-medium hover:text-accent transition-colors">
-                      <div className="flex items-center gap-2">
-                        {ex.image && <img src={ex.image} alt="" className="w-5 h-5 rounded-full" />}
-                        <span>{ex.name}</span>
-                      </div>
-                    </Link>
-                  </td>
-                  <td className="px-4 py-2.5 text-right">
-                    {ex.trust_score && (
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${ex.trust_score >= 7 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                        {ex.trust_score}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2.5 text-right">{formatCompact(ex.total_volume_24h_btc ?? 0)}</td>
-                  <td className="px-4 py-2.5 text-right">{formatCompact(ex.total_volume_btc_24h ?? 0)}</td>
-                  <td className="px-4 py-2.5 text-right">{ex.num_coin_markets ?? 0}</td>
-                  <td className="px-4 py-2.5 text-right">{ex.num_quote_assets ?? 0}</td>
-                  <td className="px-4 py-2.5 text-right">{ex.num_scorer_markets ?? 0}</td>
-                  <td className="px-4 py-2.5 text-right">{ex.market_share != null ? `${(ex.market_share * 100).toFixed(1)}%` : '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+  const totalPages = Math.ceil(totalCount / 50)
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-lg border border-border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-border bg-muted/30 hover:bg-transparent">
+              <TableHead className="w-12 text-right">#</TableHead>
+              <TableHead>Exchange</TableHead>
+              <TableHead className="text-right hidden sm:table-cell">Trust Score</TableHead>
+              <TableHead className="text-right">24h Volume</TableHead>
+              <TableHead className="text-right hidden md:table-cell">Markets</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {exchanges.map(ex => (
+              <TableRow key={ex.id} className="border-border hover:bg-muted/20">
+                <TableCell className="text-right text-muted-foreground font-mono text-xs">{ex.market_id}</TableCell>
+                <TableCell>
+                  <Link href={`/exchanges/${ex.id}`} className="font-medium hover:text-accent transition-colors">
+                    {ex.name}
+                  </Link>
+                </TableCell>
+                <TableCell className="text-right hidden sm:table-cell">
+                  {ex.score != null ? (
+                    <Badge variant="outline" className={`tabular-nums ${
+                      ex.score >= 7 ? 'text-[var(--positive)]' : ex.score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
+                    }`}>
+                      {ex.score}/10
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </TableCell>
+                <TableCell className="text-right tabular-nums">
+                  {ex.quote_volume?.toLocaleString() ?? '—'}
+                </TableCell>
+                <TableCell className="text-right tabular-nums hidden md:table-cell">
+                  {ex.num_coin_markets?.toLocaleString() ?? '—'}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      {totalPages > 1 && (
+        <CryptoPagination page={1} totalPages={totalPages} onPageChange={() => {}} />
       )}
     </div>
   )
