@@ -30,7 +30,7 @@ const ExchangesList = async () => {
   let totalCount = 0
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges?order=volume_desc&per_page=50`,
+      `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges?order=volume_24h_btc_desc&per_page=50`,
       { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
     )
     const json = await res.json()
@@ -50,38 +50,38 @@ const ExchangesList = async () => {
         <Table>
           <TableHeader>
             <TableRow className="border-border/40 bg-muted/20 hover:bg-transparent">
-              <TableHead className="w-10 text-right text-xs font-medium text-muted-foreground">#</TableHead>
+              <TableHead className="w-10 text-right text-xs font-medium text-muted-foreground">Rank</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground">Exchange</TableHead>
-              <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">Trust Score</TableHead>
-              <TableHead className="text-right text-xs font-medium text-muted-foreground">24h Volume</TableHead>
-              <TableHead className="text-right hidden md:table-cell text-xs font-medium text-muted-foreground">Markets</TableHead>
+              <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">Trust</TableHead>
+              <TableHead className="text-right text-xs font-medium text-muted-foreground">24h Vol</TableHead>
+              <TableHead className="text-right hidden md:table-cell text-xs font-medium text-muted-foreground">Coins</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {exchanges.map(ex => (
               <TableRow key={ex.id} className="border-border/40 hover:bg-muted/10 transition-colors">
-                <TableCell className="text-right text-muted-foreground font-mono text-xs">{ex.market_id}</TableCell>
+                <TableCell className="text-right text-muted-foreground font-mono text-xs">{ex.trust_score_rank ?? '—'}</TableCell>
                 <TableCell>
                   <Link href={`/exchanges/${ex.id}`} className="font-medium text-sm hover:text-accent transition-colors">
                     {ex.name}
                   </Link>
                 </TableCell>
                 <TableCell className="text-right hidden sm:table-cell">
-                  {ex.score != null ? (
+                  {ex.trust_score != null ? (
                     <Badge variant="outline" className={`tabular-nums text-xs ${
-                      ex.score >= 7 ? 'text-[var(--positive)]' : ex.score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
+                      ex.trust_score >= 7 ? 'text-[var(--positive)]' : ex.trust_score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
                     }`}>
-                      {ex.score}/10
+                      {ex.trust_score}/10
                     </Badge>
                   ) : (
                     <span className="text-muted-foreground text-sm">—</span>
                   )}
                 </TableCell>
                 <TableCell className="text-right tabular-nums text-sm">
-                  {ex.quote_volume?.toLocaleString() ?? '—'}
+                  {ex.trade_volume_24h_btc != null ? `${ex.trade_volume_24h_btc.toLocaleString(undefined, { maximumFractionDigits: 0 })} BTC` : '—'}
                 </TableCell>
                 <TableCell className="text-right tabular-nums hidden md:table-cell text-sm">
-                  {ex.num_coin_markets?.toLocaleString() ?? '—'}
+                  {ex.coins?.toLocaleString() ?? '—'}
                 </TableCell>
               </TableRow>
             ))}

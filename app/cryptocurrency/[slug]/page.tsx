@@ -145,11 +145,11 @@ const renderLinks = (links: any) => {
   )
 }
 
-const CoinDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
+const CoinDetailPage = ({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ currency?: string }> }) => {
   return (
     <div className="app-container py-6">
       <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
-        <CoinDataWithParams params={params} />
+        <CoinDataWithParams params={params} searchParams={searchParams} />
       </Suspense>
     </div>
   )
@@ -157,7 +157,9 @@ const CoinDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
 
 export default CoinDetailPage
 
-const CoinDataWithParams = async ({ params }: { params: Promise<{ slug: string }> }) => {
+const CoinDataWithParams = async ({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ currency?: string }> }) => {
   const { slug } = await params
-  return <CoinData slug={slug} currency="usd" />
+  const sp = await searchParams
+  const currency = sp.currency || 'usd'
+  return <CoinData slug={slug} currency={currency} />
 }

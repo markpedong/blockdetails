@@ -11,16 +11,16 @@ export const dynamic = 'force-dynamic'
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch('/api/exchanges?order=volume_desc&per_page=50', { next: { revalidate: 86400 } })
+    const res = await fetch('https://api.coingecko.com/api/v3/exchanges?order=volume_24h_btc_desc&per_page=50', { next: { revalidate: 86400 } })
     const json = await res.json()
-    return (json.data as { id: string }[]).slice(0, 50).map(e => ({ slug: e.id }))
+    return (json as { id: string }[]).slice(0, 50).map(e => ({ slug: e.id }))
   } catch { return [] }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   try {
-    const res = await fetch(`/api/exchanges/${slug}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges/${slug}`)
     const json = await res.json()
     if (json.data?.exchange) {
       const ex = json.data.exchange
@@ -39,7 +39,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
 
   let apiRes: any = null
   try {
-    const res = await fetch(`/api/exchanges/${slug}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges/${slug}`)
     const json = await res.json()
     if (json.data?.exchange) apiRes = json.data
   } catch {}
@@ -96,11 +96,10 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
       <div>
         <h2 className="text-sm font-semibold mb-3">Exchange Statistics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
-          <StatRow label="24h Volume (BTC)" value={formatCompact(exchange.total_volume_btc_24h ?? 0)} />
-          <StatRow label="Total Volume (BTC)" value={formatCompact(exchange.total_volume_24h_btc ?? 0)} />
-          <StatRow label="Coin Markets" value={(exchange.num_coin_markets ?? 0).toString()} />
-          <StatRow label="Quote Assets" value={(exchange.num_quote_assets ?? 0).toString()} />
-          <StatRow label="Market Share" value={exchange.market_share != null ? `${(exchange.market_share * 100).toFixed(1)}%` : '—'} />
+          <StatRow label="24h Volume (BTC)" value={formatCompact(exchange.trade_volume_24h_btc ?? 0)} />
+          <StatRow label="Coins Listed" value={(exchange.coins ?? 0).toString()} />
+          <StatRow label="Trading Pairs" value={(exchange.pairs ?? 0).toString()} />
+          <StatRow label="Trust Score Rank" value={exchange.trust_score_rank ? `#${exchange.trust_score_rank}` : '—'} />
           {exchange.country && <StatRow label="Country" value={exchange.country} />}
         </div>
       </div>

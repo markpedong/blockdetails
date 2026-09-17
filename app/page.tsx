@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-const HomePage = () => {
+const HomePage = ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
   return (
     <div className="app-container py-6 space-y-5">
       <PageHeader
@@ -16,15 +16,17 @@ const HomePage = () => {
       />
 
       <Suspense fallback={<Skeleton className="h-20 rounded-lg" />}>
-        <MarketOverview currency="usd" />
+        <MarketOverviewWrapper searchParams={searchParams} />
       </Suspense>
 
-      <TrendingSection currency="usd" />
+      <Suspense fallback={<Skeleton className="h-40 rounded-lg" />}>
+        <TrendingWrapper searchParams={searchParams} />
+      </Suspense>
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Top Cryptocurrencies</h2>
         <Suspense fallback={<Skeleton className="h-[400px] rounded-lg" />}>
-          <CoinsTable currency="usd" />
+          <CoinsTable searchParams={searchParams} />
         </Suspense>
       </section>
     </div>
@@ -33,8 +35,22 @@ const HomePage = () => {
 
 export default HomePage
 
-const CoinsTable = async ({ currency }: { currency: string }) => {
-  let coins = []
+const MarketOverviewWrapper = async ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
+  const sp = await searchParams
+  const currency = sp.currency || 'usd'
+  return <MarketOverview currency={currency} />
+}
+
+const TrendingWrapper = async ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
+  const sp = await searchParams
+  const currency = sp.currency || 'usd'
+  return <TrendingSection currency={currency} />
+}
+
+const CoinsTable = async ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
+  const sp = await searchParams
+  const currency = sp.currency || 'usd'
+  let coins: any[] = []
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/coins?vs_currency=${currency}&order=market_cap_desc&per_page=25&page=1&sparkline=false&price_change_percentage=1h,24h,7d`,

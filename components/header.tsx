@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { SearchDialog } from './search-dialog'
 import { ThemeToggle } from './theme-toggle'
 import { MobileNav } from './ui/mobile-nav'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { CurrencySelector } from '@/components/ui/currency-selector'
 import type { GlobalMarketData } from '@/lib/crypto'
 
 const NAV = [
@@ -103,20 +103,4 @@ const MarketBar = async () => {
   )
 }
 
-/* ── Currency selector ── */
-const CurrencySelector = () => {
-  return (
-    <Select defaultValue="usd">
-      <SelectTrigger className="h-7 w-[72px] text-xs px-2 gap-1 hidden sm:flex">
-        <SelectValue placeholder="USD" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="usd">USD</SelectItem>
-        <SelectItem value="eur">EUR</SelectItem>
-        <SelectItem value="gbp">GBP</SelectItem>
-        <SelectItem value="jpy">JPY</SelectItem>
-        <SelectItem value="btc">BTC</SelectItem>
-      </SelectContent>
-    </Select>
-  )
-}
+
