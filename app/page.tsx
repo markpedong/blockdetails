@@ -7,27 +7,23 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-export default function HomePage() {
+const HomePage = () => {
   return (
     <div className="app-container py-6 space-y-6">
-      {/* Page header — no hero */}
       <PageHeader
         title="Cryptocurrency Prices by Market Cap"
         description="Track live cryptocurrency prices, market capitalization, 24h volume, and market performance."
       />
 
-      {/* Market overview */}
-      <Suspense fallback={<Skeleton className="h-28 rounded-lg" />} >
+      <Suspense fallback={<Skeleton className="h-28 rounded-lg" />}>
         <MarketOverview currency="usd" />
       </Suspense>
 
-      {/* Trending */}
       <TrendingSection currency="usd" />
 
-      {/* Top coins table */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Top Cryptocurrencies</h2>
-        <Suspense fallback={<Skeleton className="h-[400px] rounded-lg" />} >
+        <Suspense fallback={<Skeleton className="h-[400px] rounded-lg" />}>
           <CoinsTable currency="usd" />
         </Suspense>
       </section>
@@ -35,8 +31,9 @@ export default function HomePage() {
   )
 }
 
-/* ── Client-side coins table (fetches data) ── */
-async function CoinsTable({ currency }: { currency: string }) {
+export default HomePage
+
+const CoinsTable = async ({ currency }: { currency: string }) => {
   let coins = []
   try {
     const res = await fetch(

@@ -6,24 +6,26 @@ import { ThemeProvider } from '@/components/theme'
 import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
-	title: 'BlockDetails — Real-time Crypto Market Data',
-	description:
-		'Track cryptocurrency prices, market cap, volume, and trends across thousands of digital assets.'
+  title: 'BlockDetails — Real-time Crypto Market Data',
+  description:
+    'Track cryptocurrency prices, market cap, volume, and trends across thousands of digital assets.',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-	return (
-		<html lang="en" suppressHydrationWarning>
-			<body className="min-h-screen bg-background text-foreground antialiased">
-				<ThemeProvider>
-					<div className="flex min-h-screen flex-col">
-						<SiteHeader />
-						<main className="flex-1">{children}</main>
-						<Footer />
-					</div>
-					<Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />
-				</ThemeProvider>
-			</body>
-		</html>
-	)
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        <ThemeProvider>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+          <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />
+        </ThemeProvider>
+      </body>
+    </html>
+  )
 }
+
+export default RootLayout

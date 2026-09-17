@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function NotFound() {
+const NotFound = () => {
   return (
     <div className="text-center py-24 space-y-4">
       <h1 className="text-5xl font-bold text-muted/30">404</h1>
@@ -12,3 +12,5 @@ export default function NotFound() {
     </div>
   )
 }
+
+export default NotFound
