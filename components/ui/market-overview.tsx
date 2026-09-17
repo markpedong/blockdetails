@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 
 export async function MarketOverview({ currency }: { currency: string }) {
   let global: any = null
@@ -13,10 +13,9 @@ export async function MarketOverview({ currency }: { currency: string }) {
 
   if (!global) {
     return (
-      <Card>
-        <CardHeader><CardTitle className="text-sm">Market Overview</CardTitle></CardHeader>
-        <CardContent><p className="text-xs text-muted-foreground">Loading market data...</p></CardContent>
-      </Card>
+      <div className="rounded-lg border border-border/40 bg-muted/20 px-4 py-3 text-xs text-muted-foreground">
+        Loading market data...
+      </div>
     )
   }
 
@@ -28,26 +27,25 @@ export async function MarketOverview({ currency }: { currency: string }) {
     return `$${n.toLocaleString()}`
   }
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm">Market Overview</CardTitle>
-      </CardHeader>
-      <CardContent className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-        <Stat label="Active Cryptos" value={global.active_cryptocurrencies?.toLocaleString() ?? '—'} />
-        <Stat label="Total Market Cap" value={fmt(global.total_market_cap_usd)} />
-        <Stat label="24h Volume" value={fmt(global.total_volume_usd)} />
-        <Stat label="BTC Dominance" value={`${global.btc_dominance?.toFixed(1) ?? '—'}%`} />
-      </CardContent>
-    </Card>
-  )
-}
+  const marketCap = global.total_market_cap?.[currency] ?? global.total_market_cap?.usd
+  const volume = global.total_volume?.[currency] ?? global.total_volume?.usd
+  const btcDominance = global.market_cap_percentage?.btc ?? global.btc_dominance
 
-const Stat = ({ label, value }: { label: string; value: string }) => {
   return (
-    <div>
-      <div className="text-muted-foreground">{label}</div>
-      <div className="font-semibold mt-0.5">{value}</div>
+    <div className="rounded-lg border border-border/40 bg-muted/20 px-4 py-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-2 text-xs">
+        <Stat label="Active Cryptos" value={global.active_cryptocurrencies?.toLocaleString() ?? '—'} />
+        <Stat label="Total Market Cap" value={fmt(marketCap)} />
+        <Stat label="24h Volume" value={fmt(volume)} />
+        <Stat label="BTC Dominance" value={`${btcDominance?.toFixed(1) ?? '—'}%`} />
+      </div>
     </div>
   )
 }
+
+const Stat = ({ label, value }: { label: string; value: string }) => (
+  <div>
+    <div className="text-muted-foreground">{label}</div>
+    <div className="font-semibold mt-0.5 tabular-nums">{value}</div>
+  </div>
+)

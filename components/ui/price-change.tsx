@@ -9,13 +9,13 @@ const pctColor = (n: number | null | undefined): string => {
 }
 
 export const PriceChangeInline = ({ value, percentage = true }: PriceChangeInlineProps) => {
-  if (value == null) return <span>—</span>
+  if (value == null) return <span className="text-muted-foreground">—</span>
 
   const sign = value > 0 ? '+' : ''
   const display = percentage ? `${sign}${value.toFixed(2)}%` : `${sign}${value.toFixed(2)}`
 
   return (
-    <span className={`tabular-nums ${pctColor(value)}`}>
+    <span className={`tabular-nums text-sm font-medium ${pctColor(value)}`}>
       {display}
     </span>
   )

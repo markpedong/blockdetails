@@ -22,21 +22,26 @@ export function CoinIdentity({ name, symbol, image, rank, size = 'md' }: CoinIde
   }
 
   const t = textClasses[size]
+  const imgSize = size === 'lg' ? 32 : 24
 
   return (
     <div className="flex items-center gap-2">
-      {image && (
+      {image ? (
         <Image
           src={image}
           alt=""
-          width={size === 'lg' ? 32 : 24}
-          height={size === 'lg' ? 32 : 24}
+          width={imgSize}
+          height={imgSize}
           className={`${sizeClasses[size]} rounded-full`}
           unoptimized
         />
+      ) : (
+        <div className={`${sizeClasses[size]} rounded-full bg-muted/50 flex items-center justify-center text-[10px] font-medium text-muted-foreground`}>
+          {symbol?.slice(0, 3) ?? name.slice(0, 3)}
+        </div>
       )}
-      <div>
-        <span className={t.name}>{name}</span>
+      <div className="min-w-0">
+        <span className={`${t.name} truncate block`}>{name}</span>
         {symbol && (
           <span className={`block ${t.symbol} text-muted-foreground`}>{symbol.toUpperCase()}</span>
         )}

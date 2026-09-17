@@ -1,5 +1,3 @@
-import { cn } from '@/lib/cn'
-
 interface StatRowProps {
   label: string
   value: string
@@ -7,7 +5,7 @@ interface StatRowProps {
 
 const StatRow = ({ label, value }: StatRowProps) => {
   return (
-    <div className="flex justify-between text-sm">
+    <div className="flex justify-between text-sm py-1.5 border-b border-border/30 last:border-0">
       <span className="text-muted-foreground">{label}</span>
       <span className="font-medium tabular-nums">{value}</span>
     </div>
