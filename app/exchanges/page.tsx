@@ -1,8 +1,6 @@
-import { getExchanges } from '../../lib/exchange'
-import { formatCompact } from '../../lib/format'
-import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '../../lib/currency'
+import { formatCompact, formatPrice } from '@/lib/format'
 import Link from 'next/link'
-import { Pagination } from '../components/ui/pagination'
+import type { ExchangeSummary, PaginatedResponse } from '@/lib/crypto'
 
 export const metadata = {
   title: 'Cryptocurrency Exchanges | BlockDetails',
@@ -13,27 +11,22 @@ export const metadata = {
 const PER_PAGE = 50
 
 export default async function ExchangesPage({ searchParams }: { searchParams: Promise<{ currency?: string; page?: string }> }) {
-  const [currency, rawPage] = await Promise.all([parseCurrencyFromUrl(searchParams), (await searchParams).page])
+  const rawPage = (await searchParams).page
   const page = Math.max(1, parseInt(rawPage || '1', 10))
 
-  persistCurrency(currency)
-
-  let exchanges: Awaited<ReturnType<typeof getExchanges>> = []
+  let exchanges: ExchangeSummary[] = []
   try {
-    // Fetch page 1 to determine total pages
-    const firstPage = await getExchanges()
-    exchanges = firstPage.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+    const res = await fetch(`/api/exchanges?per_page=${PER_PAGE}&page=${page}`)
+    const json = await res.json()
+    exchanges = (json.data as ExchangeSummary[]) ?? []
   } catch {}
 
-  const baseHref = `/exchanges?currency=${currency}`
-  let totalExchanges: Awaited<ReturnType<typeof getExchanges>> = []
-  try { totalExchanges = await getExchanges() } catch {}
-  const totalPages = Math.max(1, Math.ceil(totalExchanges.length / PER_PAGE))
+  const baseHref = `/exchanges?page=${page}`
 
   return (
     <div className="space-y-6">
       {/* Currency selector */}
-      <CurrencySelector currency={currency} baseHref={baseHref} />
+      <CurrencySelector baseHref={baseHref} />
 
       <table className="w-full text-sm">
         <thead>
@@ -47,12 +40,12 @@ export default async function ExchangesPage({ searchParams }: { searchParams: Pr
           </tr>
         </thead>
         <tbody>
-          {exchanges.map(ex => (
+          {exchanges.map((ex: ExchangeSummary) => (
             <tr key={ex.id} className="border-b border-border/50 hover:bg-muted/5 transition">
-              <td className="text-right py-3 pr-4 text-muted">{ex.market_identifier}</td>
+              <td className="text-right py-3 pr-4 text-muted">{ex.id}</td>
               <td className="pl-4 pr-4">
                 <Link href={`/exchanges/${ex.id}`} className="flex items-center gap-2.5">
-                  <img src={ex.image} alt={`${ex.name} logo`} className="w-6 h-6 rounded-full" />
+                  {ex.image && <img src={ex.image} alt={`${ex.name} logo`} className="w-6 h-6 rounded-full" />}
                   <span className="font-medium">{ex.name}</span>
                 </Link>
               </td>
@@ -60,7 +53,7 @@ export default async function ExchangesPage({ searchParams }: { searchParams: Pr
                 <TrustBadge score={ex.trust_score} />
               </td>
               <td className="text-right py-3 px-4 hidden sm:table-cell">{ex.markets?.toLocaleString() ?? '-'}</td>
-              <td className="text-right py-3 px-4">{formatCompact(ex.total_24h_volume?.[currency] ?? 0)}</td>
+              <td className="text-right py-3 px-4">{formatCompact(ex.total_24h_volume_usd ?? 0)}</td>
               <td className="text-right py-3 pl-4 pr-1 text-center">
                 <Link href={`/exchanges/${ex.id}`} className="text-accent hover:underline">→</Link>
               </td>
@@ -73,19 +66,20 @@ export default async function ExchangesPage({ searchParams }: { searchParams: Pr
         <div className="text-center py-12 text-muted">Failed to load exchanges. Please try again.</div>
       )}
 
-      <Pagination currentPage={page} totalPages={totalPages} baseHref={baseHref} />
+      <Pagination currentPage={page} baseHref={baseHref} />
     </div>
   )
 }
 
-function CurrencySelector({ currency, baseHref }: { currency: string; baseHref: string }) {
+function CurrencySelector({ baseHref }: { baseHref: string }) {
+  const currencies = ['usd', 'eur', 'gbp', 'jpy', 'aud', 'php'] as const
   return (
     <div className="flex gap-2 flex-wrap">
-      {SUPPORTED_CURRENCIES.map(c => (
+      {currencies.map(c => (
         <Link
           key={c}
-          href={`${baseHref}${currency !== c ? `&currency=${c}` : ''}`}
-          className={`px-3 py-1 text-xs rounded-full border transition ${currency === c ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
+          href={`${baseHref}&currency=${c}`}
+          className={`px-3 py-1 text-xs rounded-full border transition ${baseHref.includes(`currency=${c}`) ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
         >
           {c.toUpperCase()}
         </Link>
@@ -94,9 +88,22 @@ function CurrencySelector({ currency, baseHref }: { currency: string; baseHref: 
   )
 }
 
-function TrustBadge({ score }: { score: string | number }) {
-  const num = typeof score === 'string' ? parseFloat(score) : score
-  if (num == null) return <span className="text-muted">-</span>
+function TrustBadge({ score }: { score: string | null }) {
+  const num = score != null ? (typeof score === 'string' ? parseFloat(score) : score) : 0
+  if (num <= 0) return <span className="text-muted">-</span>
   const cls = num >= 8 ? 'bg-emerald-500/20 text-emerald-500' : num >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'
   return <span className={`px-2 py-0.5 rounded-full text-xs ${cls}`}>{num}</span>
+}
+
+function Pagination({ currentPage, baseHref }: { currentPage: number; baseHref: string }) {
+  if (currentPage <= 1) return null
+  return (
+    <div className="flex justify-center gap-2 mt-4">
+      {currentPage > 1 && (
+        <Link href={`${baseHref.replace(/page=\d+/, `page=${currentPage - 1}`)}`} className="px-3 py-1 text-xs border rounded hover:bg-muted/10">
+          ← Prev
+        </Link>
+      )}
+    </div>
+  )
 }

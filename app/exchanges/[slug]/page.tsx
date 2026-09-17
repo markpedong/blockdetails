@@ -1,20 +1,49 @@
-import { getExchangeList, getExchangeDetail, getExchangeMarkets } from '../../../lib/exchange'
-import { formatCompact, formatPrice } from '../../../lib/format'
+import { formatCompact, formatPrice } from '@/lib/format'
+import Link from 'next/link'
+import type { ExchangeDetail, ExchangeMarketPair } from '@/lib/crypto'
 
 export async function generateStaticParams() {
-  try { const list = await getExchangeList(); return list.map(e => ({ slug: e.id })) } catch { return [] }
+  try {
+    const res = await fetch('/api/exchanges?per_page=30', { next: { revalidate: 86400 } })
+    const json = await res.json()
+    return (json.data as { id: string }[]).slice(0, 30).map(e => ({ slug: e.id }))
+  } catch { return [] }
 }
 
-export const revalidate = 600
+export const revalidate = 300
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  try {
+    const res = await fetch(`/api/exchanges/${slug}`)
+    const json = await res.json()
+    if (json.data?.exchange) {
+      const ex = json.data.exchange
+      return {
+        title: `${ex.name} Exchange - Cryptocurrency Trading | BlockDetails`,
+        description: `View ${ex.name} exchange data, markets, and volume.`,
+      }
+    }
+  } catch {}
+  return { title: 'Exchange Details | BlockDetails' }
+}
 
 export default async function ExchangeDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
 
-  let exchange: Awaited<ReturnType<typeof getExchangeDetail>> = null
-  try { exchange = await getExchangeDetail(slug) } catch {}
+  let exchange: ExchangeDetail | null = null
+  try {
+    const res = await fetch(`/api/exchanges/${slug}`)
+    const json = await res.json()
+    if (json.data?.exchange) exchange = json.data.exchange as ExchangeDetail
+  } catch {}
 
-  let markets: Awaited<ReturnType<typeof getExchangeMarkets>> = []
-  try { markets = await getExchangeMarkets(slug) } catch {}
+  let markets: ExchangeMarketPair[] = []
+  try {
+    const res = await fetch(`/api/exchanges/${slug}/markets?per_page=50`)
+    const json = await res.json()
+    markets = (json.data as ExchangeMarketPair[]) ?? []
+  } catch {}
 
   if (!exchange) {
     return (
@@ -27,64 +56,61 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start gap-4">
-        <img src={exchange.image} alt={`${exchange.name} logo`} className="w-12 h-12 rounded-full" />
+      <div className="flex items-start gap-4 flex-wrap">
+        {exchange.image && (
+          <img src={exchange.image} alt={`${exchange.name} logo`} className="w-12 h-12 rounded-full" />
+        )}
         <div>
           <h1 className="text-xl font-bold">{exchange.name}</h1>
-          <div className="flex items-center gap-3 mt-1 text-sm">
-            <TrustBadge score={exchange.trust_score} />
-            {exchange.established && (
-              <span className="text-muted">Established: {exchange.established}</span>
-            )}
-          </div>
+          {exchange.trust_score && (
+            <span className={`text-xs px-2 py-0.5 rounded-full ${Number(exchange.trust_score) >= 8 ? 'bg-emerald-500/20 text-emerald-500' : Number(exchange.trust_score) >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'}`}>
+              Trust Score: {exchange.trust_score}
+            </span>
+          )}
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
         <Stat label="Markets" value={exchange.markets?.toLocaleString() ?? '-'} />
-        <Stat label="24h Volume" value={formatCompact(exchange.total_24h_volume?.usd ?? 0)} />
-        <Stat label="Reported Volume" value={formatCompact(exchange.reported_volume_24h_usd ?? 0)} />
-        <Stat label="Trading Score" value={exchange.trading_volume_score?.toFixed(1) ?? '-'} />
+        <Stat label="24h Volume" value={formatCompact(exchange.total_24h_volume_usd ?? 0)} />
+        <Stat label="24h Trades" value="-" />
+        <Stat label="Established" value={exchange.established?.toString() ?? '-'} />
       </div>
 
-      {/* Links */}
-      <div className="flex gap-4 flex-wrap text-sm">
-        {exchange.urls?.website?.[0] && (
-          <a href={sanitizeUrl(exchange.urls.website[0])} target="_blank" rel="noopener noreferrer" className="text-accent">🌐 Website</a>
-        )}
-        {exchange.urls?.twitter_username && (
-          <a href={`https://twitter.com/${exchange.urls.twitter_username}`} target="_blank" rel="noopener noreferrer" className="text-accent">🐦 Twitter</a>
-        )}
-        {exchange.urls?.subreddit_url && (
-          <a href={sanitizeUrl(exchange.urls.subreddit_url)} target="_blank" rel="noopener noreferrer" className="text-accent">💬 Reddit</a>
-        )}
-      </div>
-
-      {/* Description — sanitized */}
-      {exchange.description?.en && (
-        <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(exchange.description.en) }} />
+      {/* Description */}
+      {exchange.description && (
+        <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(exchange.description) }} />
       )}
 
+      {/* Links */}
+      {renderLinks(exchange!)}
+
       {/* Markets table */}
-      <h2 className="font-semibold">Markets</h2>
+      <h2 className="text-lg font-semibold mt-6">Markets</h2>
       {markets.length > 0 ? (
         <table className="w-full text-sm">
           <thead>
             <tr className="text-muted text-xs border-b border-border">
-              <th className="text-left py-2 pl-4 font-normal">Pair</th>
+              <th className="text-left py-2 pl-4 pr-4 font-normal">Pair</th>
               <th className="text-right py-2 px-4 font-normal">Price</th>
               <th className="text-right py-2 px-4 font-normal">24h Volume</th>
-              <th className="text-right py-2 px-4 hidden sm:table-cell">Trust Score</th>
+              <th className="text-right py-2 pl-4 pr-1 font-normal">Trust</th>
             </tr>
           </thead>
           <tbody>
-            {markets.map((m, i) => (
-              <tr key={`${m.base}-${m.quote}-${i}`} className="border-b border-border/50">
+            {markets.map((m: ExchangeMarketPair) => (
+              <tr key={`${m.base}/${m.quote}`} className="border-b border-border/50 hover:bg-muted/5 transition">
                 <td className="pl-4 pr-4 font-medium">{m.base}/{m.quote}</td>
-                <td className="text-right py-2 px-4">{formatPrice(m.last, 'usd')}</td>
-                <td className="text-right py-2 px-4">{formatCompact(m.total_volume?.usd ?? 0)}</td>
-                <td className="text-right py-2 px-4 hidden sm:table-cell">{m.trust_score ?? '-'}</td>
+                <td className="text-right py-2 px-4">{formatPrice(m.last_price, 'usd')}</td>
+                <td className="text-right py-2 px-4">{formatCompact(m.volume_24h_usd ?? 0)}</td>
+                <td className="text-right py-2 pl-4 pr-1">
+                  {m.trust_score && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${Number(m.trust_score) >= 8 ? 'bg-emerald-500/20 text-emerald-500' : Number(m.trust_score) >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'}`}>
+                      {m.trust_score}
+                    </span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -105,27 +131,23 @@ function Stat({ label, value }: { label: string; value: string }) {
   )
 }
 
-function TrustBadge({ score }: { score: number }) {
-  const cls = score >= 8 ? 'bg-emerald-500/20 text-emerald-500' : score >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'
-  return <span className={`px-2 py-0.5 rounded-full text-xs ${cls}`}>Trust Score: {score}</span>
+function renderLinks(exchange: ExchangeDetail) {
+  const links: { label: string; href: string }[] = []
+  if (exchange.url) links.push({ label: '🌐 Website', href: exchange.url })
+  if (exchange.twitter_username) links.push({ label: '🐦 Twitter', href: `https://twitter.com/${exchange.twitter_username}` })
+  if (links.length === 0) return null
+  return (
+    <div className="flex gap-4 flex-wrap text-sm">
+      {links.map(l => (
+        <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="text-accent">{l.label}</a>
+      ))}
+    </div>
+  )
 }
 
-/** Strip URLs to http/https only; reject javascript: etc. */
-function sanitizeUrl(url: string): string {
-  try {
-    const parsed = new URL(url)
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '#'
-    return url
-  } catch {
-    return '#'
-  }
-}
-
-/** Minimal HTML sanitizer: strip <script>, <style>, event handlers, javascript: URLs. */
 function sanitizeHtml(html: string): string {
   return html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
     .replace(/on\w+="[^"]*"|on\w+='[^']*'/gi, '')
-    .replace(/javascript:/gi, 'unsafe:')
 }
