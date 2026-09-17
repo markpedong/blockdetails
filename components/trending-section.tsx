@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export async function TrendingSection({ currency }: { currency: string }) {
+const TrendingSection = async ({ currency }: { currency: string }) => {
   let trending: any[] = []
   try {
     const res = await fetch(
@@ -40,3 +40,5 @@ export async function TrendingSection({ currency }: { currency: string }) {
     </section>
   )
 }
+
+export { TrendingSection }

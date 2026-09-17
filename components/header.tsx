@@ -10,13 +10,12 @@ const NAV = [
   { href: '/exchanges', label: 'Exchanges' },
 ]
 
-export default function SiteHeader() {
+const SiteHeader = () => {
   return (
     <>
       <MarketBar />
       <header className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60">
         <div className="app-container h-12 flex items-center justify-between gap-3">
-          {/* Logo + mobile menu */}
           <div className="flex items-center gap-2">
             <MobileNav />
             <Link href="/" className="flex items-center gap-2 font-bold text-base tracking-tight hover:opacity-80 transition">
@@ -25,7 +24,6 @@ export default function SiteHeader() {
             </Link>
           </div>
 
-          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-0.5 text-sm" aria-label="Main navigation">
             {NAV.map(n => (
               <Link
@@ -38,7 +36,6 @@ export default function SiteHeader() {
             ))}
           </nav>
 
-          {/* Right side */}
           <div className="flex items-center gap-2">
             <SearchDialog />
             <ThemeToggle />
@@ -49,8 +46,10 @@ export default function SiteHeader() {
   )
 }
 
+export default SiteHeader
+
 /* ── Market bar (global stats strip) ── */
-async function MarketBar() {
+const MarketBar = async () => {
   let global: GlobalMarketData | null = null
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/global?currency=usd`, { next: { revalidate: 60 } })
