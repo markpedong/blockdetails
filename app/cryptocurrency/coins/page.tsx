@@ -1,8 +1,6 @@
-import { getCoins, getGlobalData, getTrending } from '../../../lib/crypto'
-import { formatCompact, formatPct, pctColor, formatPrice } from '../../../lib/format'
+import { formatCompact, formatPct, pctColor, formatPrice } from '@/lib/format'
 import Link from 'next/link'
-import { WatchlistButton } from '../../components/watchlist-button'
-import type { Coin, TrendingCoin } from '../../../lib/crypto'
+import type { Coin, GlobalMarketData } from '@/lib/crypto'
 
 export const metadata = { title: 'Cryptocurrency Prices by Market Cap | BlockDetails' }
 
@@ -16,25 +14,28 @@ export default async function CoinsPage({
   const { currency, page } = await searchParams
   const vsCurrency = (currency || 'usd').toLowerCase()
 
-  let coins: Awaited<ReturnType<typeof getCoins>> = []
+  let coins: Coin[] = []
   try {
-    coins = await getCoins({ vs_currency: vsCurrency, order: 'market_cap_desc', per_page: 50, page: parseInt(page || '1'), sparkline: false, price_change_percentage: '1h,24h,7d' })
+    const res = await fetch(`/api/coins?currency=${vsCurrency}&order=market_cap_desc&per_page=50&page=${page || 1}`)
+    const json = await res.json()
+    coins = (json.data as Coin[]) ?? []
   } catch { /* empty on error */ }
 
-  let global: Awaited<ReturnType<typeof getGlobalData>> | null = null
-  try { global = await getGlobalData() } catch {}
-
-  let trending: Awaited<ReturnType<typeof getTrending>> = []
-  try { trending = await getTrending() } catch {}
+  let global: GlobalMarketData | null = null
+  try {
+    const res = await fetch('/api/global?currency=' + vsCurrency)
+    const json = await res.json()
+    global = (json.data as GlobalMarketData) ?? null
+  } catch {}
 
   return (
     <div className="space-y-8">
       {/* Global stats */}
       {global && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-          <Stat label="Market Cap" value={formatCompact(global.total_market_cap[vsCurrency] ?? 0)} />
-          <Stat label="24h Volume" value={formatCompact(global.total_volume?.[vsCurrency] ?? 0)} />
-          <Stat label="BTC Dominance" value={`${global.btc_dominance.toFixed(1)}%`} />
+          <Stat label="Market Cap" value={formatCompact(global.total_market_cap_usd ?? 0)} />
+          <Stat label="24h Volume" value={formatCompact(global.total_volume_usd ?? 0)} />
+          <Stat label="BTC Dominance" value={`${global.btc_dominance?.toFixed(1) ?? '—'}%`} />
           <Stat label="Active Coins" value={formatNum(global.active_cryptocurrencies ?? 0)} />
         </div>
       )}
@@ -52,26 +53,11 @@ export default async function CoinsPage({
         ))}
       </div>
 
-      {/* Trending */}
-      {trending.length > 0 && (
-        <div>
-          <h2 className="text-sm font-semibold text-muted mb-3">🔥 Trending</h2>
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {trending.slice(0, 6).map(t => (
-              <Link key={t.id} href={`/cryptocurrency/${t.id}`} className="flex items-center gap-2 min-w-[160px] p-3 rounded-lg border border-border bg-card hover:border-accent/50 transition">
-                <img src={t.small} alt={`${t.name} logo`} className="w-6 h-6 rounded-full" />
-                <div>
-                  <div className="text-sm font-medium">{t.name}</div>
-                  <div className="text-xs text-muted">/{t.symbol.toUpperCase()} #{t.market_cap_rank}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Table */}
       <CoinTable coins={coins} currency={vsCurrency} />
+
+      {/* Pagination */}
+      <Pagination currentPage={(parseInt(page || '1', 10) || 1)} />
     </div>
   )
 }
@@ -106,7 +92,6 @@ function CoinTable({ coins, currency }: { coins: Coin[]; currency: string }) {
           <th className="text-right py-2 px-4 font-normal hidden sm:table-cell">7D</th>
           <th className="text-right py-2 px-4 font-normal hidden md:table-cell">Market Cap</th>
           <th className="text-right py-2 px-4 font-normal hidden md:table-cell">Volume (24h)</th>
-          <th className="text-right py-2 pl-4 pr-1 font-normal text-center">★</th>
         </tr>
       </thead>
       <tbody>
@@ -115,7 +100,7 @@ function CoinTable({ coins, currency }: { coins: Coin[]; currency: string }) {
             <td className="text-right py-3 pr-4 text-muted">{coin.market_cap_rank}</td>
             <td className="pl-4 pr-4">
               <Link href={`/cryptocurrency/${coin.id}`} className="flex items-center gap-2.5">
-                <img src={coin.image} alt={`${coin.name} logo`} className="w-6 h-6 rounded-full" />
+                {coin.image && <img src={coin.image} alt={`${coin.name} logo`} className="w-6 h-6 rounded-full" />}
                 <span className="font-medium">{coin.name}</span>
                 <span className="text-muted text-xs hidden sm:inline">{coin.symbol.toUpperCase()}</span>
               </Link>
@@ -132,12 +117,22 @@ function CoinTable({ coins, currency }: { coins: Coin[]; currency: string }) {
             </td>
             <td className="text-right py-3 px-4 hidden md:table-cell">{formatCompact(coin.market_cap)}</td>
             <td className="text-right py-3 px-4 hidden md:table-cell">{formatCompact(coin.total_volume)}</td>
-            <td className="text-right py-3 pl-4 pr-1 text-center">
-              <WatchlistButton coinId={coin.id} />
-            </td>
           </tr>
         ))}
       </tbody>
     </table>
+  )
+}
+
+function Pagination({ currentPage }: { currentPage: number }) {
+  if (currentPage <= 1) return null
+  return (
+    <div className="flex justify-center gap-2 mt-4">
+      {currentPage > 1 && (
+        <Link href={`/cryptocurrency?page=${currentPage - 1}`} className="px-3 py-1 text-xs border rounded hover:bg-muted/10">
+          ← Prev
+        </Link>
+      )}
+    </div>
   )
 }
