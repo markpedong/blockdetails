@@ -17,12 +17,14 @@ export function ThemeToggle() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Toggle theme">
-          {theme === 'system' ? <MonitorIcon className="w-4 h-4" /> : theme === 'light' ? <SunIcon className="w-4 h-4" /> : <MoonIcon className="w-4 h-4" />}
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={(props) => (
+          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Toggle theme" {...props}>
+            {theme === 'system' ? <MonitorIcon className="w-4 h-4" /> : theme === 'light' ? <SunIcon className="w-4 h-4" /> : <MoonIcon className="w-4 h-4" />}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        )}
+      />
       <DropdownMenuContent align="end">
         {modes.map(m => (
           <DropdownMenuItem key={m} onClick={() => setTheme(m)} className={theme === m ? 'bg-accent/10 text-accent' : ''}>
