@@ -1,17 +1,16 @@
-import { getCoinDetail, getMarketChart } from '../../../lib/crypto'
-import { formatPrice, formatCompact, formatPct, pctColor } from '../../../lib/format'
-import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '../../../lib/currency'
-import { CoinChart } from '../../components/coin-chart'
-import { WatchlistButton } from '../../components/watchlist-button'
-import { Stat as StatComp } from '../../components/ui/stat'
+import { formatPrice, formatCompact, formatPct, pctColor } from '@/lib/format'
+import { SUPPORTED_CURRENCIES, parseCurrencyFromUrl, persistCurrency } from '@/lib/currency'
+import { CoinChart } from '@/app/components/coin-chart'
+import { WatchlistButton } from '@/app/components/watchlist-button'
+import { Stat as StatComp } from '@/app/components/ui/stat'
+import type { CoinDetail, MarketChartPoint } from '@/lib/crypto'
 import Link from 'next/link'
 
 export async function generateStaticParams() {
   try {
-    const coins = await fetch('https://api.coingecko.com/api/v3/coins/list?include_platform=false', {
-      next: { revalidate: 86400 },
-    }).then(r => r.json())
-    return coins.slice(0, 50).map((c: { id: string }) => ({ slug: c.id }))
+    const res = await fetch('/api/coins/list', { next: { revalidate: 86400 } })
+    const json = await res.json()
+    return (json.data as { id: string }[]).slice(0, 50).map(c => ({ slug: c.id }))
   } catch { return [] }
 }
 
@@ -20,8 +19,11 @@ export const revalidate = 300
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   try {
-    const coin = await getCoinDetail(slug)
-    if (coin) {
+    // Use the API route for metadata to go through our service layer
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/coins/${slug}`)
+    const json = await res.json()
+    if (json.data?.coin) {
+      const coin = json.data.coin
       return {
         title: `${coin.name} (${coin.symbol.toUpperCase()}) Price, Market Cap, Charts | BlockDetails`,
         description: `View real-time ${coin.name} price, market cap, charts, and supply data.`,
@@ -32,13 +34,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: 'Cryptocurrency Details | BlockDetails' }
 }
 
+type CoinApiResponse = { coin?: CoinDetail; chart?: MarketChartPoint[] }
+
 export default async function CoinDetailPage({ searchParams, params }: { searchParams: Promise<{ currency?: string }>; params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const currency = await parseCurrencyFromUrl(searchParams as unknown as Promise<Record<string, string | undefined>>)
   persistCurrency(currency)
 
-  let coin: Awaited<ReturnType<typeof getCoinDetail>> | null = null
-  try { coin = await getCoinDetail(slug) } catch {}
+  let apiRes: CoinApiResponse | null = null
+  try {
+    const res = await fetch(`/api/coins/${slug}?currency=${currency}`)
+    const json = await res.json()
+    if (json.data?.coin) apiRes = json.data as CoinApiResponse
+  } catch {}
+
+  const coin = apiRes?.coin ?? null
 
   if (!coin) {
     return (
@@ -49,14 +59,13 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
     )
   }
 
-  const price = coin.market_data?.current_price?.[currency] ?? coin.current_price
-  const fdv = coin.market_data?.fully_diluted_valuation
+  const fdv = coin.fully_diluted_valuation
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4 flex-wrap">
-        <img src={coin.image} alt={`${coin.name} logo`} className="w-10 h-10 rounded-full" />
+        {coin.image && <img src={coin.image} alt={`${coin.name} logo`} className="w-10 h-10 rounded-full" />}
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold">{coin.name}</h1>
@@ -66,7 +75,7 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
             )}
           </div>
           <div className="flex items-center gap-3 mt-1">
-            <span className="text-2xl font-bold">{formatPrice(price, currency)}</span>
+            <span className="text-2xl font-bold">{formatPrice(coin.current_price, currency)}</span>
             <WatchlistButton coinId={coin.id} />
           </div>
         </div>
@@ -103,9 +112,9 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
           <div>
             <div className="text-muted text-xs">All-Time High</div>
             <div>{formatPrice(coin.ath, currency)}</div>
-            {coin.market_data?.ath_change_percentage && currency in coin.market_data.ath_change_percentage && (
-              <div className={`text-xs ${pctColor(coin.market_data.ath_change_percentage[currency] ?? 0)}`}>
-                {formatPct(coin.market_data.ath_change_percentage[currency] ?? 0)} from ATH
+            {coin.ath_change_percentage != null && (
+              <div className={`text-xs ${pctColor(coin.ath_change_percentage)}`}>
+                {formatPct(coin.ath_change_percentage)} from ATH
               </div>
             )}
           </div>
@@ -114,9 +123,9 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
           <div>
             <div className="text-muted text-xs">All-Time Low</div>
             <div>{formatPrice(coin.atl, currency)}</div>
-            {coin.market_data?.atl_change_percentage && currency in coin.market_data.atl_change_percentage && (
-              <div className={`text-xs ${pctColor(coin.market_data.atl_change_percentage[currency] ?? 0)}`}>
-                {formatPct(coin.market_data.atl_change_percentage[currency] ?? 0)} from ATL
+            {coin.ath_change_percentage != null && coin.ath_change_percentage < 0 && (
+              <div className={`text-xs ${pctColor(coin.ath_change_percentage)}`}>
+                {formatPct(coin.ath_change_percentage)} from ATL
               </div>
             )}
           </div>
@@ -136,8 +145,13 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
         )}
       </div>
 
-      {/* Contract addresses */}
-      {renderContractAddresses(coin)}
+      {/* Platform/network */}
+      {coin.platform_id && (
+        <div className="text-sm">
+          <span className="text-muted">Network: </span>
+          <span className="font-medium">{capitalize(coin.platform_id)}</span>
+        </div>
+      )}
 
       {/* Categories */}
       {coin.categories && coin.categories.length > 0 && (
@@ -149,32 +163,12 @@ export default async function CoinDetailPage({ searchParams, params }: { searchP
       )}
 
       {/* Description — sanitized */}
-      {coin.description?.en && (
-        <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(coin.description.en) }} />
+      {coin.description && (
+        <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(coin.description) }} />
       )}
 
       {/* Links */}
-      {coin.links && (
-        <div className="flex gap-4 flex-wrap text-sm">
-          {coin.links.website?.[0] && (
-            <a href={sanitizeUrl(coin.links.website[0])} target="_blank" rel="noopener noreferrer" className="text-accent">🌐 Website</a>
-          )}
-          {coin.links.blockchain_site?.[0] && (
-            <a href={sanitizeUrl(coin.links.blockchain_site[0])} target="_blank" rel="noopener noreferrer" className="text-accent">📊 Block Explorer</a>
-          )}
-          {coin.links.subreddit_url?.[0] && (
-            <a href={sanitizeUrl(coin.links.subreddit_url[0])} target="_blank" rel="noopener noreferrer" className="text-accent">💬 Reddit</a>
-          )}
-          {coin.links.announcement_url?.[0] && (
-            <a href={sanitizeUrl(coin.links.announcement_url[0])} target="_blank" rel="noopener noreferrer" className="text-accent">📢 Announcements</a>
-          )}
-          {(() => {
-            const repo = Object.values(coin.links.repos_url).find(Boolean)
-            if (!repo) return null
-            return <a href={sanitizeUrl(repo as unknown as string)} target="_blank" rel="noopener noreferrer" className="text-accent">📦 GitHub</a>
-          })()}
-        </div>
-      )}
+      {renderLinks(coin!)}
     </div>
   )
 }
@@ -195,8 +189,7 @@ function CurrencySelector({ currency, baseHref }: { currency: string; baseHref: 
   )
 }
 
-function PriceBadges({ coin, currency }: { coin: Awaited<ReturnType<typeof getCoinDetail>>; currency: string }) {
-  const md = coin.market_data
+function PriceBadges({ coin, currency }: { coin: CoinDetail; currency: string }) {
   return (
     <div className="flex gap-2 flex-wrap">
       {coin.price_change_percentage_1h_in_currency != null && (
@@ -212,51 +205,43 @@ function PriceBadges({ coin, currency }: { coin: Awaited<ReturnType<typeof getCo
           {formatPct(coin.price_change_percentage_7d_in_currency)} (7D)
         </span>
       )}
-      {md?.price_change_percentage_30d_in_currency && currency in md.price_change_percentage_30d_in_currency && md.price_change_percentage_30d_in_currency[currency] != null && md.price_change_percentage_30d_in_currency[currency] !== 0 && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(md.price_change_percentage_30d_in_currency[currency])}`}>
-          {formatPct(md.price_change_percentage_30d_in_currency[currency])} (30D)
+      {coin.price_change_percentage_30d_in_currency != null && (
+        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_30d_in_currency)}`}>
+          {formatPct(coin.price_change_percentage_30d_in_currency)} (30D)
         </span>
       )}
-      {md?.price_change_percentage_60d_in_currency && currency in md.price_change_percentage_60d_in_currency && md.price_change_percentage_60d_in_currency[currency] != null && md.price_change_percentage_60d_in_currency[currency] !== 0 && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(md.price_change_percentage_60d_in_currency[currency])}`}>
-          {formatPct(md.price_change_percentage_60d_in_currency[currency])} (60D)
+      {coin.price_change_percentage_60d_in_currency != null && (
+        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_60d_in_currency)}`}>
+          {formatPct(coin.price_change_percentage_60d_in_currency)} (60D)
         </span>
       )}
-      {md?.price_change_percentage_1y_in_currency && currency in md.price_change_percentage_1y_in_currency && md.price_change_percentage_1y_in_currency[currency] != null && md.price_change_percentage_1y_in_currency[currency] !== 0 && (
-        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(md.price_change_percentage_1y_in_currency[currency])}`}>
-          {formatPct(md.price_change_percentage_1y_in_currency[currency])} (1Y)
+      {coin.price_change_percentage_1y_in_currency != null && (
+        <span className={`text-xs px-2 py-1 rounded-full ${pctColor(coin.price_change_percentage_1y_in_currency)}`}>
+          {formatPct(coin.price_change_percentage_1y_in_currency)} (1Y)
         </span>
       )}
     </div>
   )
 }
 
-function renderContractAddresses(coin: Awaited<ReturnType<typeof getCoinDetail>>) {
-  // CoinGecko returns contract_address on platform coins via the platform_id field
-  // and additional platform info in the response. We check for contract addresses
-  // by looking at coins that have a platform_id (meaning they're tokens on another chain).
-  if (!coin.platform_id) return null
+function renderLinks(coin: CoinDetail) {
+  const links: { label: string; href: string }[] = []
+  if (coin.homepage?.[0]) links.push({ label: '🌐 Website', href: sanitizeUrl(coin.homepage[0]) })
+  if (coin.blockchain_site?.[0]) links.push({ label: '📊 Block Explorer', href: sanitizeUrl(coin.blockchain_site[0]) })
+  if (coin.official_forum_url?.[0]) links.push({ label: '💬 Forum', href: sanitizeUrl(coin.official_forum_url[0]) })
+  if (coin.subreddit_url?.[0]) links.push({ label: '💬 Reddit', href: sanitizeUrl(coin.subreddit_url[0]) })
+  if (coin.announcement_urls?.[0]) links.push({ label: '📢 Announcements', href: sanitizeUrl(coin.announcement_urls[0]) })
+  const repo = Object.values(coin.repos_url).find(Boolean)
+  if (repo) links.push({ label: '📦 GitHub', href: sanitizeUrl(repo as string) })
 
-  // For platform coins, the contract address is embedded in the CoinGecko response
-  // under a "contract_address" field on the platform object. Since our CoinDetail type
-  // doesn't capture this, we check if there's platform info.
-  // The CoinGecko API v3 /coins/{id} response includes a "platform" field for platform coins
-  // with the contract address. We'll display it if available via a workaround:
-  // Check if any link points to an explorer that reveals the contract.
-
-  // Actually, CoinGecko v3 /coins/{id} returns a "platform" field (string) for platform coins,
-  // and the contract address is NOT directly exposed in v3. It IS available in v3/coins/{id}/contract_address
-  // but that's a separate endpoint. For now, we note platform_id as the network.
+  if (links.length === 0) return null
   return (
-    <div className="text-sm">
-      <span className="text-muted">Network: </span>
-      <span className="font-medium">{capitalize(coin.platform_id)}</span>
+    <div className="flex gap-4 flex-wrap text-sm">
+      {links.map(l => (
+        <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="text-accent">{l.label}</a>
+      ))}
     </div>
   )
-}
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 function sanitizeUrl(url: string): string {
@@ -275,4 +260,8 @@ function sanitizeHtml(html: string): string {
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
     .replace(/on\w+="[^"]*"|on\w+='[^']*'/gi, '')
     .replace(/javascript:/gi, 'unsafe:')
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1)
 }
