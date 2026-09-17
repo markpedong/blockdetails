@@ -2,9 +2,9 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { PageHeader } from '@/components/ui/page-header'
-import { CryptoPagination } from '@/components/ui/crypto-pagination'
-import { EmptyState } from '@/components/ui/empty-state'
+import { PageHeader } from '@/components/page-header'
+import { CryptoPagination } from '@/components/crypto-pagination'
+import { EmptyState } from '@/components/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
@@ -46,10 +46,10 @@ const ExchangesList = async () => {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-border/40 overflow-x-auto">
+      <div className="rounded-lg border overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="border-border/40 bg-muted/20 hover:bg-transparent">
+            <TableRow className="bg-muted/50 hover:bg-muted/50">
               <TableHead className="w-10 text-right text-xs font-medium text-muted-foreground">Rank</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground">Exchange</TableHead>
               <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">Trust</TableHead>
@@ -59,7 +59,7 @@ const ExchangesList = async () => {
           </TableHeader>
           <TableBody>
             {exchanges.map(ex => (
-              <TableRow key={ex.id} className="border-border/40 hover:bg-muted/10 transition-colors">
+              <TableRow key={ex.id} className="hover:bg-muted/30">
                 <TableCell className="text-right text-muted-foreground font-mono text-xs">{ex.trust_score_rank ?? '—'}</TableCell>
                 <TableCell>
                   <Link href={`/exchanges/${ex.id}`} className="font-medium text-sm hover:text-accent transition-colors">

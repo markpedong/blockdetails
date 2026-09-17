@@ -1,8 +1,8 @@
 import { Suspense } from 'react'
-import { CryptoTable } from '@/components/ui/crypto-table'
-import { MarketOverview } from '@/components/ui/market-overview'
+import { CryptoTable } from '@/components/crypto-table'
+import { MarketOverview } from '@/components/market-overview'
 import { TrendingSection } from '@/components/trending-section'
-import { PageHeader } from '@/components/ui/page-header'
+import { PageHeader } from '@/components/page-header'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'

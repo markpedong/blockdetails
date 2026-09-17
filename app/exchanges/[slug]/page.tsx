@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Globe, ExternalLink } from 'lucide-react'
-import { StatRow } from '@/components/ui/stat-row'
+import { StatRow } from '@/components/stat-row'
 
 export const dynamic = 'force-dynamic'
 

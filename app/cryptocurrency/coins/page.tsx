@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
-import { CryptoTable } from '@/components/ui/crypto-table'
-import { PageHeader } from '@/components/ui/page-header'
-import { CryptoPagination } from '@/components/ui/crypto-pagination'
+import { CryptoTable } from '@/components/crypto-table'
+import { PageHeader } from '@/components/page-header'
+import { CryptoPagination } from '@/components/crypto-pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
