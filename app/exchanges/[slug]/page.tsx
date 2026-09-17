@@ -10,7 +10,7 @@ export async function generateStaticParams() {
   } catch { return [] }
 }
 
-export const revalidate = 300
+// ponytail: revalidate removed — exchange markets contain last_price which must be fresh.
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -40,7 +40,7 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
 
   let markets: ExchangeMarketPair[] = []
   try {
-    const res = await fetch(`/api/exchanges/${slug}/markets?per_page=50`)
+    const res = await fetch(`/api/exchanges/${slug}/markets?per_page=50`, { cache: 'no-store' })
     const json = await res.json()
     markets = (json.data as ExchangeMarketPair[]) ?? []
   } catch {}
