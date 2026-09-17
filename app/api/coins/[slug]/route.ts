@@ -1,31 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getCoinDetail, getMarketChart } from '@/lib/crypto'
+import { NextResponse } from 'next/server'
 
 export async function GET(
-  req: NextRequest,
+  request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const url = new URL(req.url)
-  const currency = (url.searchParams.get('currency') ?? 'usd').toLowerCase()
-
-  if (!slug || slug.length < 1) {
-    return NextResponse.json({ error: { code: 'INVALID_SLUG', message: 'Coin slug is required' } }, { status: 400 })
-  }
+  const { searchParams } = new URL(request.url)
+  const vs_currency = searchParams.get('vs_currency') || 'usd'
 
   try {
-    const [coin, chart] = await Promise.all([
-      getCoinDetail(slug, currency),
-      getMarketChart(slug, currency, parseInt(url.searchParams.get('days') ?? '1', 10)),
-    ])
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${slug}?vs_currency=${vs_currency}&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`,
+      { next: { revalidate: 60 } }
+    )
 
-    if (!coin) {
-      return NextResponse.json({ error: { code: 'COIN_NOT_FOUND', message: `Coin '${slug}' not found` } }, { status: 404 })
+    if (!res.ok) {
+      return NextResponse.json({ error: 'Failed to fetch coin' }, { status: 500 })
     }
 
-    // Explicitly no-store for live price data; chart is already no-store in provider
-    return NextResponse.json({ data: { coin, chart } }, { headers: { 'Cache-Control': 'no-store, no-cache' } })
-  } catch {
-    return NextResponse.json({ error: { code: 'FETCH_ERROR', message: 'Failed to fetch coin data' } }, { status: 502 })
+    const data = await res.json()
+    return NextResponse.json({ data })
+  } catch (err) {
+    console.error('Coin detail API error:', err)
+    return NextResponse.json({ error: 'Failed to fetch coin' }, { status: 500 })
   }
 }

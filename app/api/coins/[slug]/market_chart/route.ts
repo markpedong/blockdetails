@@ -1,24 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getMarketChart } from '@/lib/crypto/service'
+import { NextResponse } from 'next/server'
 
 export async function GET(
-  req: NextRequest,
+  request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-
-  if (!slug || slug.length < 1) {
-    return NextResponse.json({ error: { code: 'INVALID_SLUG', message: 'Coin slug is required' } }, { status: 400 })
-  }
-
-  const url = new URL(req.url)
-  const currency = (url.searchParams.get('currency') ?? 'usd').toLowerCase()
-  const days = Math.min(Math.max(1, parseInt(url.searchParams.get('days') ?? '1', 10)), 365)
+  const { searchParams } = new URL(request.url)
+  const vs_currency = searchParams.get('vs_currency') || 'usd'
+  const days = searchParams.get('days') || '7'
 
   try {
-    const chart = await getMarketChart(slug, currency, days)
-    return NextResponse.json({ data: chart })
-  } catch {
-    return NextResponse.json({ error: { code: 'FETCH_ERROR', message: 'Failed to fetch market chart' } }, { status: 502 })
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${slug}/market_chart?vs_currency=${vs_currency}&days=${days}`,
+      { next: { revalidate: 60 } }
+    )
+
+    if (!res.ok) {
+      return NextResponse.json({ error: 'Failed to fetch chart data' }, { status: 500 })
+    }
+
+    const data = await res.json()
+    return NextResponse.json(data)
+  } catch (err) {
+    console.error('Market chart API error:', err)
+    return NextResponse.json({ error: 'Failed to fetch chart data' }, { status: 500 })
   }
 }

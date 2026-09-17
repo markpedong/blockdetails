@@ -1,16 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getExchangesPaginated, getExchangeDetail, getExchangeMarkets } from '@/lib/crypto/service'
+import { NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest) {
-  const url = new URL(req.url)
-
-  const perPage = Math.min(Math.max(1, parseInt(url.searchParams.get('per_page') ?? '50', 10)), 250)
-  const page = Math.min(Math.max(1, parseInt(url.searchParams.get('page') ?? '1', 10)), 100)
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const order = searchParams.get('order') || 'volume_desc'
+  const perPage = parseInt(searchParams.get('per_page') || '50', 10)
 
   try {
-    const result = await getExchangesPaginated(perPage, page)
-    return NextResponse.json({ data: result.data })
-  } catch {
-    return NextResponse.json({ error: { code: 'FETCH_ERROR', message: 'Failed to fetch exchanges' } }, { status: 502 })
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/exchanges?order=${order}&per_page=${perPage}`,
+      { next: { revalidate: 60 } }
+    )
+
+    if (!res.ok) {
+      return NextResponse.json({ error: 'Failed to fetch exchanges' }, { status: 500 })
+    }
+
+    const data = await res.json()
+    return NextResponse.json({ data })
+  } catch (err) {
+    console.error('Exchanges API error:', err)
+    return NextResponse.json({ error: 'Failed to fetch exchanges' }, { status: 500 })
   }
 }

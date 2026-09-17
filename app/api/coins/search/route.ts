@@ -1,19 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { searchCoins } from '@/lib/crypto'
+import { NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest) {
-  const url = new URL(req.url)
-  const query = url.searchParams.get('q') ?? ''
-  const currency = (url.searchParams.get('currency') ?? 'usd').toLowerCase()
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const q = searchParams.get('q') || ''
 
-  if (!query || query.length < 1) {
-    return NextResponse.json({ error: { code: 'INVALID_QUERY', message: 'Search query is required' } }, { status: 400 })
+  if (q.length < 2) {
+    return NextResponse.json({ data: [] })
   }
 
   try {
-    const results = await searchCoins(query, currency)
-    return NextResponse.json({ data: results })
-  } catch {
-    return NextResponse.json({ error: { code: 'FETCH_ERROR', message: 'Failed to search coins' } }, { status: 502 })
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/search/coins?query=${encodeURIComponent(q)}`,
+      { next: { revalidate: 60 } }
+    )
+
+    if (!res.ok) {
+      return NextResponse.json({ error: 'Failed to search' }, { status: 500 })
+    }
+
+    const data = await res.json()
+    // Map search results to coin format for the command menu
+    const coins = (data.coins || []).map((c: any) => ({
+      id: c.id,
+      name: c.name,
+      symbol: c.symbol,
+      market_cap_rank: c.market_cap_rank,
+      image: c.large,
+    }))
+
+    return NextResponse.json({ data: coins })
+  } catch (err) {
+    console.error('Search API error:', err)
+    return NextResponse.json({ error: 'Failed to search' }, { status: 500 })
   }
 }
