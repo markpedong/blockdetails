@@ -32,3 +32,19 @@ export function formatNum(n: number | null | undefined): string {
   if (n == null) return '\u2014'
   return new Intl.NumberFormat('en-US').format(n)
 }
+
+export function sanitizeUrl(url: string): string {
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '#'
+    return url
+  } catch { return '#' }
+}
+
+export function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+    .replace(/on\w+="[^"]*"|on\w+='[^']*'/gi, '')
+    .replace(/javascript:/gi, 'unsafe:')
+}
