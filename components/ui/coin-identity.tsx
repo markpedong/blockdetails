@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Link from 'next/link'
 
 interface CoinIdentityProps {
   name: string
@@ -7,10 +6,9 @@ interface CoinIdentityProps {
   image?: string | null
   rank?: number | null
   size?: 'sm' | 'md' | 'lg'
-  href?: string
 }
 
-export function CoinIdentity({ name, symbol, image, rank, size = 'md', href }: CoinIdentityProps) {
+export function CoinIdentity({ name, symbol, image, rank, size = 'md' }: CoinIdentityProps) {
   const sizeClasses = {
     sm: 'w-5 h-5',
     md: 'w-6 h-6',
@@ -25,7 +23,7 @@ export function CoinIdentity({ name, symbol, image, rank, size = 'md', href }: C
 
   const t = textClasses[size]
 
-  const content = (
+  return (
     <div className="flex items-center gap-2">
       {image && (
         <Image
@@ -50,10 +48,4 @@ export function CoinIdentity({ name, symbol, image, rank, size = 'md', href }: C
       )}
     </div>
   )
-
-  if (href) {
-    return <Link href={href}>{content}</Link>
-  }
-
-  return content
 }

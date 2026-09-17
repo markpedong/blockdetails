@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export async function MarketOverview({ currency }: { currency: string }) {
@@ -29,10 +28,6 @@ export async function MarketOverview({ currency }: { currency: string }) {
     return `$${n.toLocaleString()}`
   }
 
-  const changePct = global.market_cap_change_percentage_24h_usd
-  const changeStr = changePct != null ? `${changePct > 0 ? '+' : ''}${changePct.toFixed(1)}%` : '—'
-  const changeColor = changePct != null ? (changePct >= 0 ? 'text-[var(--positive)]' : 'text-[var(--negative)]') : ''
-
   return (
     <Card>
       <CardHeader>
@@ -48,7 +43,7 @@ export async function MarketOverview({ currency }: { currency: string }) {
   )
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+const Stat = ({ label, value }: { label: string; value: string }) => {
   return (
     <div>
       <div className="text-muted-foreground">{label}</div>
