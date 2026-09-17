@@ -1,12 +1,11 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { CoinChart } from '@/components/coin-chart'
 import { formatPrice, formatCompact, formatNum, sanitizeUrl } from '@/lib/utils'
-import { PriceChangeInline } from '@/components/ui/price-change'
-import { CoinIdentity } from '@/components/ui/coin-identity'
-import { StatRow } from '@/components/ui/stat-row'
-import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
+import { PriceChangeInline } from '@/components/price-change'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExternalLink, Globe, FileText, BookOpen } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -38,70 +37,76 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
   const isPositive = change24h >= 0
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Breadcrumb */}
-      <nav className="text-xs text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
+      <nav className="text-sm text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
         <Link href="/cryptocurrency" className="hover:text-foreground transition-colors">Cryptocurrencies</Link>
-        <span>/</span>
-        <span className="text-foreground">{coin.name}</span>
+        <span className="text-muted-foreground/50">/</span>
+        <span className="text-foreground font-medium">{coin.name}</span>
       </nav>
 
-      {/* Coin identity + price */}
-      <div className="flex flex-wrap items-start gap-4">
-        <CoinIdentity
-          name={coin.name}
-          symbol={coin.symbol}
-          image={coin.image}
-          rank={coin.market_cap_rank}
-          size="lg"
-        />
-        <div className="text-right ml-auto">
-          <div className="text-xs text-muted-foreground">Current Price</div>
-          <div className="text-2xl sm:text-3xl font-bold tabular-nums">
-            {formatPrice(coin.current_price, currency)}
-          </div>
-          {coin.price_change_24h != null && (
-            <div className="flex items-center gap-1.5 justify-end mt-0.5">
-              <PriceChangeInline value={coin.price_change_percentage_24h} />
-              <span className="text-muted-foreground text-xs tabular-nums">
-                ({isPositive ? '+' : ''}{formatPrice(Math.abs(coin.price_change_24h), currency)})
-              </span>
-            </div>
+      {/* Hero: identity + price */}
+      <div className="flex flex-wrap items-center gap-4">
+        {coin.image && (
+          <Image
+            src={coin.image}
+            alt=""
+            width={40}
+            height={40}
+            className="rounded-full"
+            unoptimized
+          />
+        )}
+        <div className="flex items-center gap-3 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{coin.name}</h1>
+          <span className="text-sm text-muted-foreground uppercase font-medium">{coin.symbol}</span>
+          {coin.market_cap_rank && (
+            <Badge variant="secondary" className="text-xs font-normal">Rank #{coin.market_cap_rank}</Badge>
           )}
         </div>
+        <div className="text-right ml-auto">
+          <div className="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight">
+            {formatPrice(coin.current_price, currency)}
+          </div>
+          <div className="flex items-center gap-2 justify-end mt-1">
+            <PriceChangeInline value={coin.price_change_percentage_24h} />
+            {coin.price_change_24h != null && (
+              <span className="text-muted-foreground text-sm tabular-nums">
+                ({isPositive ? '+' : ''}{formatPrice(Math.abs(coin.price_change_24h), currency)})
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-
-      <Separator />
 
       {/* Chart */}
       <CoinChart coinId={coin.id} currency={currency} />
 
-      <Separator />
-
       {/* Market Statistics */}
-      <div>
-        <h2 className="text-lg font-semibold mb-3">Market Statistics</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
-          <StatRow label="Market Cap" value={formatCompact(coin.market_cap)} />
-          <StatRow label="24h Volume" value={formatCompact(coin.total_volume)} />
-          <StatRow label="Circulating Supply" value={coin.circulating_supply ? formatNum(coin.circulating_supply) : '—'} />
-          <StatRow label="Total Supply" value={coin.total_supply ? formatNum(coin.total_supply) : '—'} />
-          <StatRow label="Max Supply" value={coin.max_supply ? formatNum(coin.max_supply) : '—'} />
-          <StatRow label="All-Time High" value={coin.ath ? formatPrice(coin.ath, currency) : '—'} />
-          <StatRow label="ATH Change" value={coin.ath_change_percentage != null ? `${coin.ath_change_percentage.toFixed(1)}%` : '—'} />
-          <StatRow label="ATH Date" value={coin.ath_date ? new Date(coin.ath_date).toLocaleDateString() : '—'} />
-          <StatRow label="All-Time Low" value={coin.atl ? formatPrice(coin.atl, currency) : '—'} />
-          <StatRow label="Rank" value={`#${coin.market_cap_rank}`.replace('#NaN', '')} />
-        </div>
-      </div>
-
-      <Separator />
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-semibold">Market Statistics</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-3">
+            <StatRow label="Market Cap" value={formatCompact(coin.market_cap)} />
+            <StatRow label="24h Volume" value={formatCompact(coin.total_volume)} />
+            <StatRow label="Circulating Supply" value={coin.circulating_supply ? formatNum(coin.circulating_supply) : '—'} />
+            <StatRow label="Total Supply" value={coin.total_supply ? formatNum(coin.total_supply) : '—'} />
+            <StatRow label="Max Supply" value={coin.max_supply ? formatNum(coin.max_supply) : '—'} />
+            <StatRow label="All-Time High" value={coin.ath ? formatPrice(coin.ath, currency) : '—'} />
+            <StatRow label="ATH Change" value={coin.ath_change_percentage != null ? `${coin.ath_change_percentage.toFixed(1)}%` : '—'} />
+            <StatRow label="ATH Date" value={coin.ath_date ? new Date(coin.ath_date).toLocaleDateString() : '—'} />
+            <StatRow label="All-Time Low" value={coin.atl ? formatPrice(coin.atl, currency) : '—'} />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* About */}
       {coin.description?.en && (
         <div>
           <h2 className="text-lg font-semibold mb-2">About {coin.name}</h2>
-          <div className="prose prose-sm max-w-none text-muted-foreground" dangerouslySetInnerHTML={{ __html: coin.description.en.split('.').slice(0, 3).join('.') + '.' }} />
+          <p className="text-sm text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: coin.description.en.split('.').slice(0, 3).join('.') + '.' }} />
         </div>
       )}
 
@@ -110,6 +115,13 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
     </div>
   )
 }
+
+const StatRow = ({ label, value }: { label: string; value: string }) => (
+  <div>
+    <div className="text-xs text-muted-foreground mb-0.5">{label}</div>
+    <div className="text-sm font-medium tabular-nums">{value}</div>
+  </div>
+)
 
 const renderLinks = (links: any) => {
   if (!links) return null
@@ -126,7 +138,7 @@ const renderLinks = (links: any) => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-2">Links</h2>
+      <h2 className="text-lg font-semibold mb-3">Resources</h2>
       <div className="flex flex-wrap gap-2">
         {items.map(item => (
           <a
@@ -134,7 +146,7 @@ const renderLinks = (links: any) => {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
           >
             {item.icon}
             <span>{item.label}</span>
