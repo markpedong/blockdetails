@@ -29,13 +29,11 @@ export function WatchlistButton({ coinId }: { coinId: string }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        render={(props) => (
-          <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Watchlist" {...props}>
-            <StarIcon className={`w-3.5 h-3.5 ${watched ? 'fill-yellow-400 text-yellow-400' : ''}`} />
-          </Button>
-        )}
-      />
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Watchlist">
+          <StarIcon className={`w-3.5 h-3.5 ${watched ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+        </Button>
+      </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={toggle}>
           {watched ? '★ Remove from Watchlist' : '☆ Add to Watchlist'}

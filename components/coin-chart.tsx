@@ -52,6 +52,7 @@ export function CoinChart({ coinId, currency }: CoinChartProps) {
     <div className="space-y-3">
       {/* Time range selector */}
       <ToggleGroup
+        type="single"
         value={range}
         onValueChange={(v) => v && setRange(v as RangeKey)}
         className="justify-start"
