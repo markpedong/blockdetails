@@ -14,7 +14,8 @@ export async function generateStaticParams() {
   } catch { return [] }
 }
 
-export const revalidate = 300
+// ponytail: revalidate removed — coin detail includes current_price which must be fresh.
+// The generateStaticParams still uses revalidate:86400 for the list, which is fine (id/symbol/name only).
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
