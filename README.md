@@ -50,16 +50,16 @@ BlockDetails uses a **server-side crypto data abstraction layer**. The frontend 
 
 | Endpoint | Method | Description | Cache |
 |----------|--------|-------------|-------|
-| `/api/coins` | GET | List top coins (paginated) | 1 min |
-| `/api/coins/[slug]` | GET | Single coin detail + live price | 5 min (metadata) / no-store (price) |
-| `/api/coins/[slug]/chart` | GET | Historical price chart data | 1 min (last hour) / 5 min (older) |
-| `/api/coins/trending` | GET | Trending coins | 5 min |
-| `/api/coins/search` | GET | Search coins by query | 1 min |
-| `/api/coins/list` | GET | Full coin list (for static params) | 24 hours |
-| `/api/global` | GET | Global market data | 1 min |
-| `/api/exchanges` | GET | Exchange list (paginated) | 5 min |
-| `/api/exchanges/[slug]` | GET | Single exchange detail | 10 min |
-| `/api/exchanges/[slug]/markets` | GET | Exchange markets/trading pairs | 1 min |
+| `/api/coins` | GET | List top coins (paginated) — includes `current_price`, price changes, market cap | **no-store** (price is live) |
+| `/api/coins/[slug]` | GET | Single coin detail + live price + chart data | **no-store** (price is live) |
+| `/api/coins/[slug]/chart` | GET | Historical price chart data (time-series) | **no-store** (price is live) |
+| `/api/coins/trending` | GET | Trending coins (rank, image only — no price) | 5 min |
+| `/api/coins/search` | GET | Search coins by query (rank, image only — no price) | **no-store** |
+| `/api/coins/list` | GET | Full coin list (for static params: id/symbol/name only) | 24 hours |
+| `/api/global` | GET | Global market data (totals, BTC dominance — no price) | 1 min |
+| `/api/exchanges` | GET | Exchange list (paginated — volume, trust score only) | 5 min |
+| `/api/exchanges/[slug]` | GET | Single exchange detail (no price) | 10 min |
+| `/api/exchanges/[slug]/markets` | GET | Exchange markets/trading pairs — includes `last_price` per pair | **no-store** (price is live) |
 
 ### Providers
 
