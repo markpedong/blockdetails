@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import type { Coin } from '@/lib/crypto'
 import { formatPrice, formatCompact } from '@/lib/utils'
-import { CoinIdentity } from './coin-identity'
-import { PriceChangeInline } from './price-change'
-import { WatchlistButton } from '../watchlist-button'
+import { CoinIdentity } from '@/components/coin-identity'
+import { PriceChangeInline } from '@/components/price-change'
+import { WatchlistButton } from '@/components/watchlist-button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { EmptyState } from './empty-state'
+import { EmptyState } from '@/components/empty-state'
 
 interface CryptoTableProps {
   coins: Coin[]
@@ -33,31 +33,31 @@ export function CryptoTable({
   }
 
   return (
-    <div className="rounded-lg border border-border/40 overflow-x-auto">
+    <div className="rounded-lg border overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="border-border/50 bg-muted/20 hover:bg-transparent">
-            {showRank && <TableHead className="w-10 text-right text-xs font-medium text-muted-foreground">#</TableHead>}
-            <TableHead className="min-w-[140px] text-xs font-medium text-muted-foreground">Asset</TableHead>
+          <TableRow className="bg-muted/50 hover:bg-muted/50">
+            {showRank && <TableHead className="w-12 text-right text-xs font-medium text-muted-foreground">#</TableHead>}
+            <TableHead className="min-w-[160px] text-xs font-medium text-muted-foreground">Asset</TableHead>
             <TableHead className="text-right text-xs font-medium text-muted-foreground">Price</TableHead>
-            {show1h && <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">1h</TableHead>}
-            <TableHead className="text-right text-xs font-medium text-muted-foreground">24h</TableHead>
-            {show7d && <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">7D</TableHead>}
+            {show1h && <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">1h %</TableHead>}
+            <TableHead className="text-right text-xs font-medium text-muted-foreground">24h %</TableHead>
+            {show7d && <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">7d %</TableHead>}
             {showMarketCap && <TableHead className="text-right hidden md:table-cell text-xs font-medium text-muted-foreground">Market Cap</TableHead>}
-            {showVolume && <TableHead className="text-right hidden lg:table-cell text-xs font-medium text-muted-foreground">Volume</TableHead>}
-            {showWatchlist && <TableHead className="w-10" />}
+            {showVolume && <TableHead className="text-right hidden lg:table-cell text-xs font-medium text-muted-foreground">Volume (24h)</TableHead>}
+            {showWatchlist && <TableHead className="w-12" />}
           </TableRow>
         </TableHeader>
         <TableBody>
           {coins.map(coin => (
-            <TableRow key={coin.id} className="border-border/50 hover:bg-muted/20">
+            <TableRow key={coin.id} className="hover:bg-muted/30">
               {showRank && (
-                <TableCell className="text-right text-muted-foreground font-mono text-xs">
+                <TableCell className="text-right text-muted-foreground font-mono text-xs tabular-nums">
                   {coin.market_cap_rank}
                 </TableCell>
               )}
               <TableCell>
-                <Link href={`/cryptocurrency/${coin.id}`} className="flex items-center gap-2 group">
+                <Link href={`/cryptocurrency/${coin.id}`} className="flex items-center gap-2.5 group py-0.5">
                   <CoinIdentity
                     name={coin.name}
                     symbol={coin.symbol}
@@ -84,17 +84,17 @@ export function CryptoTable({
                 </TableCell>
               )}
               {showMarketCap && (
-                <TableCell className="text-right tabular-nums hidden md:table-cell">
+                <TableCell className="text-right tabular-nums text-muted-foreground hidden md:table-cell">
                   {formatCompact(coin.market_cap)}
                 </TableCell>
               )}
               {showVolume && (
-                <TableCell className="text-right tabular-nums hidden lg:table-cell">
+                <TableCell className="text-right tabular-nums text-muted-foreground hidden lg:table-cell">
                   {formatCompact(coin.total_volume)}
                 </TableCell>
               )}
               {showWatchlist && (
-                <TableCell className="text-right">
+                <TableCell className="text-center">
                   <WatchlistButton coinId={coin.id} />
                 </TableCell>
               )}

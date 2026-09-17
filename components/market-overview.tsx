@@ -1,4 +1,4 @@
-import { Separator } from '@/components/ui/separator'
+import { Card, CardContent } from '@/components/ui/card'
 
 export async function MarketOverview({ currency }: { currency: string }) {
   let global: any = null
@@ -13,9 +13,11 @@ export async function MarketOverview({ currency }: { currency: string }) {
 
   if (!global) {
     return (
-      <div className="rounded-lg border border-border/40 bg-muted/20 px-4 py-3 text-xs text-muted-foreground">
-        Loading market data...
-      </div>
+      <Card>
+        <CardContent className="py-4">
+          <span className="text-sm text-muted-foreground">Loading market data...</span>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -32,20 +34,22 @@ export async function MarketOverview({ currency }: { currency: string }) {
   const btcDominance = global.market_cap_percentage?.btc ?? global.btc_dominance
 
   return (
-    <div className="rounded-lg border border-border/40 bg-muted/20 px-4 py-3">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-2 text-xs">
-        <Stat label="Active Cryptos" value={global.active_cryptocurrencies?.toLocaleString() ?? '—'} />
-        <Stat label="Total Market Cap" value={fmt(marketCap)} />
-        <Stat label="24h Volume" value={fmt(volume)} />
-        <Stat label="BTC Dominance" value={`${btcDominance?.toFixed(1) ?? '—'}%`} />
-      </div>
-    </div>
+    <Card>
+      <CardContent>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-3">
+          <Stat label="Active Cryptos" value={global.active_cryptocurrencies?.toLocaleString() ?? '—'} />
+          <Stat label="Total Market Cap" value={fmt(marketCap)} />
+          <Stat label="24h Volume" value={fmt(volume)} />
+          <Stat label="BTC Dominance" value={`${btcDominance?.toFixed(1) ?? '—'}%`} />
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
   <div>
-    <div className="text-muted-foreground">{label}</div>
-    <div className="font-semibold mt-0.5 tabular-nums">{value}</div>
+    <div className="text-xs text-muted-foreground">{label}</div>
+    <div className="text-sm font-semibold mt-0.5 tabular-nums">{value}</div>
   </div>
 )

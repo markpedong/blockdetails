@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
-import { CoinIdentity } from '@/components/ui/coin-identity'
-import { PriceChangeInline } from '@/components/ui/price-change'
+import { CoinIdentity } from '@/components/coin-identity'
+import { PriceChangeInline } from '@/components/price-change'
 
 const TrendingSection = async ({ currency }: { currency: string }) => {
   let trending: any[] = []
