@@ -1,107 +1,136 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { formatPrice } from '../../lib/format'
+import { useState, useEffect, useRef } from 'react'
+import { formatPrice, formatCompact } from '@/lib/format'
 
-interface Point { date: number; value: number }
+interface CoinChartProps {
+  coinId: string
+  currency?: string
+}
 
-const TIMEFRAMES = [
-  { label: '1D', days: 1 },
-  { label: '7D', days: 7 },
-  { label: '1M', days: 30 },
-  { label: '3M', days: 90 },
-  { label: '1Y', days: 365 },
-  { label: 'MAX', days: '' }
-] as const
-
-export function CoinChart({ coinId, currency }: { coinId: string; currency?: string }) {
-  const [tf, setTf] = useState<string>(() => {
-    if (typeof window === 'undefined') return '7D'
-    const saved = localStorage.getItem(`chart_tf_${coinId}`)
-    return saved || '7D'
-  })
-
-  const [data, setData] = useState<Point[]>([])
-  const [loading, setLoading] = useState(true)
-
-  const tfObj = TIMEFRAMES.find(t => t.label === tf) ?? TIMEFRAMES[1]
+export function CoinChart({ coinId, currency = 'usd' }: CoinChartProps) {
+  const [data, setData] = useState<{ date: string; price: number }[]>([])
+  const [range, setRange] = useState('7d')
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    setLoading(true)
-    const url = `/api/coins/${coinId}/market_chart?vs_currency=${currency || 'usd'}&days=${tfObj.days}`
-    fetch(url).then(r => r.json()).then(d => {
-      if (d.prices) setData(d.prices.map((p: [number, number]) => ({ date: p[0], value: p[1] })))
-      setLoading(false)
-    }).catch(() => { setLoading(false) })
-  }, [coinId, tfObj.days, currency])
-
-  // Persist timeframe choice
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(`chart_tf_${coinId}`, tf)
+    async function fetchChart() {
+      try {
+        const res = await fetch(`/api/coins/${coinId}?currency=${currency}&days=${range}`)
+        const json = await res.json()
+        if (json.data?.chart) {
+          setData(json.data.chart.map((p: { timestamp: number; price: number }) => ({ date: new Date(p.timestamp).toLocaleDateString(), price: p.price })))
+        }
+      } catch {}
     }
-  }, [tf, coinId])
+    fetchChart()
+  }, [coinId, currency, range])
 
-  const chartData = data.map(d => ({ ...d, formatted: formatPrice(d.value, currency) }))
+  // Draw chart on canvas
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || data.length === 0) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const dpr = window.devicePixelRatio || 1
+    const rect = canvas.getBoundingClientRect()
+    canvas.width = rect.width * dpr
+    canvas.height = rect.height * dpr
+    ctx.scale(dpr, dpr)
+
+    const w = rect.width
+    const h = rect.height
+    const padding = { top: 20, bottom: 30, left: 60, right: 10 }
+    const chartW = w - padding.left - padding.right
+    const chartH = h - padding.top - padding.bottom
+
+    ctx.clearRect(0, 0, w, h)
+
+    const prices = data.map(d => d.price)
+    const minP = Math.min(...prices)
+    const maxP = Math.max(...prices)
+    const rangeP = maxP - minP || 1
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)'
+    ctx.lineWidth = 1
+    for (let i = 0; i <= 4; i++) {
+      const y = padding.top + (chartH / 4) * i
+      ctx.beginPath()
+      ctx.moveTo(padding.left, y)
+      ctx.lineTo(w - padding.right, y)
+      ctx.stroke()
+
+      // Price labels
+      const price = maxP - (rangeP / 4) * i
+      ctx.fillStyle = 'rgba(255,255,255,0.4)'
+      ctx.font = '10px sans-serif'
+      ctx.textAlign = 'right'
+      ctx.fillText(formatPrice(price, currency), padding.left - 5, y + 3)
+    }
+
+    // Draw line
+    ctx.beginPath()
+    data.forEach((d, i) => {
+      const x = padding.left + (i / (data.length - 1)) * chartW
+      const y = padding.top + ((maxP - d.price) / rangeP) * chartH
+      if (i === 0) ctx.moveTo(x, y)
+      else ctx.lineTo(x, y)
+    })
+
+    // Gradient fill
+    const gradient = ctx.createLinearGradient(0, padding.top, 0, h - padding.bottom)
+    gradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)')
+    gradient.addColorStop(1, 'rgba(16, 185, 129, 0)')
+
+    ctx.strokeStyle = '#10b981'
+    ctx.lineWidth = 2
+    ctx.stroke()
+
+    // Fill area
+    ctx.lineTo(padding.left + chartW, h - padding.bottom)
+    ctx.lineTo(padding.left, h - padding.bottom)
+    ctx.closePath()
+    ctx.fillStyle = gradient
+    ctx.fill()
+
+  }, [data, currency])
+
+  const lastPrice = data.length > 0 ? data[data.length - 1].price : null
+  const firstPrice = data.length > 0 ? data[0].price : null
+  const changePct = lastPrice && firstPrice ? ((lastPrice - firstPrice) / firstPrice * 100) : null
 
   return (
-    <div>
-      <div className="flex gap-1 mb-4">
-        {TIMEFRAMES.map(t => (
+    <div className="space-y-4">
+      {/* Range selector */}
+      <div className="flex gap-2">
+        {['1d', '7d', '30d', '90d', '1y'].map(r => (
           <button
-            key={t.label}
-            onClick={() => setTf(t.label)}
-            className={`px-2.5 py-1 text-xs rounded-full transition ${tf === t.label ? 'bg-accent text-white' : 'border border-border hover:bg-muted/10'}`}
+            key={r}
+            onClick={() => setRange(r)}
+            className={`px-3 py-1 text-xs rounded-full border transition ${range === r ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
           >
-            {t.label}
+            {r}
           </button>
         ))}
       </div>
 
-      {loading ? (
-        <div className="h-64 flex items-center justify-center text-sm text-muted">Loading chart...</div>
-      ) : data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-sm text-muted">No chart data available.</div>
-      ) : (
-        <ResponsiveContainer width="100%" height={320}>
-          <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="var(--accent)" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis
-              dataKey="date"
-              tick={{ fontSize: 11, fill: 'var(--muted)' }}
-              tickFormatter={(ts: number) => new Date(ts).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
-              tickLine={false}
-            />
-            <YAxis
-              domain={['auto', 'auto']}
-              tick={{ fontSize: 11, fill: 'var(--muted)' }}
-              tickFormatter={(v: number) => formatPrice(v, currency)}
-              tickLine={false}
-              axisLine={false}
-            />
-            <Tooltip
-              content={({ active, payload }) => {
-                if (!active || !payload?.[0]) return null
-                const d = payload[0].payload as Point
-                return (
-                  <div className="bg-card border border-border rounded-lg px-3 py-2 text-xs shadow">
-                    <div>{new Date(d.date).toLocaleString()}</div>
-                    <div className="font-semibold">{formatPrice(d.value, currency)}</div>
-                  </div>
-                )
-              }}
-            />
-            <Area type="monotone" dataKey="value" stroke="var(--accent)" fill="url(#chartGrad)" strokeWidth={2} />
-          </AreaChart>
-        </ResponsiveContainer>
+      {/* Price info */}
+      {lastPrice && (
+        <div className="flex items-center gap-4">
+          <span className="text-xl font-bold">{formatPrice(lastPrice, currency)}</span>
+          {changePct != null && (
+            <span className={`text-sm ${changePct >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+              {changePct >= 0 ? '+' : ''}{changePct.toFixed(2)}%
+            </span>
+          )}
+        </div>
       )}
+
+      {/* Canvas chart */}
+      <canvas ref={canvasRef} className="w-full h-48 rounded-lg border border-border" />
     </div>
   )
 }
