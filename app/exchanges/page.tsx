@@ -9,21 +9,23 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-export default function ExchangesPage() {
+const ExchangesPage = () => {
   return (
     <div className="app-container py-6 space-y-4">
       <PageHeader
         title="Cryptocurrency Exchanges"
         description="Compare exchanges by volume, trust score, and supported markets."
       />
-      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />} >
+      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
         <ExchangesList />
       </Suspense>
     </div>
   )
 }
 
-async function ExchangesList() {
+export default ExchangesPage
+
+const ExchangesList = async () => {
   let exchanges: any[] = []
   let totalCount = 0
   try {

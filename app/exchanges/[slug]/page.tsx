@@ -1,4 +1,4 @@
-import { formatCompact, formatNum } from '@/lib/format'
+import { formatCompact, formatNum } from '@/lib/utils'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 type ExchangeApiResponse = { exchange?: any; pairs?: any[] }
 
-export default async function ExchangeDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params
 
   let apiRes: ExchangeApiResponse | null = null
@@ -62,7 +62,6 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb */}
       <nav className="text-xs text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
         <span>/</span>
@@ -71,7 +70,6 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
         <span className="text-foreground">{exchange.name}</span>
       </nav>
 
-      {/* Header */}
       <div className="flex items-start gap-3 flex-wrap">
         {exchange.image && (
           <img src={exchange.image} alt="" className="w-8 h-8 rounded-full" />
@@ -89,7 +87,6 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
 
       <Separator />
 
-      {/* Stats grid — no cards, just label/value rows */}
       <div>
         <h2 className="text-sm font-semibold mb-3">Exchange Statistics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
@@ -104,7 +101,6 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
 
       <Separator />
 
-      {/* Description */}
       {exchange.description && (
         <div>
           <h2 className="text-sm font-semibold mb-2">About</h2>
@@ -112,12 +108,10 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
         </div>
       )}
 
-      {/* Links */}
       {renderLinks(exchange)}
 
       <Separator />
 
-      {/* Trading pairs */}
       {pairs.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold mb-3">Trading Pairs ({pairs.length})</h2>
@@ -147,7 +141,9 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
   )
 }
 
-function StatRow({ label, value }: { label: string; value: string }) {
+export default ExchangeDetailPage
+
+const StatRow = ({ label, value }: { label: string; value: string }) => {
   return (
     <div className="flex justify-between text-sm">
       <span className="text-muted-foreground">{label}</span>
@@ -156,7 +152,7 @@ function StatRow({ label, value }: { label: string; value: string }) {
   )
 }
 
-function TrustScore({ score }: { score: number }) {
+const TrustScore = ({ score }: { score: number }) => {
   const color = score >= 7 ? 'text-[var(--positive)]' : score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
   return (
     <Badge variant="outline" className={`tabular-nums ${color}`}>
@@ -165,7 +161,7 @@ function TrustScore({ score }: { score: number }) {
   )
 }
 
-function renderLinks(exchange: any) {
+const renderLinks = (exchange: any) => {
   const links: { icon?: React.ReactNode; label: string; href: string }[] = []
   if (exchange.url) links.push({ icon: <Globe className="w-3.5 h-3.5" />, label: 'Website', href: sanitizeUrl(exchange.url) })
   if (exchange.market_center_url) links.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'Trade', href: sanitizeUrl(exchange.market_center_url) })
@@ -188,7 +184,7 @@ function renderLinks(exchange: any) {
   )
 }
 
-function sanitizeUrl(url: string): string {
+const sanitizeUrl = (url: string): string => {
   try {
     const parsed = new URL(url)
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '#'
@@ -196,7 +192,7 @@ function sanitizeUrl(url: string): string {
   } catch { return '#' }
 }
 
-function sanitizeHtml(html: string): string {
+const sanitizeHtml = (html: string): string => {
   return html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
