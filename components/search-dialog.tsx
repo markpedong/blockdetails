@@ -59,7 +59,7 @@ export function SearchDialog() {
         <kbd className="font-mono text-[10px] bg-muted/80 px-1 rounded ml-1 hidden sm:inline">⌘K</kbd>
       </button>
 
-      <Dialog open={open} onOpenChange={(o) => { if (!o) { setQuery(''); setResults([]) } }}>
+      <Dialog open={open} onOpenChange={(o) => { if (!o) { setOpen(false); setQuery(''); setResults([]) } }}>
         <DialogContent className="sm:max-w-lg p-0 gap-0">
           <DialogTitle className="sr-only">Search assets</DialogTitle>
           <Command className="rounded-lg border shadow-sm">
