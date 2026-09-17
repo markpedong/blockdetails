@@ -5,18 +5,20 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-export default function TokensPage() {
+const TokensPage = () => {
   return (
     <div className="app-container py-6 space-y-4">
       <PageHeader title="Tokens" description="Fungible tokens across various blockchains." />
-      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />} >
+      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
         <TokensList currency="usd" />
       </Suspense>
     </div>
   )
 }
 
-async function TokensList({ currency }: { currency: string }) {
+export default TokensPage
+
+const TokensList = async ({ currency }: { currency: string }) => {
   let coins: any[] = []
   try {
     const res = await fetch(

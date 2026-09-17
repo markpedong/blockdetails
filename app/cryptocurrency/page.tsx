@@ -6,21 +6,23 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-export default function CryptocurrencyPage() {
+const CryptocurrencyPage = () => {
   return (
     <div className="app-container py-6 space-y-4">
       <PageHeader
         title="Cryptocurrencies"
         description="Track live cryptocurrency prices and market performance."
       />
-      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />} >
+      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
         <CoinsList currency="usd" />
       </Suspense>
     </div>
   )
 }
 
-async function CoinsList({ currency }: { currency: string }) {
+export default CryptocurrencyPage
+
+const CoinsList = async ({ currency }: { currency: string }) => {
   const url = new URL('/api/coins', process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000')
   url.searchParams.set('vs_currency', currency)
   url.searchParams.set('order', 'market_cap_desc')

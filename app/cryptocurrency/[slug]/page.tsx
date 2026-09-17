@@ -12,8 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-/* ── Server component: fetches coin data ── */
-async function CoinData({ slug, currency }: { slug: string; currency: string }) {
+const CoinData = async ({ slug, currency }: { slug: string; currency: string }) => {
   let coin: any = null
   try {
     const res = await fetch(
@@ -40,14 +39,12 @@ async function CoinData({ slug, currency }: { slug: string; currency: string }) 
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb */}
       <nav className="text-xs text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
         <Link href="/cryptocurrency" className="hover:text-foreground transition-colors">Cryptocurrencies</Link>
         <span>/</span>
         <span className="text-foreground">{coin.name}</span>
       </nav>
 
-      {/* Coin header */}
       <div className="flex flex-wrap items-start gap-4">
         {coin.image && (
           <Image
@@ -85,12 +82,10 @@ async function CoinData({ slug, currency }: { slug: string; currency: string }) 
 
       <Separator />
 
-      {/* Chart */}
       <CoinChart coinId={coin.id} currency={currency} />
 
       <Separator />
 
-      {/* Stats grid — compact, no cards */}
       <div>
         <h2 className="text-sm font-semibold mb-3">Market Statistics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
@@ -109,7 +104,6 @@ async function CoinData({ slug, currency }: { slug: string; currency: string }) 
 
       <Separator />
 
-      {/* Description */}
       {coin.description?.en && (
         <div>
           <h2 className="text-sm font-semibold mb-2">About {coin.name}</h2>
@@ -117,13 +111,12 @@ async function CoinData({ slug, currency }: { slug: string; currency: string }) 
         </div>
       )}
 
-      {/* Links */}
       {renderLinks(coin.links)}
     </div>
   )
 }
 
-function StatRow({ label, value }: { label: string; value: string }) {
+const StatRow = ({ label, value }: { label: string; value: string }) => {
   return (
     <div className="flex justify-between text-sm">
       <span className="text-muted-foreground">{label}</span>
@@ -132,7 +125,7 @@ function StatRow({ label, value }: { label: string; value: string }) {
   )
 }
 
-function renderLinks(links: any) {
+const renderLinks = (links: any) => {
   if (!links) return null
   const items: { icon?: React.ReactNode; label: string; href: string }[] = []
 
@@ -162,7 +155,7 @@ function renderLinks(links: any) {
   )
 }
 
-function sanitizeUrl(url: string): string {
+const sanitizeUrl = (url: string): string => {
   try {
     const parsed = new URL(url)
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '#'
@@ -170,18 +163,19 @@ function sanitizeUrl(url: string): string {
   } catch { return '#' }
 }
 
-/* ── Page wrapper with Suspense ── */
-export default function CoinDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+const CoinDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
   return (
     <div className="app-container py-6">
-      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />} >
+      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
         <CoinDataWithParams params={params} />
       </Suspense>
     </div>
   )
 }
 
-async function CoinDataWithParams({ params }: { params: Promise<{ slug: string }> }) {
+export default CoinDetailPage
+
+const CoinDataWithParams = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params
   return <CoinData slug={slug} currency="usd" />
 }
