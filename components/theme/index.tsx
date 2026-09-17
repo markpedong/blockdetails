@@ -50,9 +50,11 @@ function ThemeProviderInner({ children }: { children: React.ReactNode }) {
     }
   }
 
-  return React.createElement(ThemeContext.Provider, {
-    value: { theme, setTheme: handleSetTheme, resolved },
-  }, children)
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme, resolved }}>
+      {children}
+    </ThemeContext.Provider>
+  )
 }
 
 export { ThemeProviderInner as ThemeProvider }
