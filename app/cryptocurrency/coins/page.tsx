@@ -1,14 +1,17 @@
 import { Suspense } from 'react'
-import Link from 'next/link'
 import { CryptoTable } from '@/components/ui/crypto-table'
+import { PageHeader } from '@/components/ui/page-header'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-export default function CoinsPage() {
+const CoinsPage = () => {
   return (
     <div className="app-container py-6 space-y-4">
-      <h1 className="text-xl font-bold tracking-tight">All Coins</h1>
+      <PageHeader
+        title="All Coins"
+        description="Browse all cryptocurrencies ranked by market cap."
+      />
       <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
         <CoinsList currency="usd" />
       </Suspense>
@@ -16,7 +19,7 @@ export default function CoinsPage() {
   )
 }
 
-async function CoinsList({ currency }: { currency: string }) {
+const CoinsList = async ({ currency }: { currency: string }) => {
   let coins: any[] = []
   try {
     const res = await fetch(
@@ -29,3 +32,5 @@ async function CoinsList({ currency }: { currency: string }) {
 
   return <CryptoTable coins={coins} currency={currency} />
 }
+
+export default CoinsPage

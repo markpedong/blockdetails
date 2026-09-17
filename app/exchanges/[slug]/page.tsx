@@ -1,9 +1,11 @@
-import { formatCompact, formatNum } from '@/lib/utils'
+import { formatCompact, formatNum, sanitizeUrl, sanitizeHtml } from '@/lib/utils'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { Globe, ExternalLink, FileText } from 'lucide-react'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Globe, ExternalLink } from 'lucide-react'
+import { StatRow } from '@/components/ui/stat-row'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,16 +34,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: 'Exchange Details | BlockDetails' }
 }
 
-type ExchangeApiResponse = { exchange?: any; pairs?: any[] }
-
 const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params
 
-  let apiRes: ExchangeApiResponse | null = null
+  let apiRes: any = null
   try {
     const res = await fetch(`/api/exchanges/${slug}`)
     const json = await res.json()
-    if (json.data?.exchange) apiRes = json.data as ExchangeApiResponse
+    if (json.data?.exchange) apiRes = json.data
   } catch {}
 
   const exchange = apiRes?.exchange ?? null
@@ -77,7 +77,13 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">{exchange.name}</h1>
           <div className="flex items-center gap-2 mt-1">
-            {exchange.trust_score ? <TrustScore score={exchange.trust_score} /> : null}
+            {exchange.trust_score != null && (
+              <Badge variant="outline" className={`tabular-nums ${
+                exchange.trust_score >= 7 ? 'text-[var(--positive)]' : exchange.trust_score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
+              }`}>
+                {exchange.trust_score}/10
+              </Badge>
+            )}
             {exchange.year_established && (
               <span className="text-xs text-muted-foreground">Est. {exchange.year_established}</span>
             )}
@@ -116,24 +122,24 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
         <div>
           <h2 className="text-sm font-semibold mb-3">Trading Pairs ({pairs.length})</h2>
           <div className="rounded-lg border border-border overflow-x-auto">
-            <table className="w-full text-sm tabular-nums">
-              <thead>
-                <tr className="border-b border-border bg-muted/5 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th className="px-4 py-2.5 font-medium">Pair</th>
-                  <th className="px-4 py-2.5 font-medium text-right">Volume (BTC)</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border bg-muted/30 hover:bg-transparent">
+                  <TableHead>Pair</TableHead>
+                  <TableHead className="text-right">Volume (BTC)</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {pairs.slice(0, 100).map((pair: any) => (
-                  <tr key={pair.market_id} className="border-b border-border hover:bg-muted/5">
-                    <td className="px-4 py-2.5 font-medium">
+                  <TableRow key={pair.market_id} className="border-border hover:bg-muted/20">
+                    <TableCell className="font-medium tabular-nums">
                       {pair.base_symbol}/{pair.quote_symbol}
-                    </td>
-                    <td className="px-4 py-2.5 text-right">{formatCompact(pair.volume_btc_24h ?? 0)}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">{formatCompact(pair.volume_btc_24h ?? 0)}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}
@@ -142,24 +148,6 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
 }
 
 export default ExchangeDetailPage
-
-const StatRow = ({ label, value }: { label: string; value: string }) => {
-  return (
-    <div className="flex justify-between text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="font-medium tabular-nums">{value}</span>
-    </div>
-  )
-}
-
-const TrustScore = ({ score }: { score: number }) => {
-  const color = score >= 7 ? 'text-[var(--positive)]' : score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
-  return (
-    <Badge variant="outline" className={`tabular-nums ${color}`}>
-      {score}/10
-    </Badge>
-  )
-}
 
 const renderLinks = (exchange: any) => {
   const links: { icon?: React.ReactNode; label: string; href: string }[] = []
@@ -182,20 +170,4 @@ const renderLinks = (exchange: any) => {
       </div>
     </div>
   )
-}
-
-const sanitizeUrl = (url: string): string => {
-  try {
-    const parsed = new URL(url)
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '#'
-    return url
-  } catch { return '#' }
-}
-
-const sanitizeHtml = (html: string): string => {
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-    .replace(/on\w+="[^"]*"|on\w+='[^']*'/gi, '')
-    .replace(/javascript:/gi, 'unsafe:')
 }

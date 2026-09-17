@@ -2,9 +2,10 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { CoinChart } from '@/components/coin-chart'
-import { formatPrice, formatCompact, formatNum } from '@/lib/utils'
+import { formatPrice, formatCompact, formatNum, sanitizeUrl } from '@/lib/utils'
 import { PriceChangeInline } from '@/components/ui/price-change'
 import { CoinIdentity } from '@/components/ui/coin-identity'
+import { StatRow } from '@/components/ui/stat-row'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { ExternalLink, Globe, FileText } from 'lucide-react'
@@ -116,15 +117,6 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
   )
 }
 
-const StatRow = ({ label, value }: { label: string; value: string }) => {
-  return (
-    <div className="flex justify-between text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="font-medium tabular-nums">{value}</span>
-    </div>
-  )
-}
-
 const renderLinks = (links: any) => {
   if (!links) return null
   const items: { icon?: React.ReactNode; label: string; href: string }[] = []
@@ -153,14 +145,6 @@ const renderLinks = (links: any) => {
       </div>
     </div>
   )
-}
-
-const sanitizeUrl = (url: string): string => {
-  try {
-    const parsed = new URL(url)
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '#'
-    return url
-  } catch { return '#' }
 }
 
 const CoinDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
