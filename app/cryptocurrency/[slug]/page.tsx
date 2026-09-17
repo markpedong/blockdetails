@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { CoinChart } from '@/components/coin-chart'
 import { formatPrice, formatCompact, formatNum, sanitizeUrl } from '@/lib/utils'
 import { PriceChangeInline } from '@/components/ui/price-change'
@@ -8,7 +7,7 @@ import { CoinIdentity } from '@/components/ui/coin-identity'
 import { StatRow } from '@/components/ui/stat-row'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { ExternalLink, Globe, FileText } from 'lucide-react'
+import { ExternalLink, Globe, FileText, BookOpen } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
@@ -39,35 +38,26 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
   const isPositive = change24h >= 0
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      {/* Breadcrumb */}
       <nav className="text-xs text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
         <Link href="/cryptocurrency" className="hover:text-foreground transition-colors">Cryptocurrencies</Link>
         <span>/</span>
         <span className="text-foreground">{coin.name}</span>
       </nav>
 
+      {/* Coin identity + price */}
       <div className="flex flex-wrap items-start gap-4">
-        {coin.image && (
-          <Image
-            src={coin.image}
-            alt=""
-            width={32}
-            height={32}
-            className="rounded-full"
-            unoptimized
-          />
-        )}
-        <div className="flex-1 min-w-0">
-          <CoinIdentity
-            name={coin.name}
-            symbol={coin.symbol}
-            rank={coin.market_cap_rank}
-            size="lg"
-          />
-        </div>
-        <div className="text-right">
+        <CoinIdentity
+          name={coin.name}
+          symbol={coin.symbol}
+          image={coin.image}
+          rank={coin.market_cap_rank}
+          size="lg"
+        />
+        <div className="text-right ml-auto">
           <div className="text-xs text-muted-foreground">Current Price</div>
-          <div className="text-xl sm:text-2xl font-bold tabular-nums">
+          <div className="text-2xl sm:text-3xl font-bold tabular-nums">
             {formatPrice(coin.current_price, currency)}
           </div>
           {coin.price_change_24h != null && (
@@ -83,12 +73,14 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
 
       <Separator />
 
+      {/* Chart */}
       <CoinChart coinId={coin.id} currency={currency} />
 
       <Separator />
 
+      {/* Market Statistics */}
       <div>
-        <h2 className="text-sm font-semibold mb-3">Market Statistics</h2>
+        <h2 className="text-lg font-semibold mb-3">Market Statistics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
           <StatRow label="Market Cap" value={formatCompact(coin.market_cap)} />
           <StatRow label="24h Volume" value={formatCompact(coin.total_volume)} />
@@ -105,13 +97,15 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
 
       <Separator />
 
+      {/* About */}
       {coin.description?.en && (
         <div>
-          <h2 className="text-sm font-semibold mb-2">About {coin.name}</h2>
+          <h2 className="text-lg font-semibold mb-2">About {coin.name}</h2>
           <div className="prose prose-sm max-w-none text-muted-foreground" dangerouslySetInnerHTML={{ __html: coin.description.en.split('.').slice(0, 3).join('.') + '.' }} />
         </div>
       )}
 
+      {/* Links */}
       {renderLinks(coin.links)}
     </div>
   )
@@ -124,7 +118,7 @@ const renderLinks = (links: any) => {
   if (links.homepage?.[0]) items.push({ icon: <Globe className="w-3.5 h-3.5" />, label: 'Website', href: sanitizeUrl(links.homepage[0]) })
   if (links.blockchain_site?.[0]) items.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'Explorer', href: sanitizeUrl(links.blockchain_site[0]) })
   if (links.twitter_screen_name) items.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'X/Twitter', href: `https://twitter.com/${links.twitter_screen_name}` })
-  if (links.subreddit) items.push({ label: 'Reddit', href: `https://reddit.com/r/${links.subreddit}` })
+  if (links.subreddit) items.push({ icon: <BookOpen className="w-3.5 h-3.5" />, label: 'Reddit', href: `https://reddit.com/r/${links.subreddit}` })
   if (links.github?.length) items.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'GitHub', href: links.github[0] })
   if (links.whitepaper?.length) items.push({ icon: <FileText className="w-3.5 h-3.5" />, label: 'Whitepaper', href: links.whitepaper[0] })
 
@@ -132,15 +126,19 @@ const renderLinks = (links: any) => {
 
   return (
     <div>
-      <h2 className="text-sm font-semibold mb-2">Links</h2>
+      <h2 className="text-lg font-semibold mb-2">Links</h2>
       <div className="flex flex-wrap gap-2">
         {items.map(item => (
-          <Button key={item.label} variant="outline" size="sm">
-            <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5">
-              {item.icon}
-              <span>{item.label}</span>
-            </a>
-          </Button>
+          <a
+            key={item.label}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </a>
         ))}
       </div>
     </div>

@@ -46,41 +46,41 @@ const ExchangesList = async () => {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-border overflow-x-auto">
+      <div className="rounded-lg border border-border/40 overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="border-border bg-muted/30 hover:bg-transparent">
-              <TableHead className="w-12 text-right">#</TableHead>
-              <TableHead>Exchange</TableHead>
-              <TableHead className="text-right hidden sm:table-cell">Trust Score</TableHead>
-              <TableHead className="text-right">24h Volume</TableHead>
-              <TableHead className="text-right hidden md:table-cell">Markets</TableHead>
+            <TableRow className="border-border/40 bg-muted/20 hover:bg-transparent">
+              <TableHead className="w-10 text-right text-xs font-medium text-muted-foreground">#</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">Exchange</TableHead>
+              <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground">Trust Score</TableHead>
+              <TableHead className="text-right text-xs font-medium text-muted-foreground">24h Volume</TableHead>
+              <TableHead className="text-right hidden md:table-cell text-xs font-medium text-muted-foreground">Markets</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {exchanges.map(ex => (
-              <TableRow key={ex.id} className="border-border hover:bg-muted/20">
+              <TableRow key={ex.id} className="border-border/40 hover:bg-muted/10 transition-colors">
                 <TableCell className="text-right text-muted-foreground font-mono text-xs">{ex.market_id}</TableCell>
                 <TableCell>
-                  <Link href={`/exchanges/${ex.id}`} className="font-medium hover:text-accent transition-colors">
+                  <Link href={`/exchanges/${ex.id}`} className="font-medium text-sm hover:text-accent transition-colors">
                     {ex.name}
                   </Link>
                 </TableCell>
                 <TableCell className="text-right hidden sm:table-cell">
                   {ex.score != null ? (
-                    <Badge variant="outline" className={`tabular-nums ${
+                    <Badge variant="outline" className={`tabular-nums text-xs ${
                       ex.score >= 7 ? 'text-[var(--positive)]' : ex.score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
                     }`}>
                       {ex.score}/10
                     </Badge>
                   ) : (
-                    <span className="text-muted-foreground">—</span>
+                    <span className="text-muted-foreground text-sm">—</span>
                   )}
                 </TableCell>
-                <TableCell className="text-right tabular-nums">
+                <TableCell className="text-right tabular-nums text-sm">
                   {ex.quote_volume?.toLocaleString() ?? '—'}
                 </TableCell>
-                <TableCell className="text-right tabular-nums hidden md:table-cell">
+                <TableCell className="text-right tabular-nums hidden md:table-cell text-sm">
                   {ex.num_coin_markets?.toLocaleString() ?? '—'}
                 </TableCell>
               </TableRow>

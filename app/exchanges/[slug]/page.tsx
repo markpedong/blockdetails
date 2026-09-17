@@ -61,7 +61,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
   const pairs = apiRes?.pairs ?? []
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <nav className="text-xs text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
         <span>/</span>
@@ -78,7 +78,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">{exchange.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             {exchange.trust_score != null && (
-              <Badge variant="outline" className={`tabular-nums ${
+              <Badge variant="outline" className={`tabular-nums text-xs ${
                 exchange.trust_score >= 7 ? 'text-[var(--positive)]' : exchange.trust_score >= 4 ? 'text-yellow-500' : 'text-[var(--negative)]'
               }`}>
                 {exchange.trust_score}/10
@@ -121,21 +121,21 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
       {pairs.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold mb-3">Trading Pairs ({pairs.length})</h2>
-          <div className="rounded-lg border border-border overflow-x-auto">
+          <div className="rounded-lg border border-border/40 overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="border-border bg-muted/30 hover:bg-transparent">
-                  <TableHead>Pair</TableHead>
-                  <TableHead className="text-right">Volume (BTC)</TableHead>
+                <TableRow className="border-border/40 bg-muted/20 hover:bg-transparent">
+                  <TableHead className="text-xs font-medium text-muted-foreground">Pair</TableHead>
+                  <TableHead className="text-right text-xs font-medium text-muted-foreground">Volume (BTC)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {pairs.slice(0, 100).map((pair: any) => (
-                  <TableRow key={pair.market_id} className="border-border hover:bg-muted/20">
-                    <TableCell className="font-medium tabular-nums">
+                  <TableRow key={pair.market_id} className="border-border/40 hover:bg-muted/10 transition-colors">
+                    <TableCell className="font-medium tabular-nums text-sm">
                       {pair.base_symbol}/{pair.quote_symbol}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{formatCompact(pair.volume_btc_24h ?? 0)}</TableCell>
+                    <TableCell className="text-right tabular-nums text-sm">{formatCompact(pair.volume_btc_24h ?? 0)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -160,7 +160,7 @@ const renderLinks = (exchange: any) => {
       <h2 className="text-sm font-semibold mb-2">Links</h2>
       <div className="flex flex-wrap gap-2">
         {links.map(l => (
-          <Button key={l.label} variant="outline" size="sm">
+          <Button key={l.label} variant="outline" size="sm" className="h-7 text-xs">
             <a href={l.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5">
               {l.icon}
               <span>{l.label}</span>

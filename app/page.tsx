@@ -9,13 +9,13 @@ export const dynamic = 'force-dynamic'
 
 const HomePage = () => {
   return (
-    <div className="app-container py-6 space-y-6">
+    <div className="app-container py-6 space-y-5">
       <PageHeader
         title="Cryptocurrency Prices by Market Cap"
         description="Track live cryptocurrency prices, market capitalization, 24h volume, and market performance."
       />
 
-      <Suspense fallback={<Skeleton className="h-28 rounded-lg" />}>
+      <Suspense fallback={<Skeleton className="h-20 rounded-lg" />}>
         <MarketOverview currency="usd" />
       </Suspense>
 

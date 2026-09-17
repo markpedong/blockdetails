@@ -16,8 +16,6 @@ const TokensPage = () => {
   )
 }
 
-export default TokensPage
-
 const TokensList = async ({ currency }: { currency: string }) => {
   let coins: any[] = []
   try {
@@ -31,3 +29,5 @@ const TokensList = async ({ currency }: { currency: string }) => {
 
   return <CryptoTable coins={coins} currency={currency} />
 }
+
+export default TokensPage
