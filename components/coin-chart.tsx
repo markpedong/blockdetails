@@ -5,6 +5,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
 import { formatPrice } from '@/lib/utils'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 type Point = { date: string; price: number }
 type RangeKey = '1d' | '7d' | '30d' | '90d' | '1y' | '5y'
@@ -50,21 +51,22 @@ export function CoinChart({ coinId, currency }: CoinChartProps) {
   return (
     <div className="space-y-3">
       {/* Time range selector */}
-      <div className="flex gap-1 flex-wrap" role="group" aria-label="Chart time range">
+      <ToggleGroup
+        value={range}
+        onValueChange={(v) => v && setRange(v as RangeKey)}
+        className="justify-start"
+        aria-label="Chart time range"
+      >
         {RANGES.map(r => (
-          <button
+          <ToggleGroupItem
             key={r.key}
-            onClick={() => setRange(r.key)}
-            className={`px-2.5 py-1 text-xs rounded-md border transition-colors ${
-              range === r.key
-                ? 'bg-accent text-white border-accent'
-                : 'border-border hover:bg-muted/50 text-muted-foreground'
-            }`}
+            value={r.key}
+            className="text-xs px-2.5 py-1 h-7"
           >
             {r.label}
-          </button>
+          </ToggleGroupItem>
         ))}
-      </div>
+      </ToggleGroup>
 
       {/* Chart */}
       {loading ? (

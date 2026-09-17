@@ -1,6 +1,7 @@
-import { Suspense } from 'react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { CoinIdentity } from '@/components/ui/coin-identity'
+import { PriceChangeInline } from '@/components/ui/price-change'
 
 const TrendingSection = async ({ currency }: { currency: string }) => {
   let trending: any[] = []
@@ -17,20 +18,22 @@ const TrendingSection = async ({ currency }: { currency: string }) => {
 
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">🔥 Trending</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <h2 className="text-lg font-semibold mb-3">Trending</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {trending.slice(0, 6).map((item: any) => (
           <Link key={item.item?.id} href={`/cryptocurrency/${item.item?.id}`} className="block">
-            <Card className="hover:border-accent/50 transition-colors group">
+            <Card className="hover:bg-muted/30 transition-colors group h-full">
               <CardContent className="p-3 flex items-center gap-2.5">
-                {item.item?.image && (
-                  <img src={item.item.image} alt="" className="w-6 h-6 rounded-full" />
-                )}
-                <div>
-                  <div className="font-medium text-sm group-hover:text-accent transition-colors">
-                    {item.item?.name}
-                  </div>
-                  <div className="text-xs text-muted-foreground">{item.item?.symbol?.toUpperCase()}</div>
+                <CoinIdentity
+                  name={item.item?.name}
+                  symbol={item.item?.symbol}
+                  image={item.item?.image}
+                  size="sm"
+                />
+                <div className="ml-auto text-right">
+                  {item.item?.price_change_percentage_24h != null && (
+                    <PriceChangeInline value={item.item.price_change_percentage_24h} />
+                  )}
                 </div>
               </CardContent>
             </Card>
