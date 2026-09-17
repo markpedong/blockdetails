@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { searchCoins } from '../../lib/crypto'
+import { searchCoins } from '@/lib/crypto'
 import Link from 'next/link'
 
 export function SearchDialog() {
@@ -77,7 +77,7 @@ export function SearchDialog() {
                   onClick={handleClose}
                   className="flex items-center gap-3 px-4 py-2.5 hover:bg-accent/10 transition text-sm"
                 >
-                  <img src={c.image} alt={`${c.name} logo`} className="w-5 h-5 rounded-full" />
+                  <img src={c.image || ''} alt={`${c.name} logo`} className="w-5 h-5 rounded-full" />
                   <div>
                     <span className="font-medium">{c.name}</span>{' '}
                     <span className="text-muted">/{c.symbol.toUpperCase()}</span>
