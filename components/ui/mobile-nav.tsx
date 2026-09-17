@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { MenuIcon } from 'lucide-react'
 
 const NAV = [
@@ -20,11 +20,9 @@ export function MobileNav() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger>
-        <Button variant="ghost" size="icon" className="sm:hidden h-8 w-8" aria-label="Open navigation menu">
-          <MenuIcon className="w-4 h-4" />
-        </Button>
-      </SheetTrigger>
+      <Button variant="ghost" size="icon" className="sm:hidden h-8 w-8" aria-label="Open navigation menu" onClick={() => setOpen(true)}>
+        <MenuIcon className="w-4 h-4" />
+      </Button>
       <SheetContent side="left" className="w-[240px] sm:hidden">
         <SheetHeader>
           <SheetTitle className="text-left text-sm">Navigation</SheetTitle>
