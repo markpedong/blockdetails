@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   try {
     const res = await fetch(
       `https://api.coingecko.com/api/v3/search/trending?vs_currency=${vs_currency}`,
-      { next: { revalidate: 300 } }
+      { next: { revalidate: 300 }, signal: AbortSignal.timeout(15_000) }
     )
 
     if (!res.ok) {

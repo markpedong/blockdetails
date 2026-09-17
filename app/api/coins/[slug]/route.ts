@@ -11,7 +11,7 @@ export async function GET(
   try {
     const res = await fetch(
       `https://api.coingecko.com/api/v3/coins/${slug}?vs_currency=${vs_currency}&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
     )
 
     if (!res.ok) {

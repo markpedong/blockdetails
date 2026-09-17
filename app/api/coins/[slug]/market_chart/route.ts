@@ -12,7 +12,7 @@ export async function GET(
   try {
     const res = await fetch(
       `https://api.coingecko.com/api/v3/coins/${slug}/market_chart?vs_currency=${vs_currency}&days=${days}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
     )
 
     if (!res.ok) {

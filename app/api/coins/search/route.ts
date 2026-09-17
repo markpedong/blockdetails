@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   try {
     const res = await fetch(
       `https://api.coingecko.com/api/v3/search/coins?query=${encodeURIComponent(q)}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
     )
 
     if (!res.ok) {
