@@ -28,39 +28,42 @@ export default async function ExchangesPage({ searchParams }: { searchParams: Pr
       {/* Currency selector */}
       <CurrencySelector baseHref={baseHref} />
 
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-muted text-xs border-b border-border">
-            <th className="text-right py-2 pr-4 font-normal">#</th>
-            <th className="text-left py-2 pl-4 pr-4 font-normal">Exchange</th>
-            <th className="text-right py-2 px-4 font-normal">Trust Score</th>
-            <th className="text-right py-2 px-4 font-normal hidden sm:table-cell">Markets</th>
-            <th className="text-right py-2 px-4 font-normal">Volume (24h)</th>
-            <th className="text-right py-2 pl-4 pr-1 font-normal text-center">→</th>
-          </tr>
-        </thead>
-        <tbody>
-          {exchanges.map((ex: ExchangeSummary) => (
-            <tr key={ex.id} className="border-b border-border/50 hover:bg-muted/5 transition">
-              <td className="text-right py-3 pr-4 text-muted">{ex.id}</td>
-              <td className="pl-4 pr-4">
-                <Link href={`/exchanges/${ex.id}`} className="flex items-center gap-2.5">
-                  {ex.image && <img src={ex.image} alt={`${ex.name} logo`} className="w-6 h-6 rounded-full" />}
-                  <span className="font-medium">{ex.name}</span>
-                </Link>
-              </td>
-              <td className="text-right py-3 px-4">
-                <TrustBadge score={ex.trust_score} />
-              </td>
-              <td className="text-right py-3 px-4 hidden sm:table-cell">{ex.markets?.toLocaleString() ?? '-'}</td>
-              <td className="text-right py-3 px-4">{formatCompact(ex.total_24h_volume_usd ?? 0)}</td>
-              <td className="text-right py-3 pl-4 pr-1 text-center">
-                <Link href={`/exchanges/${ex.id}`} className="text-accent hover:underline">→</Link>
-              </td>
+      {/* Table */}
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-muted text-xs uppercase tracking-wider border-b border-border">
+              <th className="text-right py-3 px-4 font-medium w-12">#</th>
+              <th className="text-left py-3 px-4 font-medium">Exchange</th>
+              <th className="text-right py-3 px-4 font-medium">Trust Score</th>
+              <th className="text-right py-3 px-4 font-medium hidden sm:table-cell">Markets</th>
+              <th className="text-right py-3 px-4 font-medium">Volume (24h)</th>
+              <th className="text-right py-3 px-4 font-medium text-center w-10">→</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {exchanges.map((ex: ExchangeSummary) => (
+              <tr key={ex.id} className="border-b border-border/50 last:border-0 hover:bg-muted/5 transition">
+                <td className="text-right py-3 px-4 text-muted">{ex.id}</td>
+                <td className="px-4">
+                  <Link href={`/exchanges/${ex.id}`} className="flex items-center gap-2.5">
+                    {ex.image && <img src={ex.image} alt={`${ex.name} logo`} className="w-6 h-6 rounded-full" />}
+                    <span className="font-medium">{ex.name}</span>
+                  </Link>
+                </td>
+                <td className="text-right py-3 px-4">
+                  <TrustBadge score={ex.trust_score} />
+                </td>
+                <td className="text-right py-3 px-4 hidden sm:table-cell">{ex.markets?.toLocaleString() ?? '-'}</td>
+                <td className="text-right py-3 px-4">{formatCompact(ex.total_24h_volume_usd ?? 0)}</td>
+                <td className="text-right py-3 px-4 text-center">
+                  <Link href={`/exchanges/${ex.id}`} className="text-accent hover:underline">→</Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {exchanges.length === 0 && (
         <div className="text-center py-12 text-muted">Failed to load exchanges. Please try again.</div>
@@ -100,7 +103,7 @@ function Pagination({ currentPage, baseHref }: { currentPage: number; baseHref: 
   return (
     <div className="flex justify-center gap-2 mt-4">
       {currentPage > 1 && (
-        <Link href={`${baseHref.replace(/page=\d+/, `page=${currentPage - 1}`)}`} className="px-3 py-1 text-xs border rounded hover:bg-muted/10">
+        <Link href={`${baseHref.replace(/page=\d+/, `page=${currentPage - 1}`)}`} className="px-3 py-1.5 text-xs border rounded-lg hover:bg-muted/10 transition">
           ← Prev
         </Link>
       )}

@@ -10,8 +10,6 @@ export async function generateStaticParams() {
   } catch { return [] }
 }
 
-// ponytail: revalidate removed — exchange markets contain last_price which must be fresh.
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   try {
@@ -61,7 +59,7 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
           <img src={exchange.image} alt={`${exchange.name} logo`} className="w-12 h-12 rounded-full" />
         )}
         <div>
-          <h1 className="text-xl font-bold">{exchange.name}</h1>
+          <h1 className="text-xl font-bold tracking-tight">{exchange.name}</h1>
           {exchange.trust_score && (
             <span className={`text-xs px-2 py-0.5 rounded-full ${Number(exchange.trust_score) >= 8 ? 'bg-emerald-500/20 text-emerald-500' : Number(exchange.trust_score) >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'}`}>
               Trust Score: {exchange.trust_score}
@@ -70,12 +68,12 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-        <Stat label="Markets" value={exchange.markets?.toLocaleString() ?? '-'} />
-        <Stat label="24h Volume" value={formatCompact(exchange.total_24h_volume_usd ?? 0)} />
-        <Stat label="24h Trades" value="-" />
-        <Stat label="Established" value={exchange.established?.toString() ?? '-'} />
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <StatCard label="Markets" value={exchange.markets?.toLocaleString() ?? '-'} />
+        <StatCard label="24h Volume" value={formatCompact(exchange.total_24h_volume_usd ?? 0)} />
+        <StatCard label="24h Trades" value="-" />
+        <StatCard label="Established" value={exchange.established?.toString() ?? '-'} />
       </div>
 
       {/* Description */}
@@ -87,46 +85,50 @@ export default async function ExchangeDetailPage({ params }: { params: Promise<{
       {renderLinks(exchange!)}
 
       {/* Markets table */}
-      <h2 className="text-lg font-semibold mt-6">Markets</h2>
-      {markets.length > 0 ? (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-muted text-xs border-b border-border">
-              <th className="text-left py-2 pl-4 pr-4 font-normal">Pair</th>
-              <th className="text-right py-2 px-4 font-normal">Price</th>
-              <th className="text-right py-2 px-4 font-normal">24h Volume</th>
-              <th className="text-right py-2 pl-4 pr-1 font-normal">Trust</th>
-            </tr>
-          </thead>
-          <tbody>
-            {markets.map((m: ExchangeMarketPair) => (
-              <tr key={`${m.base}/${m.quote}`} className="border-b border-border/50 hover:bg-muted/5 transition">
-                <td className="pl-4 pr-4 font-medium">{m.base}/{m.quote}</td>
-                <td className="text-right py-2 px-4">{formatPrice(m.last_price, 'usd')}</td>
-                <td className="text-right py-2 px-4">{formatCompact(m.volume_24h_usd ?? 0)}</td>
-                <td className="text-right py-2 pl-4 pr-1">
-                  {m.trust_score && (
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${Number(m.trust_score) >= 8 ? 'bg-emerald-500/20 text-emerald-500' : Number(m.trust_score) >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'}`}>
-                      {m.trust_score}
-                    </span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className="text-center py-8 text-muted">No market data available.</div>
-      )}
+      <section>
+        <h2 className="text-lg font-semibold tracking-tight mb-4">Markets</h2>
+        {markets.length > 0 ? (
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-muted text-xs uppercase tracking-wider border-b border-border">
+                  <th className="text-left py-3 px-4 font-medium">Pair</th>
+                  <th className="text-right py-3 px-4 font-medium">Price</th>
+                  <th className="text-right py-3 px-4 font-medium">24h Volume</th>
+                  <th className="text-right py-3 px-4 font-medium">Trust</th>
+                </tr>
+              </thead>
+              <tbody>
+                {markets.map((m: ExchangeMarketPair) => (
+                  <tr key={`${m.base}/${m.quote}`} className="border-b border-border/50 last:border-0 hover:bg-muted/5 transition">
+                    <td className="px-4 font-medium">{m.base}/{m.quote}</td>
+                    <td className="text-right py-3 px-4">{formatPrice(m.last_price, 'usd')}</td>
+                    <td className="text-right py-3 px-4">{formatCompact(m.volume_24h_usd ?? 0)}</td>
+                    <td className="text-right py-3 px-4">
+                      {m.trust_score && (
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${Number(m.trust_score) >= 8 ? 'bg-emerald-500/20 text-emerald-500' : Number(m.trust_score) >= 6 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'}`}>
+                          {m.trust_score}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted">No market data available.</div>
+        )}
+      </section>
     </div>
   )
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <div className="text-muted text-xs">{label}</div>
-      <div className="font-semibold mt-0.5">{value}</div>
+    <div className="card p-4">
+      <div className="text-muted text-xs uppercase tracking-wide">{label}</div>
+      <div className="font-semibold mt-1 text-sm sm:text-base">{value}</div>
     </div>
   )
 }

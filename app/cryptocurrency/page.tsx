@@ -8,7 +8,7 @@ export const metadata = { title: 'Cryptocurrency Prices by Market Cap | BlockDet
 const CURRENCIES = ['usd', 'eur', 'gbp', 'php', 'jpy', 'aud']
 
 export default async function CoinsPage({
-  searchParams
+  searchParams,
 }: {
   searchParams: Promise<{ currency?: string; page?: string }>
 }) {
@@ -38,13 +38,13 @@ export default async function CoinsPage({
 
   return (
     <div className="space-y-8">
-      {/* Global stats */}
+      {/* Global stats cards */}
       {global && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-          <Stat label="Market Cap" value={formatCompact(global.total_market_cap_usd ?? 0)} />
-          <Stat label="24h Volume" value={formatCompact(global.total_volume_usd ?? 0)} />
-          <Stat label="BTC Dominance" value={`${global.btc_dominance?.toFixed(1) ?? '—'}%`} />
-          <Stat label="Active Coins" value={formatNum(global.active_cryptocurrencies ?? 0)} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <StatCard label="Market Cap" value={formatCompact(global.total_market_cap_usd ?? 0)} />
+          <StatCard label="24h Volume" value={formatCompact(global.total_volume_usd ?? 0)} />
+          <StatCard label="BTC Dominance" value={`${global.btc_dominance?.toFixed(1) ?? '—'}%`} />
+          <StatCard label="Active Coins" value={formatNum(global.active_cryptocurrencies ?? 0)} />
         </div>
       )}
 
@@ -63,12 +63,12 @@ export default async function CoinsPage({
 
       {/* Trending */}
       {trending.length > 0 && (
-        <div>
-          <h2 className="text-sm font-semibold text-muted mb-3">🔥 Trending</h2>
-          <div className="flex gap-4 overflow-x-auto pb-2">
+        <section>
+          <h2 className="text-sm font-semibold text-muted mb-3 uppercase tracking-wide">🔥 Trending</h2>
+          <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
             {trending.slice(0, 6).map(t => (
-              <Link key={t.id} href={`/cryptocurrency/${t.id}`} className="flex items-center gap-2 min-w-[160px] p-3 rounded-lg border border-border bg-card hover:border-accent/50 transition">
-                <img src={t.image} alt={`${t.name} logo`} className="w-6 h-6 rounded-full" />
+              <Link key={t.id} href={`/cryptocurrency/${t.id}`} className="flex items-center gap-2.5 min-w-[180px] p-3 rounded-xl border border-border bg-card hover:border-accent/50 transition snap-start">
+                <img src={t.image} alt={`${t.name} logo`} className="w-8 h-8 rounded-full" />
                 <div>
                   <div className="text-sm font-medium">{t.name}</div>
                   <div className="text-xs text-muted">/{t.symbol.toUpperCase()} #{t.market_cap_rank}</div>
@@ -76,20 +76,23 @@ export default async function CoinsPage({
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Table */}
       <CoinTable coins={coins} currency={vsCurrency} />
+
+      {/* Pagination */}
+      <Pagination currentPage={(parseInt(page || '1', 10) || 1)} />
     </div>
   )
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <div className="text-muted text-xs">{label}</div>
-      <div className="font-semibold mt-0.5">{value}</div>
+    <div className="card p-4 sm:p-5">
+      <div className="text-muted text-xs uppercase tracking-wide">{label}</div>
+      <div className="font-semibold mt-1 text-base sm:text-lg">{value}</div>
     </div>
   )
 }
@@ -104,49 +107,64 @@ function CoinTable({ coins, currency }: { coins: Coin[]; currency: string }) {
   }
 
   return (
-    <table className="w-full text-sm">
-      <thead>
-        <tr className="text-muted text-xs border-b border-border">
-          <th className="text-right py-2 pr-4 font-normal">#</th>
-          <th className="text-left py-2 pl-4 pr-4 font-normal">Asset</th>
-          <th className="text-right py-2 pr-4 font-normal">Price</th>
-          <th className="text-right py-2 px-4 font-normal hidden sm:table-cell">1h</th>
-          <th className="text-right py-2 px-4 font-normal">24h</th>
-          <th className="text-right py-2 px-4 font-normal hidden sm:table-cell">7D</th>
-          <th className="text-right py-2 px-4 font-normal hidden md:table-cell">Market Cap</th>
-          <th className="text-right py-2 px-4 font-normal hidden md:table-cell">Volume (24h)</th>
-          <th className="text-right py-2 pl-4 pr-1 font-normal text-center">★</th>
-        </tr>
-      </thead>
-      <tbody>
-        {coins.map(coin => (
-          <tr key={coin.id} className="border-b border-border/50 hover:bg-muted/5 transition">
-            <td className="text-right py-3 pr-4 text-muted">{coin.market_cap_rank}</td>
-            <td className="pl-4 pr-4">
-              <Link href={`/cryptocurrency/${coin.id}`} className="flex items-center gap-2.5">
-                {coin.image && <img src={coin.image} alt={`${coin.name} logo`} className="w-6 h-6 rounded-full" />}
-                <span className="font-medium">{coin.name}</span>
-                <span className="text-muted text-xs hidden sm:inline">{coin.symbol.toUpperCase()}</span>
-              </Link>
-            </td>
-            <td className="text-right py-3 pr-4 font-medium">{formatPrice(coin.current_price, currency)}</td>
-            <td className={`text-right py-3 px-4 hidden sm:table-cell ${pctColor(coin.price_change_percentage_1h_in_currency)}`}>
-              {coin.price_change_percentage_1h_in_currency != null ? formatPct(coin.price_change_percentage_1h_in_currency) : '-'}
-            </td>
-            <td className={`text-right py-3 px-4 ${pctColor(coin.price_change_percentage_24h)}`}>
-              {coin.price_change_percentage_24h != null ? formatPct(coin.price_change_percentage_24h) : '-'}
-            </td>
-            <td className={`text-right py-3 px-4 hidden sm:table-cell ${pctColor(coin.price_change_percentage_7d_in_currency)}`}>
-              {coin.price_change_percentage_7d_in_currency != null ? formatPct(coin.price_change_percentage_7d_in_currency) : '-'}
-            </td>
-            <td className="text-right py-3 px-4 hidden md:table-cell">{formatCompact(coin.market_cap)}</td>
-            <td className="text-right py-3 px-4 hidden md:table-cell">{formatCompact(coin.total_volume)}</td>
-            <td className="text-right py-3 pl-4 pr-1 text-center">
-              <WatchlistButton coinId={coin.id} />
-            </td>
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-muted text-xs uppercase tracking-wider border-b border-border">
+            <th className="text-right py-3 px-4 font-medium w-12">#</th>
+            <th className="text-left py-3 px-4 font-medium">Asset</th>
+            <th className="text-right py-3 px-4 font-medium">Price</th>
+            <th className="text-right py-3 px-4 font-medium hidden sm:table-cell">1h</th>
+            <th className="text-right py-3 px-4 font-medium">24h</th>
+            <th className="text-right py-3 px-4 font-medium hidden sm:table-cell">7D</th>
+            <th className="text-right py-3 px-4 font-medium hidden md:table-cell">Market Cap</th>
+            <th className="text-right py-3 px-4 font-medium hidden lg:table-cell">Volume (24h)</th>
+            <th className="text-right py-3 px-4 font-medium text-center w-10">★</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {coins.map(coin => (
+            <tr key={coin.id} className="border-b border-border/50 last:border-0 hover:bg-muted/5 transition">
+              <td className="text-right py-3 px-4 text-muted">{coin.market_cap_rank}</td>
+              <td className="px-4">
+                <Link href={`/cryptocurrency/${coin.id}`} className="flex items-center gap-2.5">
+                  {coin.image && <img src={coin.image} alt={`${coin.name} logo`} className="w-6 h-6 rounded-full" />}
+                  <span className="font-medium">{coin.name}</span>
+                  <span className="text-muted text-xs hidden sm:inline">{coin.symbol.toUpperCase()}</span>
+                </Link>
+              </td>
+              <td className="text-right py-3 px-4 font-medium">{formatPrice(coin.current_price, currency)}</td>
+              <td className={`text-right py-3 px-4 hidden sm:table-cell ${pctColor(coin.price_change_percentage_1h_in_currency)}`}>
+                {coin.price_change_percentage_1h_in_currency != null ? formatPct(coin.price_change_percentage_1h_in_currency) : '-'}
+              </td>
+              <td className={`text-right py-3 px-4 ${pctColor(coin.price_change_percentage_24h)}`}>
+                {coin.price_change_percentage_24h != null ? formatPct(coin.price_change_percentage_24h) : '-'}
+              </td>
+              <td className={`text-right py-3 px-4 hidden sm:table-cell ${pctColor(coin.price_change_percentage_7d_in_currency)}`}>
+                {coin.price_change_percentage_7d_in_currency != null ? formatPct(coin.price_change_percentage_7d_in_currency) : '-'}
+              </td>
+              <td className="text-right py-3 px-4 hidden md:table-cell">{formatCompact(coin.market_cap)}</td>
+              <td className="text-right py-3 px-4 hidden lg:table-cell">{formatCompact(coin.total_volume)}</td>
+              <td className="text-right py-3 px-4 text-center">
+                <WatchlistButton coinId={coin.id} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function Pagination({ currentPage }: { currentPage: number }) {
+  if (currentPage <= 1) return null
+  return (
+    <div className="flex justify-center gap-2 mt-4">
+      {currentPage > 1 && (
+        <Link href={`/cryptocurrency?page=${currentPage - 1}`} className="px-3 py-1.5 text-xs border rounded-lg hover:bg-muted/10 transition">
+          ← Prev
+        </Link>
+      )}
+    </div>
   )
 }
