@@ -16,7 +16,7 @@ export default async function HomePage({
 
   let coins: Coin[] = []
   try {
-    const res = await fetch(`/api/coins?currency=${vsCurrency}&order=market_cap_desc&per_page=10`)
+    const res = await fetch(`/api/coins?currency=${vsCurrency}&order=market_cap_desc&per_page=10`, { cache: 'no-store' })
     const json = await res.json()
     coins = (json.data as Coin[]) ?? []
   } catch {}
