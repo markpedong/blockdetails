@@ -1,6 +1,6 @@
 'use client'
 
-import { useTheme } from '../../lib/theme'
+import { useTheme } from '@/lib/theme'
 import Link from 'next/link'
 import Nav from './layout/page'
 import { SearchDialog } from './search-dialog'
