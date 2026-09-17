@@ -51,7 +51,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
       <div className="text-center py-24 space-y-3">
         <h1 className="text-xl font-semibold text-[var(--negative)]">Exchange not found</h1>
         <p className="text-muted-foreground text-sm">This exchange may have been delisted or the ID is incorrect.</p>
-        <Link href="/exchanges" className="inline-block text-sm bg-accent text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+        <Link href="/exchanges" className="inline-block text-sm bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
           ← Back to Exchanges
         </Link>
       </div>

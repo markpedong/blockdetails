@@ -5,7 +5,7 @@ export async function MarketOverview({ currency }: { currency: string }) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/global?vs_currency=${currency}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 }, signal: AbortSignal.timeout(5_000) }
     )
     const json = await res.json()
     global = (json.data as any) ?? null
