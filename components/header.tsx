@@ -3,6 +3,7 @@ import { SearchDialog } from './search-dialog'
 import { ThemeToggle } from './theme-toggle'
 import { MobileNav } from './mobile-nav'
 import { CurrencySelector } from './currency-selector'
+import { Logo } from './logo'
 import type { GlobalMarketData } from '@/lib/crypto'
 
 const NAV = [
@@ -20,7 +21,7 @@ const SiteHeader = () => {
           <div className="flex items-center gap-2">
             <MobileNav />
             <Link href="/" className="flex items-center gap-2 font-bold text-base tracking-tight hover:opacity-80 transition">
-              <span className="text-foreground text-lg" aria-hidden>◆</span>
+              <Logo className="w-6 h-6" />
               <span className="hidden sm:inline">BlockDetails</span>
             </Link>
           </div>
