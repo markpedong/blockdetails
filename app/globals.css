@@ -7,19 +7,19 @@
   --card-foreground: #111827;
   --popover: #ffffff;
   --popover-foreground: #111827;
-  --primary: #16a34a;
+  --primary: #111827;
   --primary-foreground: #ffffff;
   --secondary: #f3f4f6;
   --secondary-foreground: #111827;
   --muted: #6b7280;
   --muted-foreground: #9ca3af;
-  --accent: #16a34a;
+  --accent: #111827;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --ring: #16a34a;
+  --ring: #111827;
   --radius: 0.5rem;
 
   /* Crypto-specific semantic tokens */
@@ -37,19 +37,19 @@
   --card-foreground: #e5e7eb;
   --popover: #141824;
   --popover-foreground: #e5e7eb;
-  --primary: #22c55e;
+  --primary: #e5e7eb;
   --primary-foreground: #0b0f19;
   --secondary: #1f2937;
   --secondary-foreground: #e5e7eb;
   --muted: #9ca3af;
   --muted-foreground: #6b7280;
-  --accent: #22c55e;
+  --accent: #e5e7eb;
   --accent-foreground: #0b0f19;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: #1f2937;
   --input: #1f2937;
-  --ring: #22c55e;
+  --ring: #e5e7eb;
 
   /* Crypto-specific semantic tokens (dark) */
   --positive: #22c55e;
@@ -96,3 +96,12 @@ a:hover {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Utility: hide scrollbar but keep scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
