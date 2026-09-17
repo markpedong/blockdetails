@@ -73,7 +73,7 @@ export function SearchDialog() {
               {loading ? (
                 <CommandEmpty className="px-4 py-6 text-sm text-muted-foreground">Searching...</CommandEmpty>
               ) : results.length === 0 ? (
-                <CommandEmpty className="px-4 py-6 text-sm text-muted-foreground">No results for "{query}"</CommandEmpty>
+                <CommandEmpty className="px-4 py-6 text-sm text-muted-foreground">No results for &quot;{query}&quot;</CommandEmpty>
               ) : (
                 <CommandGroup heading="Assets">
                   {results.map((coin) => (

@@ -2,6 +2,7 @@
 
 import { usePathname, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 interface CryptoPaginationProps {
   page: number
@@ -39,28 +40,28 @@ export function CryptoPagination({ page, totalPages }: CryptoPaginationProps) {
     <div className="flex items-center justify-center gap-1.5 mt-6 text-sm">
       <Link
         href={page > 1 ? buildHref(page - 1) : '#'}
-        className={`px-3 py-1.5 rounded-lg border transition ${page > 1 ? 'border-border hover:bg-muted/10' : 'border-border opacity-40 cursor-not-allowed'}`}
         aria-disabled={page <= 1}
       >
-        ← Prev
+        <Button variant="outline" size="sm" disabled={page <= 1}>
+          ← Prev
+        </Button>
       </Link>
 
       {pages.map(p => (
-        <Link
-          key={p}
-          href={buildHref(p)}
-          className={`w-8 h-8 flex items-center justify-center rounded-lg border transition ${p === page ? 'bg-accent text-white border-accent' : 'border-border hover:bg-muted/10'}`}
-        >
-          {p}
+        <Link key={p} href={buildHref(p)}>
+          <Button variant={p === page ? 'default' : 'outline'} size="sm" className="w-8 h-8 p-0">
+            {p}
+          </Button>
         </Link>
       ))}
 
       <Link
         href={page < totalPages ? buildHref(page + 1) : '#'}
-        className={`px-3 py-1.5 rounded-lg border transition ${page < totalPages ? 'border-border hover:bg-muted/10' : 'border-border opacity-40 cursor-not-allowed'}`}
         aria-disabled={page >= totalPages}
       >
-        Next →
+        <Button variant="outline" size="sm" disabled={page >= totalPages}>
+          Next →
+        </Button>
       </Link>
     </div>
   )

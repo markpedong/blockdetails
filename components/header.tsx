@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { SearchDialog } from './search-dialog'
 import { ThemeToggle } from './theme-toggle'
 import { MobileNav } from './ui/mobile-nav'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { GlobalMarketData } from '@/lib/crypto'
 
 const NAV = [
@@ -38,6 +39,7 @@ const SiteHeader = () => {
 
           <div className="flex items-center gap-2">
             <SearchDialog />
+            <CurrencySelector />
             <ThemeToggle />
           </div>
         </div>
@@ -74,7 +76,11 @@ const MarketBar = async () => {
     return `$${n.toLocaleString()}`
   }
 
-  const changePct = d.market_cap_change_percentage_24h_usd
+  const marketCap = d.total_market_cap?.usd ?? d.total_market_cap?.['usd']
+  const volume = d.total_volume?.usd ?? d.total_volume?.['usd']
+  const btcDominance = d.market_cap_percentage?.btc
+  const ethDominance = d.market_cap_percentage?.eth
+  const changePct = d.market_cap_change_percentage_24h?.usd
   const changeStr = changePct != null ? `${changePct > 0 ? '+' : ''}${changePct.toFixed(1)}%` : '—'
   const changeColor = changePct != null ? (changePct >= 0 ? 'text-[var(--positive)]' : 'text-[var(--negative)]') : ''
 
@@ -83,16 +89,34 @@ const MarketBar = async () => {
       <div className="app-container flex items-center gap-3 sm:gap-4 py-1.5 overflow-x-auto scrollbar-hide">
         <span className="text-muted-foreground whitespace-nowrap">Coins: <b className="text-foreground">{d.active_cryptocurrencies?.toLocaleString() ?? '—'}</b></span>
         <span className="hidden sm:inline text-border">·</span>
-        <span className="text-muted-foreground whitespace-nowrap">Mkt Cap: <b className="text-foreground">{fmt(d.total_market_cap_usd)}</b></span>
+        <span className="text-muted-foreground whitespace-nowrap">Mkt Cap: <b className="text-foreground">{fmt(marketCap)}</b></span>
         <span className="hidden md:inline text-border">·</span>
-        <span className="hidden md:inline text-muted-foreground whitespace-nowrap">24h Vol: <b className="text-foreground">{fmt(d.total_volume_usd)}</b></span>
+        <span className="hidden md:inline text-muted-foreground whitespace-nowrap">24h Vol: <b className="text-foreground">{fmt(volume)}</b></span>
         <span className="hidden lg:inline text-border">·</span>
-        <span className="hidden lg:inline text-muted-foreground whitespace-nowrap">BTC: <b className="text-foreground">{d.btc_dominance?.toFixed(1) ?? '—'}%</b></span>
+        <span className="hidden lg:inline text-muted-foreground whitespace-nowrap">BTC: <b className="text-foreground">{btcDominance?.toFixed(1) ?? '—'}%</b></span>
         <span className="hidden xl:inline text-border">·</span>
-        <span className="hidden xl:inline text-muted-foreground whitespace-nowrap">ETH: <b className="text-foreground">{d.eth_dominance?.toFixed(1) ?? '—'}%</b></span>
+        <span className="hidden xl:inline text-muted-foreground whitespace-nowrap">ETH: <b className="text-foreground">{ethDominance?.toFixed(1) ?? '—'}%</b></span>
         <span className="hidden xl:inline text-border">·</span>
         <span className={`hidden xl:inline whitespace-nowrap ${changeColor}`}>24h: <b>{changeStr}</b></span>
       </div>
     </div>
+  )
+}
+
+/* ── Currency selector ── */
+const CurrencySelector = () => {
+  return (
+    <Select defaultValue="usd">
+      <SelectTrigger className="h-7 w-[72px] text-xs px-2 gap-1 hidden sm:flex">
+        <SelectValue placeholder="USD" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="usd">USD</SelectItem>
+        <SelectItem value="eur">EUR</SelectItem>
+        <SelectItem value="gbp">GBP</SelectItem>
+        <SelectItem value="jpy">JPY</SelectItem>
+        <SelectItem value="btc">BTC</SelectItem>
+      </SelectContent>
+    </Select>
   )
 }
