@@ -48,11 +48,10 @@ export interface MarketChartPoint {
 }
 
 export interface GlobalMarketData {
-  total_market_cap_usd: number | null
-  total_volume_usd: number | null
-  btc_dominance: number | null
-  eth_dominance: number | null
-  market_cap_change_percentage_24h_usd: number | null
+  total_market_cap: Record<string, number> | null
+  total_volume: Record<string, number> | null
+  market_cap_percentage: Record<string, number> | null
+  market_cap_change_percentage_24h: Record<string, number> | null
   active_cryptocurrencies: number | null
   total_updates: number | null
 }

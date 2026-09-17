@@ -100,15 +100,12 @@ function mapChart(raw: Record<string, unknown>): MarketChartPoint[] {
   return prices.map(([ts, price]) => ({ timestamp: ts, price }))
 }
 
-function mapGlobal(raw: Record<string, unknown>, currency: string): GlobalMarketData {
-  const tmc = raw.total_market_cap as Record<string, number> | undefined
-  const tv = raw.total_volume as Record<string, number> | undefined
+function mapGlobal(raw: Record<string, unknown>, _currency: string): GlobalMarketData {
   return {
-    total_market_cap_usd: currency ? tmc?.[currency] ?? null : (tmc?.usd ?? null),
-    total_volume_usd: currency ? tv?.[currency] ?? null : (tv?.usd ?? null),
-    btc_dominance: (raw.btc_dominance as number) ?? null,
-    eth_dominance: (raw.eth_dominance as number | undefined) ?? null,
-    market_cap_change_percentage_24h_usd: (raw.market_cap_change_percentage_24h_usd as number | undefined) ?? null,
+    total_market_cap: raw.total_market_cap as Record<string, number> | null,
+    total_volume: raw.total_volume as Record<string, number> | null,
+    market_cap_percentage: raw.market_cap_percentage as Record<string, number> | null,
+    market_cap_change_percentage_24h: raw.market_cap_change_percentage_24h as Record<string, number> | null,
     active_cryptocurrencies: (raw.active_cryptocurrencies as number | undefined) ?? null,
     total_updates: (raw.total_updates as number | undefined) ?? null,
   }
