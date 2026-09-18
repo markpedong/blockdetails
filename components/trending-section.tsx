@@ -18,7 +18,7 @@ const TrendingSection = async ({ currency }: { currency: string }) => {
 
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">Trending</h2>
+      <h2 className="text-lg font-semibold mb-3 text-foreground">Trending</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {trending.slice(0, 6).map((item: any) => (
           <Link key={item.item?.id} href={`/cryptocurrency/${item.item?.id}`} className="block">

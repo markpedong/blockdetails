@@ -50,6 +50,6 @@ export async function MarketOverview({ currency }: { currency: string }) {
 const Stat = ({ label, value }: { label: string; value: string }) => (
   <div>
     <div className="text-xs text-muted-foreground">{label}</div>
-    <div className="text-sm font-semibold mt-0.5 tabular-nums">{value}</div>
+    <div className="text-sm font-semibold mt-0.5 tabular-nums text-foreground">{value}</div>
   </div>
 )

@@ -41,7 +41,7 @@ export function CoinIdentity({ name, symbol, image, rank, size = 'md' }: CoinIde
         </div>
       )}
       <div className="min-w-0">
-        <span className={`${t.name} truncate block`}>{name}</span>
+        <span className={`${t.name} truncate block text-foreground`}>{name}</span>
         {symbol && (
           <span className={`block ${t.symbol} text-muted-foreground`}>{symbol.toUpperCase()}</span>
         )}

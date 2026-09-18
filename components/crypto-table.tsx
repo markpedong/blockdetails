@@ -67,7 +67,7 @@ export function CryptoTable({
                   />
                 </Link>
               </TableCell>
-              <TableCell className="text-right font-medium tabular-nums text-sm">
+              <TableCell className="text-right font-medium tabular-nums text-sm text-foreground">
                 {formatPrice(coin.current_price, currency)}
               </TableCell>
               {show1h && (

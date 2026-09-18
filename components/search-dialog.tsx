@@ -85,7 +85,7 @@ export function SearchDialog() {
                       {coin.image && (
                         <img src={coin.image} alt="" className="w-4 h-4 rounded-full mr-2" />
                       )}
-                      <span className="font-medium">{coin.name}</span>
+                      <span className="font-medium text-foreground">{coin.name}</span>
                       <span className="text-muted-foreground text-xs ml-auto">/{coin.symbol?.toUpperCase()}</span>
                       {coin.market_cap_rank && (
                         <span className="text-[10px] bg-muted/50 text-muted-foreground px-1.5 py-0.5 rounded-full ml-2">#{coin.market_cap_rank}</span>
