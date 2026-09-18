@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ChevronDownIcon } from 'lucide-react'
 
 const CURRENCIES = [
   { value: 'usd', label: 'USD', symbol: '$' },
@@ -30,7 +29,6 @@ export function CurrencySelector() {
     <Select value={currency} onValueChange={handleChange}>
       <SelectTrigger className="h-8 w-[72px] text-xs border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors">
         <SelectValue />
-        <ChevronDownIcon className="w-3 h-3 text-muted-foreground" />
       </SelectTrigger>
       <SelectContent>
         {CURRENCIES.map(c => (
