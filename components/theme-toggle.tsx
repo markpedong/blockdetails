@@ -1,7 +1,6 @@
 'use client'
 
 import { useTheme } from '@/components/theme'
-import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -22,17 +21,18 @@ export function ThemeToggle() {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger>
-				<Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Toggle theme">
-					{theme === 'system' ? (
-						<MonitorIcon className="w-4 h-4" />
-					) : theme === 'light' ? (
-						<SunIcon className="w-4 h-4" />
-					) : (
-						<MoonIcon className="w-4 h-4" />
-					)}
-					<span className="sr-only">Toggle theme</span>
-				</Button>
+			<DropdownMenuTrigger
+				className="inline-flex size-7 items-center justify-center rounded-md text-xs/relaxed font-medium transition-all hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"
+				aria-label="Toggle theme"
+			>
+				{theme === 'system' ? (
+					<MonitorIcon className="w-4 h-4" />
+				) : theme === 'light' ? (
+					<SunIcon className="w-4 h-4" />
+				) : (
+					<MoonIcon className="w-4 h-4" />
+				)}
+				<span className="sr-only">Toggle theme</span>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
 				{modes.map(m => (
