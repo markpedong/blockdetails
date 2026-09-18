@@ -58,14 +58,14 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
           />
         )}
         <div className="flex items-center gap-3 min-w-0">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{coin.name}</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{coin.name}</h1>
           <span className="text-sm text-muted-foreground uppercase font-medium">{coin.symbol}</span>
           {coin.market_cap_rank && (
             <Badge variant="secondary" className="text-xs font-normal">Rank #{coin.market_cap_rank}</Badge>
           )}
         </div>
         <div className="text-right ml-auto">
-          <div className="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight">
+          <div className="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight text-foreground">
             {formatPrice(coin.current_price, currency)}
           </div>
           <div className="flex items-center gap-2 justify-end mt-1">
@@ -85,7 +85,7 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
       {/* Market Statistics */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold">Market Statistics</CardTitle>
+          <CardTitle className="text-base font-semibold text-foreground">Market Statistics</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-3">
@@ -105,7 +105,7 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
       {/* About */}
       {coin.description?.en && (
         <div>
-          <h2 className="text-lg font-semibold mb-2">About {coin.name}</h2>
+          <h2 className="text-lg font-semibold mb-2 text-foreground">About {coin.name}</h2>
           <p className="text-sm text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: coin.description.en.split('.').slice(0, 3).join('.') + '.' }} />
         </div>
       )}
@@ -119,7 +119,7 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
 const StatRow = ({ label, value }: { label: string; value: string }) => (
   <div>
     <div className="text-xs text-muted-foreground mb-0.5">{label}</div>
-    <div className="text-sm font-medium tabular-nums">{value}</div>
+    <div className="text-sm font-medium tabular-nums text-foreground">{value}</div>
   </div>
 )
 
@@ -138,7 +138,7 @@ const renderLinks = (links: any) => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Resources</h2>
+      <h2 className="text-lg font-semibold mb-3 text-foreground">Resources</h2>
       <div className="flex flex-wrap gap-2">
         {items.map(item => (
           <a

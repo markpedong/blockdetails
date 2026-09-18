@@ -75,7 +75,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
           <img src={exchange.image} alt="" className="w-8 h-8 rounded-full" />
         )}
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">{exchange.name}</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">{exchange.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             {exchange.trust_score != null && (
               <Badge variant="outline" className={`tabular-nums text-xs ${
@@ -94,7 +94,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
       <Separator />
 
       <div>
-        <h2 className="text-sm font-semibold mb-3">Exchange Statistics</h2>
+        <h2 className="text-sm font-semibold mb-3 text-foreground">Exchange Statistics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
           <StatRow label="24h Volume (BTC)" value={formatCompact(exchange.trade_volume_24h_btc ?? 0)} />
           <StatRow label="Coins Listed" value={(exchange.coins ?? 0).toString()} />
@@ -108,7 +108,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
 
       {exchange.description && (
         <div>
-          <h2 className="text-sm font-semibold mb-2">About</h2>
+          <h2 className="text-sm font-semibold mb-2 text-foreground">About</h2>
           <div className="prose prose-sm max-w-none text-muted-foreground" dangerouslySetInnerHTML={{ __html: sanitizeHtml(exchange.description) }} />
         </div>
       )}
@@ -119,7 +119,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
 
       {pairs.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold mb-3">Trading Pairs ({pairs.length})</h2>
+          <h2 className="text-sm font-semibold mb-3 text-foreground">Trading Pairs ({pairs.length})</h2>
           <div className="rounded-lg border border-border/40 overflow-x-auto">
             <Table>
               <TableHeader>
@@ -131,7 +131,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
               <TableBody>
                 {pairs.slice(0, 100).map((pair: any) => (
                   <TableRow key={pair.market_id} className="border-border/40 hover:bg-muted/10 transition-colors">
-                    <TableCell className="font-medium tabular-nums text-sm">
+                    <TableCell className="font-medium tabular-nums text-sm text-foreground">
                       {pair.base_symbol}/{pair.quote_symbol}
                     </TableCell>
                     <TableCell className="text-right tabular-nums text-sm">{formatCompact(pair.volume_btc_24h ?? 0)}</TableCell>
@@ -156,7 +156,7 @@ const renderLinks = (exchange: any) => {
 
   return (
     <div>
-      <h2 className="text-sm font-semibold mb-2">Links</h2>
+      <h2 className="text-sm font-semibold mb-2 text-foreground">Links</h2>
       <div className="flex flex-wrap gap-2">
         {links.map(l => (
           <Button key={l.label} variant="outline" size="sm" className="h-7 text-xs">
