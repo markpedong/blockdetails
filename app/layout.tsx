@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import SiteHeader from '@/components/header'
-import Footer from '@/components/footer'
 import { ThemeProvider } from '@/components/theme'
 import { Toaster } from 'sonner'
 import { Inter } from "next/font/google";
@@ -23,7 +22,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex min-h-screen flex-col">
             <SiteHeader />
             <main className="flex-1">{children}</main>
-            <Footer />
+
           </div>
           <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />
         </ThemeProvider>

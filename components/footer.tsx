@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { Logo } from './logo'
 
 const Footer = () => {
@@ -10,11 +9,6 @@ const Footer = () => {
           <span className="font-medium text-foreground">BlockDetails</span>
           <span>·</span>
           <span>Real-time crypto market data</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <span>Data by CoinGecko & CoinMarketCap</span>
-          <span>·</span>
-          <span>Not financial advice</span>
         </div>
       </div>
     </footer>
