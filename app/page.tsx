@@ -11,7 +11,7 @@ const HomePage = ({ searchParams }: { searchParams: Promise<{ currency?: string 
   return (
     <div className="app-container py-6 space-y-5">
       <PageHeader
-        title="Cryptocurrency Prices by Market Cap"
+        title="Cryptocurrency Prices"
         description="Track live cryptocurrency prices, market capitalization, 24h volume, and market performance."
       />
 
@@ -24,7 +24,7 @@ const HomePage = ({ searchParams }: { searchParams: Promise<{ currency?: string 
       </Suspense>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Top Cryptocurrencies</h2>
+        <h2 className="text-lg font-semibold text-foreground">Top Cryptocurrencies</h2>
         <Suspense fallback={<Skeleton className="h-[400px] rounded-lg" />}>
           <CoinsTable searchParams={searchParams} />
         </Suspense>
