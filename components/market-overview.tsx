@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
+import { formatCompact } from '@/lib/utils'
 
 export async function MarketOverview({ currency }: { currency: string }) {
   let global: any = null
@@ -21,14 +22,6 @@ export async function MarketOverview({ currency }: { currency: string }) {
     )
   }
 
-  const fmt = (n: number | null | undefined) => {
-    if (!n && n !== 0) return '—'
-    if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`
-    if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`
-    if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`
-    return `$${n.toLocaleString()}`
-  }
-
   const marketCap = global.total_market_cap?.[currency] ?? global.total_market_cap?.usd
   const volume = global.total_volume?.[currency] ?? global.total_volume?.usd
   const btcDominance = global.market_cap_percentage?.btc ?? global.btc_dominance
@@ -38,8 +31,8 @@ export async function MarketOverview({ currency }: { currency: string }) {
       <CardContent>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-3">
           <Stat label="Active Cryptos" value={global.active_cryptocurrencies?.toLocaleString() ?? '—'} />
-          <Stat label="Total Market Cap" value={fmt(marketCap)} />
-          <Stat label="24h Volume" value={fmt(volume)} />
+          <Stat label="Total Market Cap" value={formatCompact(marketCap)} />
+          <Stat label="24h Volume" value={formatCompact(volume)} />
           <Stat label="BTC Dominance" value={`${btcDominance?.toFixed(1) ?? '—'}%`} />
         </div>
       </CardContent>
