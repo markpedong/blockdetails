@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { CoinChart } from '@/components/coin-chart'
-import { formatPrice, formatCompact, formatNum, sanitizeUrl } from '@/lib/utils'
+import { formatPrice, formatCompact, formatNum, formatDate, sanitizeUrl } from '@/lib/utils'
 import { PriceChangeInline } from '@/components/price-change'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -96,7 +96,7 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
             <StatRow label="Max Supply" value={coin.max_supply ? formatNum(coin.max_supply) : '—'} />
             <StatRow label="All-Time High" value={coin.ath ? formatPrice(coin.ath, currency) : '—'} />
             <StatRow label="ATH Change" value={coin.ath_change_percentage != null ? `${coin.ath_change_percentage.toFixed(1)}%` : '—'} />
-            <StatRow label="ATH Date" value={coin.ath_date ? new Date(coin.ath_date).toLocaleDateString() : '—'} />
+            <StatRow label="ATH Date" value={formatDate(coin.ath_date)} />
             <StatRow label="All-Time Low" value={coin.atl ? formatPrice(coin.atl, currency) : '—'} />
           </div>
         </CardContent>

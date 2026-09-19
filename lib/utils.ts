@@ -28,6 +28,13 @@ export function formatNum(n: number | null | undefined): string {
   return new Intl.NumberFormat('en-US').format(n)
 }
 
+export function formatDate(date: string | null | undefined, options?: Intl.DateTimeFormatOptions): string {
+  if (!date) return '—'
+  const d = new Date(date)
+  if (isNaN(d.getTime())) return '—'
+  return d.toLocaleDateString(undefined, options)
+}
+
 export function sanitizeUrl(url: string): string {
   try {
     const parsed = new URL(url)

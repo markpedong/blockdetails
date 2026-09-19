@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatDate } from '@/lib/utils'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 type Point = { date: string; price: number }
@@ -37,7 +37,7 @@ export function CoinChart({ coinId, currency }: CoinChartProps) {
       .then(json => {
         if (json.prices) {
           setData(json.prices.map((p: [number, number]) => ({
-            date: new Date(p[0]).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+            date: formatDate(new Date(p[0]).toISOString(), { month: 'short', day: 'numeric' }),
             price: p[1],
           })))
         } else { setData([]) }
