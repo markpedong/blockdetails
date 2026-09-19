@@ -3,23 +3,20 @@
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SUPPORTED_CURRENCIES, getDefaultCurrency, persistCurrency, type Currency } from '@/lib/currency'
 
-const CURRENCIES = [
-  { value: 'usd', label: 'USD', symbol: '$' },
-  { value: 'eur', label: 'EUR', symbol: '€' },
-  { value: 'gbp', label: 'GBP', symbol: '£' },
-  { value: 'jpy', label: 'JPY', symbol: '¥' },
-  { value: 'btc', label: 'BTC', symbol: '₿' },
-]
+const SYMBOLS: Record<string, string> = { usd: '$', eur: '€', gbp: '£', jpy: '¥', aud: 'A$', php: '₱' }
 
 export function CurrencySelector() {
   const router = useRouter()
   const pathname = usePathname()
-  const [currency, setCurrency] = useState('usd')
+  const [currency, setCurrency] = useState<Currency>(getDefaultCurrency)
 
   const handleChange = (value: string | null) => {
     if (!value) return
-    setCurrency(value)
+    const c = value as Currency
+    setCurrency(c)
+    persistCurrency(c)
     const params = new URLSearchParams(window.location.search)
     params.set('currency', value)
     router.push(`${pathname}?${params.toString()}`)
@@ -31,9 +28,9 @@ export function CurrencySelector() {
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {CURRENCIES.map(c => (
-          <SelectItem key={c.value} value={c.value} className="text-xs">
-            {c.symbol} {c.label}
+        {SUPPORTED_CURRENCIES.map(c => (
+          <SelectItem key={c} value={c} className="text-xs">
+            {SYMBOLS[c] ?? ''} {c.toUpperCase()}
           </SelectItem>
         ))}
       </SelectContent>
