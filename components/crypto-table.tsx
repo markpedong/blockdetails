@@ -1,6 +1,19 @@
 import Link from 'next/link'
-import type { Coin } from '@/lib/crypto'
 import { formatPrice, formatCompact } from '@/lib/utils'
+
+export interface Coin {
+  id: string
+  symbol: string
+  name: string
+  image: string | null
+  market_cap_rank: number | null
+  current_price: number | null
+  price_change_percentage_1h_in_currency: number | null
+  price_change_percentage_24h: number | null
+  price_change_percentage_7d_in_currency: number | null
+  market_cap: number | null
+  total_volume: number | null
+}
 import { CoinIdentity } from '@/components/coin-identity'
 import { PriceChangeInline } from '@/components/price-change'
 import { WatchlistButton } from '@/components/watchlist-button'
