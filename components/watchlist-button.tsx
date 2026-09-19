@@ -3,27 +3,14 @@
 import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { StarIcon } from 'lucide-react'
+import { getWatchlist, toggleWatchlist } from '@/lib/storage'
 
 export function WatchlistButton({ coinId }: { coinId: string }) {
-  const [watched, setWatched] = useState(() => {
-    try {
-      const list = JSON.parse(localStorage.getItem('watchlist') || '[]') as string[]
-      return list.includes(coinId)
-    } catch { return false }
-  })
+  const [watched, setWatched] = useState(() => getWatchlist().includes(coinId))
 
   const toggle = () => {
-    try {
-      const list: string[] = JSON.parse(localStorage.getItem('watchlist') || '[]')
-      const idx = list.indexOf(coinId)
-      if (idx >= 0) {
-        list.splice(idx, 1)
-      } else {
-        list.push(coinId)
-      }
-      localStorage.setItem('watchlist', JSON.stringify(list))
-      setWatched(!watched)
-    } catch {}
+    const next = toggleWatchlist(coinId)
+    setWatched(next.includes(coinId))
   }
 
   return (
