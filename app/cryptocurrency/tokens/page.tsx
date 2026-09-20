@@ -1,44 +1,11 @@
-import { Suspense } from 'react'
-import { CryptoTable } from '@/components/crypto-table'
+import Link from 'next/link'
 import { PageHeader } from '@/components/page-header'
-import { CryptoPagination } from '@/components/crypto-pagination'
-import { Skeleton } from '@/components/ui/skeleton'
-
-export const dynamic = 'force-dynamic'
-
-const TokensPage = ({ searchParams }: { searchParams: Promise<{ page?: string; currency?: string }> }) => {
-  return (
-    <div className="app-container py-6 space-y-4">
-      <PageHeader title="Tokens" description="Fungible tokens across various blockchains." />
-      <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
-        <TokensList searchParams={searchParams} />
-      </Suspense>
-    </div>
-  )
+import { parseCurrencyFromUrl } from '@/lib/currency'
+export default async function TokensPage({ searchParams }: { searchParams: Promise<{ currency?: string }> }) {
+  const currency = await parseCurrencyFromUrl(searchParams)
+  return <div className="app-container py-6 space-y-4">
+    <PageHeader title="Tokens" description="The market feed does not provide a reliable coin-versus-token classification. We do not infer asset types from ticker symbols." />
+    <p className="text-sm text-muted-foreground">Browse provider-defined categories instead, or check an asset’s contract addresses on its detail page.</p>
+    <Link className="text-sm underline" href={`/categories?currency=${currency}`}>Browse categories →</Link>
+  </div>
 }
-
-const TokensList = async ({ searchParams }: { searchParams: Promise<{ page?: string; currency?: string }> }) => {
-  const sp = await searchParams
-  const currentPage = Math.max(1, parseInt(sp.page || '1', 10))
-  const currency = sp.currency || 'usd'
-
-  let coins: any[] = []
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/coins?vs_currency=${currency}&order=market_cap_desc&per_page=50&page=${currentPage}&sparkline=false&price_change_percentage=1h,24h,7d`,
-      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
-    )
-    const json = await res.json()
-    // Client-side filter: tokens are coins on a platform (not base layer coins)
-    coins = (json.data || []).filter((c: any) => c.platform_id || c.symbol?.includes('.'))
-  } catch {}
-
-  return (
-    <div className="space-y-4">
-      <CryptoTable coins={coins} currency={currency} />
-      <CryptoPagination page={currentPage} totalPages={200} />
-    </div>
-  )
-}
-
-export default TokensPage

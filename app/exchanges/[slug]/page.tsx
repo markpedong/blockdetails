@@ -1,29 +1,22 @@
-import { formatCompact, formatNum, sanitizeUrl, sanitizeHtml } from '@/lib/utils'
+import { formatCompact, sanitizeUrl } from '@/lib/utils'
+import { getExchange, CryptoError, type ExchangeDetail, type Exchange } from '@/lib/crypto/service'
+import { notFound } from 'next/navigation'
+import { ErrorState } from '@/components/error-state'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Globe, ExternalLink } from 'lucide-react'
 import { StatRow } from '@/components/stat-row'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams() {
-  try {
-    const res = await fetch('https://api.coingecko.com/api/v3/exchanges?order=volume_24h_btc_desc&per_page=50', { next: { revalidate: 86400 } })
-    const json = await res.json()
-    return (json as { id: string }[]).slice(0, 50).map(e => ({ slug: e.id }))
-  } catch { return [] }
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges/${slug}`)
-    const json = await res.json()
-    if (json.data?.exchange) {
-      const ex = json.data.exchange
+    const { exchange: ex } = await getExchange(slug)
+    if (ex) {
       return {
         title: `${ex.name} Exchange — Volume, Trust Score & Markets | BlockDetails`,
         description: `View ${ex.name} exchange data, trust score, trading volume, and supported markets.`,
@@ -37,31 +30,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params
 
-  let apiRes: any = null
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges/${slug}`)
-    const json = await res.json()
-    if (json.data?.exchange) apiRes = json.data
-  } catch {}
-
-  const exchange = apiRes?.exchange ?? null
-
-  if (!exchange) {
-    return (
-      <div className="text-center py-24 space-y-3">
-        <h1 className="text-xl font-semibold text-[var(--negative)]">Exchange not found</h1>
-        <p className="text-muted-foreground text-sm">This exchange may have been delisted or the ID is incorrect.</p>
-        <Link href="/exchanges" className="inline-block text-sm bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
-          ← Back to Exchanges
-        </Link>
-      </div>
-    )
+  let apiRes: ExchangeDetail
+  try { apiRes = await getExchange(slug) }
+  catch (error) {
+    if (error instanceof CryptoError && (error.status === 404 || error.status === 400)) notFound()
+    return <div className="app-container py-6"><ErrorState message="Exchange data is temporarily unavailable. Please retry shortly." /></div>
   }
-
-  const pairs = apiRes?.pairs ?? []
+  const { exchange, pairs } = apiRes
 
   return (
-    <div className="space-y-5">
+    <div className="app-container py-6 space-y-5">
       <nav className="text-xs text-muted-foreground flex items-center gap-1.5" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
         <span>/</span>
@@ -72,7 +50,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
 
       <div className="flex items-start gap-3 flex-wrap">
         {exchange.image && (
-          <img src={exchange.image} alt="" className="w-8 h-8 rounded-full" />
+          <Image src={exchange.image} alt="" width={32} height={32} unoptimized className="rounded-full" />
         )}
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">{exchange.name}</h1>
@@ -96,9 +74,9 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
       <div>
         <h2 className="text-sm font-semibold mb-3 text-foreground">Exchange Statistics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
-          <StatRow label="24h Volume (BTC)" value={formatCompact(exchange.trade_volume_24h_btc ?? 0)} />
-          <StatRow label="Coins Listed" value={(exchange.coins ?? 0).toString()} />
-          <StatRow label="Trading Pairs" value={(exchange.pairs ?? 0).toString()} />
+          <StatRow label="24h Volume (BTC)" value={formatCompact(exchange.trade_volume_24h_btc)} />
+          <StatRow label="Coins Listed" value={exchange.coins?.toString() ?? '—'} />
+          <StatRow label="Trading Pairs" value={exchange.pairs?.toString() ?? '—'} />
           <StatRow label="Trust Score Rank" value={exchange.trust_score_rank ? `#${exchange.trust_score_rank}` : '—'} />
           {exchange.country && <StatRow label="Country" value={exchange.country} />}
         </div>
@@ -109,7 +87,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
       {exchange.description && (
         <div>
           <h2 className="text-sm font-semibold mb-2 text-foreground">About</h2>
-          <div className="prose prose-sm max-w-none text-muted-foreground" dangerouslySetInnerHTML={{ __html: sanitizeHtml(exchange.description) }} />
+          <p className="text-sm leading-relaxed text-muted-foreground">{exchange.description}</p>
         </div>
       )}
 
@@ -129,12 +107,12 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pairs.slice(0, 100).map((pair: any) => (
-                  <TableRow key={pair.market_id} className="border-border/40 hover:bg-muted/10 transition-colors">
+                {pairs.slice(0, 100).map((pair, index) => (
+                  <TableRow key={`${pair.market_id}-${pair.base_symbol}-${pair.quote_symbol}-${index}`} className="border-border/40 hover:bg-muted/10 transition-colors">
                     <TableCell className="font-medium tabular-nums text-sm text-foreground">
                       {pair.base_symbol}/{pair.quote_symbol}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums text-sm">{formatCompact(pair.volume_btc_24h ?? 0)}</TableCell>
+                    <TableCell className="text-right tabular-nums text-sm">{formatCompact(pair.volume_btc_24h)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -148,7 +126,7 @@ const ExchangeDetailPage = async ({ params }: { params: Promise<{ slug: string }
 
 export default ExchangeDetailPage
 
-const renderLinks = (exchange: any) => {
+const renderLinks = (exchange: Exchange) => {
   const links: { icon?: React.ReactNode; label: string; href: string }[] = []
   if (exchange.url) links.push({ icon: <Globe className="w-3.5 h-3.5" />, label: 'Website', href: sanitizeUrl(exchange.url) })
   if (exchange.market_center_url) links.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'Trade', href: sanitizeUrl(exchange.market_center_url) })
@@ -159,12 +137,9 @@ const renderLinks = (exchange: any) => {
       <h2 className="text-sm font-semibold mb-2 text-foreground">Links</h2>
       <div className="flex flex-wrap gap-2">
         {links.map(l => (
-          <Button key={l.label} variant="outline" size="sm" className="h-7 text-xs">
-            <a href={l.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5">
-              {l.icon}
-              <span>{l.label}</span>
-            </a>
-          </Button>
+          <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs hover:bg-muted">
+            {l.icon}<span>{l.label}</span>
+          </a>
         ))}
       </div>
     </div>

@@ -3,13 +3,14 @@ import Link from 'next/link'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { PageHeader } from '@/components/page-header'
-import { CryptoPagination } from '@/components/crypto-pagination'
+import { getExchanges, type Exchange } from '@/lib/crypto/service'
+import { ErrorState } from '@/components/error-state'
 import { EmptyState } from '@/components/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
-const ExchangesPage = () => {
+const ExchangesPage = ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
   return (
     <div className="app-container py-6 space-y-4">
       <PageHeader
@@ -17,7 +18,7 @@ const ExchangesPage = () => {
         description="Compare exchanges by volume, trust score, and supported markets."
       />
       <Suspense fallback={<Skeleton className="h-[500px] rounded-lg" />}>
-        <ExchangesList />
+        <ExchangesList searchParams={searchParams} />
       </Suspense>
     </div>
   )
@@ -25,24 +26,17 @@ const ExchangesPage = () => {
 
 export default ExchangesPage
 
-const ExchangesList = async () => {
-  let exchanges: any[] = []
-  let totalCount = 0
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/exchanges?order=volume_24h_btc_desc&per_page=50`,
-      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
-    )
-    const json = await res.json()
-    exchanges = json.data || []
-    totalCount = (json as any)?.total_count || exchanges.length
-  } catch {}
+const ExchangesList = async ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
+  const sp = await searchParams
+  const page = /^\d+$/.test(sp.page || '') ? Math.min(200, Math.max(1, Number(sp.page))) : 1
+  let exchanges: Exchange[]
+  try { exchanges = await getExchanges(page, 50) }
+  catch { return <ErrorState message="Exchange data is temporarily unavailable. Please retry shortly." /> }
 
   if (exchanges.length === 0) {
     return <EmptyState message="No exchanges found." />
   }
 
-  const totalPages = Math.ceil(totalCount / 50)
 
   return (
     <div className="space-y-4">
@@ -88,9 +82,11 @@ const ExchangesList = async () => {
           </TableBody>
         </Table>
       </div>
-      {totalPages > 1 && (
-        <CryptoPagination page={1} totalPages={totalPages} onPageChange={() => {}} />
-      )}
+      <nav aria-label="Exchange pages" className="flex justify-center gap-4 text-sm">
+        {page > 1 && <Link href={`/exchanges?page=${page - 1}`}>← Previous</Link>}
+        <span>Page {page}</span>
+        {exchanges.length === 50 && page < 200 && <Link href={`/exchanges?page=${page + 1}`}>Next →</Link>}
+      </nav>
     </div>
   )
 }

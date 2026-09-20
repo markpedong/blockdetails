@@ -1,13 +1,17 @@
 import { Suspense } from 'react'
+import { getMarkets } from '@/lib/crypto/service'
+import { parseCurrencyFromUrl } from '@/lib/currency'
+import { ErrorState } from '@/components/error-state'
 import { CryptoTable } from '@/components/crypto-table'
 import { MarketOverview } from '@/components/market-overview'
 import { TrendingSection } from '@/components/trending-section'
 import { PageHeader } from '@/components/page-header'
 import { Skeleton } from '@/components/ui/skeleton'
+import { CryptoPagination } from '@/components/crypto-pagination'
 
 export const dynamic = 'force-dynamic'
 
-const HomePage = ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
+const HomePage = ({ searchParams }: { searchParams: Promise<{ currency?: string; page?: string }> }) => {
   return (
     <div className="app-container py-6 space-y-5">
       <PageHeader
@@ -35,30 +39,29 @@ const HomePage = ({ searchParams }: { searchParams: Promise<{ currency?: string 
 
 export default HomePage
 
-const MarketOverviewWrapper = async ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
+const MarketOverviewWrapper = async ({ searchParams }: { searchParams: Promise<{ currency?: string; page?: string }> }) => {
   const sp = await searchParams
-  const currency = sp.currency || 'usd'
+  const currency = await parseCurrencyFromUrl(Promise.resolve(sp))
   return <MarketOverview currency={currency} />
 }
 
-const TrendingWrapper = async ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
+const TrendingWrapper = async ({ searchParams }: { searchParams: Promise<{ currency?: string; page?: string }> }) => {
   const sp = await searchParams
-  const currency = sp.currency || 'usd'
+  const currency = await parseCurrencyFromUrl(Promise.resolve(sp))
   return <TrendingSection currency={currency} />
 }
 
-const CoinsTable = async ({ searchParams }: { searchParams: Promise<{ currency?: string }> }) => {
+const CoinsTable = async ({ searchParams }: { searchParams: Promise<{ currency?: string; page?: string }> }) => {
   const sp = await searchParams
-  const currency = sp.currency || 'usd'
-  let coins: any[] = []
+  const currency = await parseCurrencyFromUrl(Promise.resolve(sp))
+  const page = sp.page ? Math.max(1, parseInt(sp.page) || 1) : 1
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/coins?vs_currency=${currency}&order=market_cap_desc&per_page=25&page=1&sparkline=false&price_change_percentage=1h,24h,7d`,
-      { next: { revalidate: 60 }, signal: AbortSignal.timeout(15_000) }
+    const coins = await getMarkets({ currency, perPage: 25, page })
+    return (
+      <div className="space-y-4">
+        <CryptoTable coins={coins} currency={currency} showFilters showSupply />
+        <CryptoPagination page={page} totalPages={200} />
+      </div>
     )
-    const json = await res.json()
-    coins = json.data || []
-  } catch {}
-
-  return <CryptoTable coins={coins} currency={currency} />
+  } catch { return <ErrorState message="Unable to load top cryptocurrencies. Please try again later." /> }
 }

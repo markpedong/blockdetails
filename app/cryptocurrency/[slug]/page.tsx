@@ -6,35 +6,23 @@ import { formatPrice, formatCompact, formatNum, formatDate, sanitizeUrl } from '
 import { PriceChangeInline } from '@/components/price-change'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ExternalLink, Globe, FileText, BookOpen } from 'lucide-react'
+import { notFound } from 'next/navigation'
+import { getCoin, CryptoError, type Coin } from '@/lib/crypto/service'
+import { ErrorState } from '@/components/error-state'
+import { WatchlistButton } from '@/components/watchlist-button'
+import { MarketPairs } from '@/components/market-pairs'
+import { parseCurrencyFromUrl } from '@/lib/currency'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const dynamic = 'force-dynamic'
 
 const CoinData = async ({ slug, currency }: { slug: string; currency: string }) => {
-  let coin: any = null
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000'}/api/coins/${slug}?vs_currency=${currency}&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`,
-      { next: { revalidate: 60 } }
-    )
-    const json = await res.json()
-    coin = json.data || null
-  } catch {}
-
-  if (!coin) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Coin not found. Please check the slug.</p>
-        <Link href="/cryptocurrency" className="text-accent text-sm mt-2 inline-block">
-          ← Back to all coins
-        </Link>
-      </div>
-    )
+  let coin: Coin
+  try { coin = await getCoin(slug, currency) }
+  catch (error) {
+    if (error instanceof CryptoError && (error.status === 404 || error.status === 400)) notFound()
+    return <ErrorState message="Coin data is temporarily unavailable. Please retry shortly." />
   }
-
-  const change24h = coin.price_change_percentage_24h || 0
-  const isPositive = change24h >= 0
 
   return (
     <div className="space-y-6">
@@ -60,6 +48,7 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
         <div className="flex items-center gap-3 min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{coin.name}</h1>
           <span className="text-sm text-muted-foreground uppercase font-medium">{coin.symbol}</span>
+          <WatchlistButton coinId={coin.id} />
           {coin.market_cap_rank && (
             <Badge variant="secondary" className="text-xs font-normal">Rank #{coin.market_cap_rank}</Badge>
           )}
@@ -72,7 +61,7 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
             <PriceChangeInline value={coin.price_change_percentage_24h} />
             {coin.price_change_24h != null && (
               <span className="text-muted-foreground text-sm tabular-nums">
-                ({isPositive ? '+' : ''}{formatPrice(Math.abs(coin.price_change_24h), currency)})
+                ({coin.price_change_24h > 0 ? '+' : ''}{formatPrice(coin.price_change_24h, currency)})
               </span>
             )}
           </div>
@@ -103,15 +92,17 @@ const CoinData = async ({ slug, currency }: { slug: string; currency: string }) 
       </Card>
 
       {/* About */}
-      {coin.description?.en && (
+      {coin.description && (
         <div>
           <h2 className="text-lg font-semibold mb-2 text-foreground">About {coin.name}</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: coin.description.en.split('.').slice(0, 3).join('.') + '.' }} />
+          <p className="text-sm text-muted-foreground leading-relaxed">{coin.description}</p>
         </div>
       )}
 
       {/* Links */}
       {renderLinks(coin.links)}
+      {Object.keys(coin.platforms).length > 0 && <section className="space-y-2"><h2 className="text-lg font-semibold">Contract addresses</h2>{Object.entries(coin.platforms).map(([platform, address]) => <p key={platform} className="text-sm break-all"><strong>{platform}:</strong> <code>{address}</code></p>)}</section>}
+      <Suspense fallback={<Skeleton className="h-48" />}><MarketPairs id={coin.id} /></Suspense>
     </div>
   )
 }
@@ -123,16 +114,8 @@ const StatRow = ({ label, value }: { label: string; value: string }) => (
   </div>
 )
 
-const renderLinks = (links: any) => {
-  if (!links) return null
-  const items: { icon?: React.ReactNode; label: string; href: string }[] = []
-
-  if (links.homepage?.[0]) items.push({ icon: <Globe className="w-3.5 h-3.5" />, label: 'Website', href: sanitizeUrl(links.homepage[0]) })
-  if (links.blockchain_site?.[0]) items.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'Explorer', href: sanitizeUrl(links.blockchain_site[0]) })
-  if (links.twitter_screen_name) items.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'X/Twitter', href: `https://twitter.com/${links.twitter_screen_name}` })
-  if (links.subreddit) items.push({ icon: <BookOpen className="w-3.5 h-3.5" />, label: 'Reddit', href: `https://reddit.com/r/${links.subreddit}` })
-  if (links.github?.length) items.push({ icon: <ExternalLink className="w-3.5 h-3.5" />, label: 'GitHub', href: links.github[0] })
-  if (links.whitepaper?.length) items.push({ icon: <FileText className="w-3.5 h-3.5" />, label: 'Whitepaper', href: links.whitepaper[0] })
+const renderLinks = (links: Coin['links']) => {
+  const items = links.map(link => ({ label: link.label, href: sanitizeUrl(link.url) })).filter(link => link.href !== '#')
 
   if (items.length === 0) return null
 
@@ -142,13 +125,12 @@ const renderLinks = (links: any) => {
       <div className="flex flex-wrap gap-2">
         {items.map(item => (
           <a
-            key={item.label}
+            key={item.href}
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
           >
-            {item.icon}
             <span>{item.label}</span>
           </a>
         ))}
@@ -172,6 +154,6 @@ export default CoinDetailPage
 const CoinDataWithParams = async ({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ currency?: string }> }) => {
   const { slug } = await params
   const sp = await searchParams
-  const currency = sp.currency || 'usd'
+  const currency = await parseCurrencyFromUrl(Promise.resolve(sp))
   return <CoinData slug={slug} currency={currency} />
 }
