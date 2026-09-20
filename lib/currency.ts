@@ -5,8 +5,10 @@ const KEY = 'blockdetails_currency'
 
 export function getDefaultCurrency(): Currency {
   if (typeof window === 'undefined') return 'usd'
-  const saved = localStorage.getItem(KEY) as Currency | null
-  if (saved && SUPPORTED_CURRENCIES.includes(saved)) return saved
+  try {
+    const saved = localStorage.getItem(KEY) as Currency | null
+    if (saved && SUPPORTED_CURRENCIES.includes(saved)) return saved
+  } catch { /* Storage can be blocked; the URL remains the source of truth. */ }
   // Detect locale-based default
   const locale = navigator.language?.toLowerCase() ?? ''
   if (locale.includes('ph')) return 'php'
@@ -19,7 +21,7 @@ export function getDefaultCurrency(): Currency {
 
 export function persistCurrency(currency: Currency): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(KEY, currency)
+    try { localStorage.setItem(KEY, currency) } catch { /* URL selection still works. */ }
   }
 }
 
@@ -29,5 +31,5 @@ export async function parseCurrencyFromUrl(
   const params = await searchParams
   const c = (params.currency as string | undefined)?.toLowerCase()
   if (c && SUPPORTED_CURRENCIES.includes(c as Currency)) return c as Currency
-  return getDefaultCurrency()
+  return 'usd'
 }
