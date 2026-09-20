@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
-import { formatPrice, formatDate } from '@/lib/utils'
+import { formatPrice } from '@/lib/utils'
+import { ErrorState } from '@/components/error-state'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 type Point = { date: string; price: number }
@@ -16,7 +17,7 @@ const RANGES: { label: string; key: RangeKey; days: number }[] = [
   { label: '30D', key: '30d', days: 30 },
   { label: '90D', key: '90d', days: 90 },
   { label: '1Y', key: '1y', days: 365 },
-  { label: 'MAX', key: '5y', days: 1825 },
+  { label: '5Y', key: '5y', days: 1825 },
 ]
 
 interface CoinChartProps {
@@ -29,22 +30,28 @@ export function CoinChart({ coinId, currency }: CoinChartProps) {
   const [data, setData] = useState<Point[]>([])
   const [loading, setLoading] = useState(true)
 
+  const [error, setError] = useState('')
+  const [retry, setRetry] = useState(0)
+
   useEffect(() => {
+    const controller = new AbortController()
     setLoading(true)
+    setError('')
+    setData([])
     const days = RANGES.find(r => r.key === range)?.days ?? 7
-    fetch(`/api/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`)
-      .then(r => r.json())
+    fetch(`/api/coins/${encodeURIComponent(coinId)}/market_chart?vs_currency=${currency}&days=${days}`, { signal: controller.signal })
+      .then(async r => { if (!r.ok) throw new Error('Chart unavailable'); return r.json() })
       .then(json => {
-        if (json.prices) {
-          setData(json.prices.map((p: [number, number]) => ({
-            date: formatDate(new Date(p[0]).toISOString(), { month: 'short', day: 'numeric' }),
-            price: p[1],
-          })))
-        } else { setData([]) }
+        if (!Array.isArray(json.data?.prices)) throw new Error('Invalid chart response')
+        if (!controller.signal.aborted) setData(json.data.prices.filter((p: unknown) => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite)).map((p: [number, number]) => ({
+          date: new Date(p[0]).toLocaleString(undefined, { month: 'short', day: 'numeric', year: days > 365 ? 'numeric' : undefined, hour: days <= 7 ? '2-digit' : undefined, minute: days <= 7 ? '2-digit' : undefined }),
+          price: p[1],
+        })))
       })
-      .catch(() => setData([]))
-      .finally(() => setLoading(false))
-  }, [coinId, currency, range])
+      .catch(() => { if (!controller.signal.aborted) setError('Chart unavailable for this range. The data provider may restrict historical access. Try another range or retry.') })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false) })
+    return () => controller.abort()
+  }, [coinId, currency, range, retry])
 
   const isUp = data.length > 1 ? data[data.length - 1].price >= data[0].price : true
 
@@ -71,7 +78,7 @@ export function CoinChart({ coinId, currency }: CoinChartProps) {
       {/* Chart */}
       {loading ? (
         <div className="h-[280px] flex items-center justify-center text-sm text-muted-foreground">Loading chart...</div>
-      ) : data.length === 0 ? (
+      ) : error ? <ErrorState message={error} onRetry={() => setRetry(v => v + 1)} /> : data.length === 0 ? (
         <div className="h-[280px] flex items-center justify-center text-sm text-muted-foreground">No chart data available</div>
       ) : (
         <ResponsiveContainer width="100%" height={280}>

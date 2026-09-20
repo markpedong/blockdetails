@@ -22,20 +22,26 @@ export function useTheme() {
 }
 
 function ThemeProviderInner({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as Theme) || 'system'
-    }
-    return 'system'
-  })
+  const [theme, setTheme] = useState<Theme>('system')
+  const [systemDark, setSystemDark] = useState(false)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('theme')
+      if (saved === 'dark' || saved === 'light' || saved === 'system') setTheme(saved)
+    } catch { /* Theme remains usable when storage is blocked. */ }
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    const update = () => setSystemDark(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
 
   const resolved = React.useMemo((): 'dark' | 'light' => {
     if (theme === 'system') {
-      return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark' : 'light'
+      return systemDark ? 'dark' : 'light'
     }
     return theme
-  }, [theme])
+  }, [theme, systemDark])
 
   useEffect(() => {
     const root = document.documentElement
@@ -46,7 +52,7 @@ function ThemeProviderInner({ children }: { children: React.ReactNode }) {
   const handleSetTheme = (t: Theme) => {
     setTheme(t)
     if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', t)
+      try { localStorage.setItem('theme', t) } catch { /* Keep the in-memory choice. */ }
     }
   }
 
