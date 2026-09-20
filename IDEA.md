@@ -1,4 +1,6 @@
-# BlockDetails 2.0 — Project Direction
+# BlockDetails 2.0 — Historical Project Direction
+
+> Superseded by the 2026-09-19 modernization requirements: retain Next.js App Router with root-level directories (no `src/`), use normalized CoinGecko/CoinMarketCap providers, and include portfolio transaction accounting. The Vite migration and portfolio exclusion below are historical, not implementation instructions. Current architecture and verification commands belong in README.md.
 
 ## Purpose
 

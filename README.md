@@ -1,130 +1,79 @@
 # BlockDetails
 
-A cryptocurrency and exchange information dashboard built with Next.js, React, TypeScript, Tailwind CSS, and shadcn/ui.
+Cryptocurrency dashboard built with Next.js App Router, React, TypeScript, Tailwind and existing shadcn/Base UI components. Root-level `app/`, `components/`, `lib/`; no `src/`.
 
-## Quick Start
+## Run
+
+Node >=22.18 and pnpm10.33 (pinned in package.json):
 
 ```bash
-pnpm install
-cp .env.example .env.local  # (optional) add your CoinGecko API key
+corepack pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open http://localhost:3000. Public CoinGecko and supported official CoinMarketCap keyless endpoints work without secrets. For higher quotas, configure server environment variables securely:
 
-## Project Structure
+- `CRYPTO_PRIMARY_PROVIDER`: `coingecko` (default) or `coinmarketcap`.
+- `COINMARKETCAP_API_KEY`: optional; authenticated capabilities depend on your plan.
+- `COINGECKO_DEMO_API_KEY`: optional demo key. Legacy `COINGECKO_API_KEY` aliases this, not Pro.
+- `COINGECKO_PRO_API_KEY`: explicitly selects the Pro host.
 
-```
-app/
-  api/              # Server-side API routes (proxy to crypto providers)
-    coins/          # Coin listing, detail, chart, search, trending
-    exchanges/      # Exchange listing, detail, markets
-    global/         # Global market data
-  components/       # Reusable UI components
-  cryptocurrency/   # Crypto listing, coin detail pages (SSG)
-  exchanges/        # Exchange listing page (SSR)
-  page.tsx          # Home page with global market stats
-lib/
-  crypto/           # Crypto data abstraction layer (NEW)
-    types.ts        # Internal type definitions
-    provider.ts     # Provider interface
-    service.ts      # Service layer with fallback logic
-    providers/
-      coingecko.ts  # CoinGecko provider (primary)
-      coinmarketcap.ts  # CoinMarketCap provider (fallback)
-    index.ts        # Re-exports for backward compatibility
-  crypto.ts         # Backward-compat shim (old imports)
-  api.ts            # Backward-compat shim (old API imports)
-  exchange.ts       # Backward-compat shim (old exchange imports)
-  currency.ts       # Currency formatting utilities
-  format.ts         # Price/number formatting helpers
-docs/
-  crypto-data-architecture.md  # Full architecture spec
-```
-
-## Crypto Data Architecture
-
-BlockDetails uses a **server-side crypto data abstraction layer**. The frontend never calls CoinGecko or CoinMarketCap directly — all provider logic, normalization, caching, and fallback live on the server.
-
-### API Endpoints
-
-| Endpoint | Method | Description | Cache |
-|----------|--------|-------------|-------|
-| `/api/coins` | GET | List top coins (paginated) — includes `current_price`, price changes, market cap | **no-store** (price is live) |
-| `/api/coins/[slug]` | GET | Single coin detail + live price + chart data | **no-store** (price is live) |
-| `/api/coins/[slug]/chart` | GET | Historical price chart data (time-series) | **no-store** (price is live) |
-| `/api/coins/trending` | GET | Trending coins (rank, image only — no price) | 5 min |
-| `/api/coins/search` | GET | Search coins by query (rank, image only — no price) | **no-store** |
-| `/api/coins/list` | GET | Full coin list (for static params: id/symbol/name only) | 24 hours |
-| `/api/global` | GET | Global market data (totals, BTC dominance — no price) | 1 min |
-| `/api/exchanges` | GET | Exchange list (paginated — volume, trust score only) | 5 min |
-| `/api/exchanges/[slug]` | GET | Single exchange detail (no price) | 10 min |
-| `/api/exchanges/[slug]/markets` | GET | Exchange markets/trading pairs — includes `last_price` per pair | **no-store** (price is live) |
-
-### Providers
-
-- **CoinGecko** (primary) — Free tier. Base URL from `COINGECKO_BASE_URL` env var.
-- **CoinMarketCap** (fallback) — Free tier trial endpoints. No API key required for basic listing/quotes.
-
-Provider selection is internal to the server. The client never knows which provider served data.
-
-### Fallback Behavior
-
-1. Primary provider (CoinGecko) is called first.
-2. On 429, 502, 503, 504, or network timeout → fallback to CoinMarketCap.
-3. Fallback response is normalized into the same internal shape.
-4. Client behavior is unchanged regardless of which provider served data.
-
-### Environment Variables
-
-```env
-COINGECKO_BASE_URL=https://api.coingecko.com/api/v3
-# COINGECKO_API_KEY=your_key_here  (optional, for paid tier)
-```
-
-No `NEXT_PUBLIC_*` crypto variables. All provider keys remain server-only.
-
-## Pages
-
-| Route | Description | Rendering |
-|-------|-------------|-----------|
-| `/` | Home — global market stats | SSR |
-| `/cryptocurrency` | Coin listing with sorting, pagination, currency filter | SSG (dynamic) |
-| `/cryptocurrency/[slug]` | Coin detail page with chart, stats, links | SSG (dynamic) |
-| `/cryptocurrency/coins` | All coins listing | SSR |
-| `/cryptocurrency/tokens` | Token listing (filtered) | SSR |
-| `/exchanges` | Exchange listing with pagination | SSR |
-| `/exchanges/[slug]` | Exchange detail + trading pairs | SSG (dynamic) |
+No crypto keys in `NEXT_PUBLIC_*`. Never commit `.env.local`. Provider hosts are fixed, not user-controlled URLs.
 
 ## Features
 
-- **Multi-currency support** — switch between USD, EUR, GBP, JPY, etc.
-- **Sorting & pagination** — sort by rank, price, volume, change; paginate through results.
-- **Search dialog** — fuzzy search coins via `/api/coins/search`.
-- **Watchlist** — save/remove favorite coins (localStorage).
-- **Dark/light theme** — system-aware with manual toggle.
-- **Responsive design** — mobile-first layout with shadcn/ui components.
+Rankings, currency selection, search, global metrics, coin details/metadata, historical charts, trading pairs, exchanges/detail, categories, trending, top-250 gainers/losers, persistent local watchlist and portfolio. Token navigation uses provider categories rather than pretending a ticker or rank distinguishes tokens.
 
-## Tech Stack
+Portfolio is **local-only USD accounting**, not an exchange or synced account. It supports BUY, SELL, TRANSFER_IN, TRANSFER_OUT, REWARD, AIRDROP and STAKING_REWARD; asset ID, decimal quantity/price/fee, time and notes; edit/delete with validation; JSON backup/restore. Weighted-average cost and BigInt arithmetic calculate holdings, cost, invested value, valuation, realized/unrealized/total P&L, percentages and allocations. Missing prices make valuation unavailable, not zero. Rewards use zero purchase basis; transfers carry cost without pretending to be sales. Full policy is shown in `/portfolio`; this is not a tax engine. Export backups before clearing browser storage.
 
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Data fetching**: Server components + API routes (no client-side crypto calls)
-- **Crypto providers**: CoinGecko (primary), CoinMarketCap (fallback)
+## Data flow
 
-## Scripts
+`provider HTTP -> adapters/validation -> central capability router -> normalized crypto service -> server components / route handlers`
+
+- `lib/crypto/types.ts`: normalized contract; missing values are null.
+- `lib/crypto/core.ts`: actual adapters, identity map, routing, bounded6s/provider deadlines and128-entry success cache. 429/5xx/network/timeout/schema/quota failures try a compatible fallback. No scattered provider catches.
+- `lib/crypto/service.ts`: server-only secrets and Next persistent cache. Server components call this directly, never a localhost API.
+- `lib/crypto/http.ts`: safe HTTP errors; unavailable503, invalid input400, authoritative not-found404.
+
+### Capability matrix
+
+Default primary is CG; the configured preference reverses compatible providers. Every listed operation has response validation. Availability is not identical across plans.
+
+| Capability / HTTP route | CoinGecko | CoinMarketCap fallback | Next revalidation |
+|---|---|---|---|
+| Markets/quotes `/api/coins` | coins/markets | v3 listings/latest or quotes/latest; keyless | 60s |
+| Details `/api/coins/[id]` | coins/id | v2 info + v3 quotes/latest; keyless | 60s |
+| Chart `/api/coins/[id]/market_chart` | market_chart; range limits | v3 quotes/historical; key/plan required | 300s |
+| Global `/api/global` | global | v1 global-metrics/quotes/latest; keyless | 60s |
+| Trending `/api/trending` | search/trending + quotes | v1 trending/latest; key/plan, provider-specific ranking | 300s |
+| Search `/api/coins/search?q=` | search | No equivalent substring-search fallback | 300s |
+| Categories `/api/categories` | coins/categories/list | No interchangeable taxonomy fallback | 24h |
+| Exchanges `/api/exchanges` | exchanges | v1 exchange/listings/latest; key/plan | 300s |
+| Exchange `/api/exchanges/[id]` | exchanges/id | exchange quotes/info/pairs; key/plan | 300s |
+| Pairs `/api/coins/[id]/markets`, `/api/exchanges/[id]/markets` | coin/exchange tickers | official market-pairs; key/plan | 60s |
+
+All HTTP responses use `{data}`; chart data contains `prices`. Common query parameters: `vs_currency`, `page`, `per_page`; markets additionally accept `ids`, `category`, `order`; charts accept `days`.
+
+Transport is no-store; only validated successes enter caches. Next may serve an older successful result while revalidating. Quotes are cached snapshots, not a streaming price feed. Public-provider IP rate limits can still make capabilities without compatible fallback unavailable; the UI reports that rather than inventing data.
+
+### Identity and limits
+
+CG IDs are canonical. The reviewed cross-provider map currently covers bitcoin1, ethereum1027, solana5426, and exchange binance270. Unmapped CMC assets use `cmc:<id>`; normalized data also carries source slug, symbol and provider IDs. Never join by symbol or assume identical provider slugs. Unmapped CG assets have no safe CMC quote fallback until their mapping is reviewed. Add mappings with independent identity evidence, not fuzzy name matches.
+
+Official [CMC keyless documentation](https://coinmarketcap.com/api/documentation/pro-api-reference/keyless-public-api) defines the `/public-api` endpoints; no undocumented website API is used. Live keyless success codes may be numeric0 or string"0". CMC historical/trending/exchange/pairs access requires applicable authentication/entitlement; fixture tests are not live-plan verification. Long historical ranges may be unavailable.
+
+## Verify
 
 ```bash
-pnpm dev        # Start development server
-pnpm build      # Production build
-pnpm start      # Start production server
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm test:runtime
 ```
 
-## Adding a New Provider
+`test` runs deterministic Node tests (explicit synthetic provider fixtures) for both fallback directions,429/5xx/timeout/malformed/missing fields/both down, normalization, identity safety, cache behavior and portfolio math/storage protection.
 
-1. Create `lib/crypto/providers/<name>.ts` implementing the `CryptoProvider` interface.
-2. Add mapping logic for all 9 methods (chart, trending, search may return empty for limited tiers).
-3. Register the provider name in `lib/crypto/service.ts` fallback chain.
+`test:runtime` starts/stops a production server, runs paced real HTTP checks, then installed Chrome in a disposable profile. Set `CHROME_BIN` if Chrome is not in a supported default location; `BLOCKDETAILS_PORT` changes3100. Browser checks exercise portfolio add/edit/reload/oversell, watchlist persistence, page rendering/mobile width and uncaught exceptions. Public API quotas may cause explicit degraded-state UI; API tests still fail if a required live endpoint returns503. Standalone `test:live` and `test:browser` target `BLOCKDETAILS_URL` (default localhost3100). `SKIP_LIVE=1` runs browser-only; `RUNTIME_DEV=1` enables non-minified diagnosis.
 
-See `docs/crypto-data-architecture.md` for the full spec.
+Verified2026-09-20:41 unit tests, lint, typecheck, production build;12 live data operations200 and3 invalid queries400; production browser checks passed with no uncaught exceptions. CMC public listings/quotes/details/global were independently confirmed live. Paid CMC paths were not live-verified. These checks do not establish universal asset mapping, unlimited provider availability or complete CoinMarketCap feature parity.
